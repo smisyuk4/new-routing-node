@@ -1,20 +1,10 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
+const url = require('url');
+
 let sql;
-const app = express();
 const port = 3000;
-
-app.post('/create-post', async (req, res) => {
-  const { title, message } = req.body;
-
-  res.status(200).send({ result: 'created' });
-
-  //res.status(500).send({ error });
-});
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
 
 // connect to db
 let db = new sqlite3.Database('./posts.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -24,20 +14,85 @@ let db = new sqlite3.Database('./posts.db', sqlite3.OPEN_READWRITE, (err) => {
   console.log('Connected to the in-memory SQlite database.');
 });
 
-// create table
-//sql = `CREATE TABLE posts(id INTEGER PRIMARY KEY,title,message)`;
-//db.run(sql);
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-// drop table
-//db.run('DROP TABLE posts');
+app.get('/posts', async (req, res) => {
+  sql = `SELECT * FROM posts`; // get all data
 
-// insert data into table
-//sql = `INSERT INTO posts(title, message) VALUES(?,?)`;
-//db.run(sql, ['Angular', 'fine tool for development power SPA'], (err) => {
-//  if (err) {
-//    return console.error(err.message);
-//  }
-//});
+  const queryObject = url.parse(req.url, true).query;
+
+  if (queryObject.field && queryObject.value) {
+    // get selected data
+    sql += ` WHERE ${queryObject.field} LIKE '%${queryObject.value}%'`;
+  }
+
+  try {
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        return res.json({
+          status: 300,
+          success: false,
+          error: err,
+        });
+      }
+
+      if (rows.length < 1) {
+        return res.json({
+          status: 300,
+          success: false,
+          error: 'No match',
+        });
+      }
+
+      return res.json({
+        status: 200,
+        success: true,
+        data: rows,
+      });
+    });
+  } catch (error) {
+    return res.json({
+      status: 400,
+      success: false,
+    });
+  }
+});
+
+app.post('/create-post', async (req, res) => {
+  const { title, message } = req.body;
+
+  try {
+    // insert data into table
+    sql = `INSERT INTO posts(title, message) VALUES(?,?)`;
+    db.run(sql, ['Angular', 'fine tool for development power SPA'], (err) => {
+      if (err) {
+        return res.json({
+          status: 300,
+          success: false,
+          error: err,
+        });
+      }
+
+      console.log(req.body);
+    });
+
+    res.json({
+      status: 200,
+      success: true,
+    });
+  } catch (error) {
+    return res.json({
+      status: 400,
+      success: false,
+    });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`App listening on port ${port}`);
+});
 
 // update data
 //sql = `UPDATE posts SET title = ? WHERE id = ?`;
@@ -61,15 +116,3 @@ let db = new sqlite3.Database('./posts.db', sqlite3.OPEN_READWRITE, (err) => {
 //    }
 //  },
 //]);
-
-// query the data
-sql = `SELECT * FROM posts`;
-db.all(sql, [], (err, rows) => {
-  if (err) {
-    return console.error(err.message);
-  }
-
-  rows.forEach((row) => {
-    console.log(row);
-  });
-});
