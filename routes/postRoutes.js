@@ -4,9 +4,6 @@
  *   schemas:
  *     Posts:
  *       type: object
- *       required:
- *         - title
- *         - message
  *       properties:
  *         id:
  *           type: integer
@@ -69,6 +66,10 @@ const {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Posts'
+ *       300: 
+ *         description: Error with reading data to base or no exists
+ *       400: 
+ *         description: Error with reading data to base
  */
 router.get('/posts', asyncWrapper(getFilteredPosts));
 
@@ -83,7 +84,15 @@ router.get('/posts', asyncWrapper(getFilteredPosts));
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Posts'
+ *             type: object
+ *             required:
+ *               - title
+ *               - message
+ *             properties:
+ *               title:
+ *                 type: string
+ *               message:
+ *                 type: string
  *     responses:
  *       200:
  *         description: The created post.
@@ -94,6 +103,37 @@ router.get('/posts', asyncWrapper(getFilteredPosts));
  */
 router.post('/create-post', asyncWrapper(createPost));
 
+/**
+ * @swagger
+ * /update-post:
+ *   patch:
+ *     summary: Update post
+ *     tags: [Posts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *             properties:
+ *               id:
+ *                 type: integer
+ *               title:
+ *                 type: string
+ *               message:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: The created post.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Posts'
+ *       400:
+ *         description: Post not updated.
+ */
 router.patch('/update-post', asyncWrapper(updatePost));
 
 /**
@@ -102,14 +142,17 @@ router.patch('/update-post', asyncWrapper(updatePost));
  *   delete:
  *     summary: Remove the post by id
  *     tags: [Posts]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The post id
- *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *             properties:
+ *               id:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: The post was deleted

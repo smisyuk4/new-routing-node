@@ -9,10 +9,6 @@ const { postRouter } = require('./routes/postRoutes');
 const openapiSpecification = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',
-    servers: [
-      //{ url: `localhost:${process.env.PORT}` },
-      //{ url: process.env.SERVER },
-    ],
     info: {
       version: '1.0.0',
     },

@@ -23,30 +23,26 @@ const getFilteredPosts = async (req, res) => {
   try {
     db.all(sql, [], (err, rows) => {
       if (err) {
-        return res.json({
-          status: 300,
+        return res.status(300).json({
           success: false,
           error: err,
         });
       }
 
       if (rows.length < 1) {
-        return res.json({
-          status: 300,
+        return res.status(300).json({
           success: false,
           error: 'No match',
         });
       }
 
-      return res.json({
-        status: 200,
+      return res.status(200).json({
         success: true,
         data: rows,
       });
     });
   } catch (error) {
-    return res.json({
-      status: 400,
+    return res.status(400).json({
       success: false,
     });
   }
@@ -57,8 +53,7 @@ const createPost = async (req, res) => {
   sql = `INSERT INTO posts(title, message) VALUES(?,?)`;
 
   if (!title || !message) {
-    return res.json({
-      status: 400,
+    return res.status(400).json({
       success: false,
       message: 'title and message required',
     });
@@ -67,21 +62,18 @@ const createPost = async (req, res) => {
   try {
     db.run(sql, [title, message], (err) => {
       if (err) {
-        return res.json({
-          status: 300,
+        return res.status(300).json({
           success: false,
           error: err,
         });
       }
 
-      res.json({
-        status: 200,
+      res.status(200).json({
         success: true,
       });
     });
   } catch (error) {
-    return res.json({
-      status: 400,
+    return res.status(400).json({
       success: false,
     });
   }
@@ -91,6 +83,13 @@ const updatePost = async (req, res) => {
   const { id, title, message } = req.body;
   sql = 'UPDATE posts SET';
   const params = [];
+
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      message: 'id is required',
+    });
+  }
 
   if (title) {
     sql += ' title = ?,';
@@ -111,21 +110,18 @@ const updatePost = async (req, res) => {
     //generated query as `UPDATE posts SET title = ?, message = ? WHERE id = ?`;
     db.run(sql, params, (err) => {
       if (err) {
-        return res.json({
-          status: 300,
+        return res.status(300).json({
           success: false,
           error: err,
         });
       }
     });
 
-    res.json({
-      status: 200,
+    res.status(200).json({
       success: true,
     });
   } catch (error) {
-    return res.json({
-      status: 400,
+    return res.status(400).json({
       success: false,
     });
   }
@@ -138,21 +134,18 @@ const deletePost = async (req, res) => {
   try {
     db.run(sql, [id], (err) => {
       if (err) {
-        return res.json({
-          status: 300,
+        return res.status(300).json({
           success: false,
           error: err,
         });
       }
 
-      res.json({
-        status: 200,
+      res.status(200).json({
         success: true,
       });
     });
   } catch (error) {
-    return res.json({
-      status: 400,
+    return res.status(400).json({
       success: false,
     });
   }
