@@ -1,16 +1,30 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
+const swaggerJsdoc = require('swagger-jsdoc');
 require('dotenv').config();
 
 const { postRouter } = require('./routes/postRoutes');
 
+const openapiSpecification = swaggerJsdoc({
+  definition: {
+    openapi: '3.0.0',
+    servers: [
+      //{ url: `localhost:${process.env.PORT}` },
+      //{ url: process.env.SERVER },
+    ],
+    info: {
+      version: '1.0.0',
+    },
+  },
+  apis: ['./routes/*.js'],
+});
+
 const PORT = process.env.PORT || 8080;
 const app = express();
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use(bodyParser.json());
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(postRouter);
 
 app.get('/', async (req, res) => {
