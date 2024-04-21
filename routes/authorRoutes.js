@@ -34,7 +34,9 @@ const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
   registerAuthor,
   loginAuthor,
+  logOutAuthor,
   updateAuthorProfile,
+  getAuthors,
   deleteAuthor,
 } = require('../controllers/authorControlleer');
 
@@ -70,6 +72,8 @@ router.post('/register', asyncWrapper(registerAuthor));
 
 router.post('/login', asyncWrapper(loginAuthor));
 
+router.post('/logout', asyncWrapper(logOutAuthor));
+
 /**
  * @swagger
  * /update-post:
@@ -102,6 +106,8 @@ router.post('/login', asyncWrapper(loginAuthor));
  *         description: Post not updated.
  */
 router.patch('/update-author-profile', asyncWrapper(updateAuthorProfile));
+
+router.get('/authors', asyncWrapper(getAuthors));
 
 /**
  * @swagger

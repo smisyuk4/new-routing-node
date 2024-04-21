@@ -15,103 +15,202 @@ let db = new sqlite3.Database(
 );
 
 const registerAuthor = async (req, res) => {
-  //const { author_id, title, message } = req.body;
-  //const dateISO = new Date().toISOString();
-  //sql = `INSERT INTO posts(author_id, title, message, date_publish, date_update) VALUES(?,?,?,?,?)`;
-  //if (!title || !message || !author_id) {
-  //  return res.status(400).json({
-  //    success: false,
-  //    message: 'author_id, title and message required',
-  //  });
-  //}
-  //try {
-  //  db.run(sql, [author_id, title, message, dateISO, dateISO], (err) => {
-  //    if (err) {
-  //      return res.status(300).json({
-  //        success: false,
-  //        error: err,
-  //      });
-  //    }
-  //    res.status(200).json({
-  //      success: true,
-  //    });
-  //  });
-  //} catch (error) {
-  //  return res.status(400).json({
-  //    success: false,
-  //  });
-  //}
+  const { name, email } = req.body;
+  const dateISO = new Date().toISOString();
+  sql = `INSERT INTO authors(name, email, token, date_publish, date_update) VALUES(?,?,?,?,?)`;
+  const token = 'test_register_token_000000000';
+
+  if (!name || !email) {
+    return res.status(400).json({
+      success: false,
+      message: 'name and email required',
+    });
+  }
+
+  try {
+    db.run(sql, [name, email, token, dateISO, dateISO], (err) => {
+      if (err) {
+        return res.status(300).json({
+          success: false,
+          error: err,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        token,
+      });
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+    });
+  }
 };
 
-const loginAuthor = async (req, res) => {};
+const loginAuthor = async (req, res) => {
+  const { name, email } = req.body;
+  const dateISO = new Date().toISOString();
+  sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
+  const token = 'test_login_token_000000000';
 
-const updateAuthorProfile = async (req, res) => {
-  //const { post_id, title, message } = req.body;
-  //const dateISO = new Date().toISOString();
-  //sql = 'UPDATE posts SET';
-  //const params = [];
-  //if (!post_id) {
-  //  return res.status(400).json({
-  //    success: false,
-  //    message: 'post_id is required',
-  //  });
+  if (!name || !email) {
+    return res.status(400).json({
+      success: false,
+      message: 'name and email required',
+    });
+  }
+
+  try {
+    db.run(sql, [token, dateISO, email], function (err) {
+      if (err) {
+        return res.status(300).json({
+          success: false,
+          error: err,
+        });
+      }
+
+      if (this.changes === 0) {
+        return res.status(300).json({
+          success: false,
+          message: `Author with ${email} not found.`,
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        token,
+      });
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+    });
+  }
+};
+
+const logOutAuthor = async (req, res) => {
+  const { name, email } = req.body;
+  const dateISO = new Date().toISOString();
+  sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
+  const token = null;
+
+  if (!name || !email) {
+    return res.status(400).json({
+      success: false,
+      message: 'name and email required',
+    });
+  }
+
+  try {
+    db.run(sql, [token, dateISO, email], function (err) {
+      if (err) {
+        return res.status(300).json({
+          success: false,
+          error: err,
+        });
+      }
+
+      if (this.changes === 0) {
+        return res.status(300).json({
+          success: false,
+          message: `Author with ${email} not found.`,
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+      });
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+    });
+  }
+};
+
+const updateAuthorProfile = async (req, res) => {};
+
+const getAuthors = async (req, res) => {
+  sql = `SELECT * FROM authors`; // get all data
+
+  //const queryObject = url.parse(req.url, true).query;
+
+  //if (queryObject.field && queryObject.value) {
+  //  // get filtered data
+  //  sql += ` WHERE ${queryObject.field} LIKE '%${queryObject.value}%'`;
   //}
-  //if (title) {
-  //  sql += ' title = ?,';
-  //  params.push(title);
-  //}
-  //if (message) {
-  //  sql += ' message = ?,';
-  //  params.push(message);
-  //}
-  //sql += ' date_update = ? WHERE post_id = ?';
-  //params.push(dateISO);
-  //params.push(post_id);
-  //try {
-  //  //generated query as `UPDATE posts SET title = ?, message = ?, date_update = ? WHERE post_id = ?`;
-  //  db.run(sql, params, (err) => {
-  //    if (err) {
-  //      return res.status(300).json({
-  //        success: false,
-  //        error: err,
-  //      });
-  //    }
-  //    res.status(200).json({
-  //      success: true,
-  //    });
-  //  });
-  //} catch (error) {
-  //  return res.status(400).json({
-  //    success: false,
-  //  });
-  //}
+
+  try {
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        return res.status(300).json({
+          success: false,
+          error: err,
+        });
+      }
+
+      if (rows.length < 1) {
+        return res.status(300).json({
+          success: false,
+          error: 'No match',
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: rows,
+      });
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+    });
+  }
 };
 
 const deleteAuthor = async (req, res) => {
-  //const { post_id } = req.body;
-  //sql = `DELETE FROM posts WHERE post_id = ?`;
-  //try {
-  //  db.run(sql, [post_id], (err) => {
-  //    if (err) {
-  //      return res.status(300).json({
-  //        success: false,
-  //        error: err,
-  //      });
-  //    }
-  //    res.status(200).json({
-  //      success: true,
-  //    });
-  //  });
-  //} catch (error) {
-  //  return res.status(400).json({
-  //    success: false,
-  //  });
-  //}
+  const { author_id, token } = req.body;
+  sql = `DELETE FROM authors WHERE author_id = ? AND token = ?`;
+
+  if (!author_id || !token) {
+    return res.status(400).json({
+      success: false,
+      message: 'author_id and token required',
+    });
+  }
+
+  try {
+    db.run(sql, [author_id, token], function (err) {
+      if (err) {
+        return res.status(300).json({
+          success: false,
+          error: err,
+        });
+      }
+
+      if (this.changes === 0) {
+        return res.status(300).json({
+          success: false,
+          message: `Author not found or token not correct.`,
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+      });
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+    });
+  }
 };
 
 module.exports = {
   registerAuthor,
   loginAuthor,
+  logOutAuthor,
   updateAuthorProfile,
+  getAuthors,
   deleteAuthor,
 };

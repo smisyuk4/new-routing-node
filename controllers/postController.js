@@ -75,11 +75,18 @@ const updatePost = async (req, res) => {
 
   try {
     //generated query as `UPDATE posts SET title = ?, message = ?, date_update = ? WHERE post_id = ?`;
-    db.run(sql, params, (err) => {
+    db.run(sql, params, function (err) {
       if (err) {
         return res.status(300).json({
           success: false,
           error: err,
+        });
+      }
+
+      if (this.changes === 0) {
+        return res.status(300).json({
+          success: false,
+          message: `Post with id: ${post_id} not found.`,
         });
       }
 
