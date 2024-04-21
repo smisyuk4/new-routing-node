@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "createTable": "node db/table.js"
   },
   "author": "",
   "license": "ISC",
