@@ -13,7 +13,8 @@ let db = new sqlite3.Database(
 );
 
 // create table
-const sql = `CREATE TABLE posts(post_id INTEGER PRIMARY KEY,author_id INTEGER,title TEXT,message TEXT,date_publish TEXT,date_update TEXT)`;
+//const sql = `CREATE TABLE posts(post_id INTEGER PRIMARY KEY,author_id INTEGER,title TEXT,message TEXT,date_publish TEXT,date_update TEXT)`;
+const sql = `CREATE TABLE author(author_id INTEGER PRIMARY KEY,name TEXT,email TEXT,location TEXT,avatar_url TEXT,date_publish TEXT,date_update TEXT)`;
 db.run(sql);
 console.log('table created');
 
