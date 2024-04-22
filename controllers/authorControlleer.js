@@ -2,6 +2,8 @@ const url = require('url');
 const sqlite3 = require('sqlite3').verbose();
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const { generateAccessToken } = require('../helpers/generateAccessToken');
+const { getAuthorToken } = require('../services/authorServices');
 
 // connect to db
 let sql;
@@ -53,56 +55,11 @@ const loginAuthor = async (req, res) => {
   const { name, email } = req.body;
 
   const user = { name, email };
+  const accessToken = generateAccessToken(user);
+  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET); // save to SQLite
 
-  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-  res.status(200).json({
-    success: true,
-    accessToken,
-  });
-  //const dateISO = new Date().toISOString();
-  //sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
-  //const token = 'test_login_token_000000000';
-
-  //if (!name || !email) {
-  //  return res.status(400).json({
-  //    success: false,
-  //    message: 'name and email required',
-  //  });
-  //}
-
-  //try {
-  //  db.run(sql, [token, dateISO, email], function (err) {
-  //    if (err) {
-  //      return res.status(300).json({
-  //        success: false,
-  //        error: err,
-  //      });
-  //    }
-
-  //    if (this.changes === 0) {
-  //      return res.status(300).json({
-  //        success: false,
-  //        message: `Author with ${email} not found.`,
-  //      });
-  //    }
-
-  //    res.status(200).json({
-  //      success: true,
-  //      token,
-  //    });
-  //  });
-  //} catch (error) {
-  //  return res.status(400).json({
-  //    success: false,
-  //  });
-  //}
-};
-
-const logOutAuthor = async (req, res) => {
-  const { name, email } = req.body;
   const dateISO = new Date().toISOString();
   sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
-  const token = null;
 
   if (!name || !email) {
     return res.status(400).json({
@@ -112,7 +69,7 @@ const logOutAuthor = async (req, res) => {
   }
 
   try {
-    db.run(sql, [token, dateISO, email], function (err) {
+    db.run(sql, [refreshToken, dateISO, email], function (err) {
       if (err) {
         return res.status(300).json({
           success: false,
@@ -129,7 +86,50 @@ const logOutAuthor = async (req, res) => {
 
       res.status(200).json({
         success: true,
+        accessToken,
+        refreshToken,
       });
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+    });
+  }
+};
+
+const logOutAuthor = async (req, res) => {
+  const refreshToken = req.body.token;
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Token not found' });
+  }
+
+  try {
+    const { email } = await getAuthorToken(refreshToken);
+
+    if (!email) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    const dateISO = new Date().toISOString();
+    sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
+
+    db.run(sql, [null, dateISO, email], function (err) {
+      if (err) {
+        return res.status(300).json({
+          success: false,
+          error: err,
+        });
+      }
+
+      if (this.changes === 0) {
+        return res.status(300).json({
+          success: false,
+          message: `Author with ${email} not found.`,
+        });
+      }
+
+      return res.status(204);
     });
   } catch (error) {
     return res.status(400).json({

@@ -13,6 +13,11 @@
 - [jsonwebtoken npm](https://www.npmjs.com/package/jsonwebtoken)
 - [JWT Authentication Tutorial - Node.js - video](https://www.youtube.com/watch?v=mbsmsi7l3r4&t=828&ab_channel=WebDevSimplified)
 
+## Status code
+
+- [200](https://www.akto.io/academy/200-status-code)
+- [204](https://www.akto.io/academy/204-status-code)
+
 ## other
 
 - [body-parser](https://www.npmjs.com/package/body-parser)

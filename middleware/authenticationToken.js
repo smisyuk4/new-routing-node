@@ -11,7 +11,12 @@ const authenticationToken = async (req, res, next) => {
     return res.status(401).json({ message: 'Token not found' });
   }
 
-  const decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  let decodedToken;
+  try {
+    decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  } catch (error) {
+    return res.status(403).json(error);
+  }
 
   if (!decodedToken) {
     return res.status(403).json({ message: 'Not authorized' });
@@ -23,7 +28,7 @@ const authenticationToken = async (req, res, next) => {
     next();
   } catch (error) {
     if (error.message === 'No match author') {
-      res.status(403).json(error);
+      return res.status(403).json(error);
     }
   }
 };

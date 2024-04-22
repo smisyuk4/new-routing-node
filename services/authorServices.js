@@ -34,6 +34,29 @@ const getAuthorByEmail = async (email) => {
   });
 };
 
+const getAuthorToken = async (token) => {
+  if (!token) {
+    return 'token is required';
+  }
+
+  return new Promise((resolve, reject) => {
+    sql = `SELECT * FROM authors WHERE token = ?`;
+
+    return db.all(sql, [token], (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      if (rows.length < 1) {
+        return reject({ message: 'No match author' });
+      }
+
+      return resolve(rows[0]);
+    });
+  });
+};
+
 module.exports = {
   getAuthorByEmail,
+  getAuthorToken,
 };

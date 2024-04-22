@@ -39,6 +39,10 @@ const {
   getAuthors,
   deleteAuthor,
 } = require('../controllers/authorControlleer');
+const { getAuthorToken } = require('../services/authorServices');
+const { generateAccessToken } = require('../helpers/generateAccessToken');
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 /**
  * @swagger
@@ -71,6 +75,41 @@ const {
 router.post('/register', asyncWrapper(registerAuthor));
 
 router.post('/login', asyncWrapper(loginAuthor));
+
+router.post('/token', async (req, res) => {
+  const refreshToken = req.body.token;
+
+  console.log(refreshToken);
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Token not found' });
+  }
+
+  try {
+    const { name, email } = await getAuthorToken(refreshToken);
+
+    if (!email) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    let decodedToken = await jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    if (!decodedToken) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    const accessToken = generateAccessToken({
+      name,
+      email,
+    });
+
+    return res.status(200).json({ accessToken });
+  } catch (error) {
+    return res.status(401).json(error);
+  }
+});
 
 router.post('/logout', asyncWrapper(logOutAuthor));
 
