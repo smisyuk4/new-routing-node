@@ -2,7 +2,7 @@
  * @swagger
  * components:
  *   schemas:
- *     Posts:
+ *     Authors:
  *       type: object
  *       properties:
  *         id:
@@ -32,50 +32,15 @@ const router = express.Router();
 
 const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
-  getAllPosts,
-  getFilteredPosts,
-  createPost,
-  updatePost,
-  deletePost,
-} = require('../controllers/postController');
+  registerAuthor,
+  loginAuthor,
+  checkAndGenerateToken,
+  logOutAuthor,
+  updateAuthorProfile,
+  getAuthors,
+  deleteAuthor,
+} = require('../controllers/authorControlleer');
 const { authenticationToken } = require('../middleware/authenticationToken');
-
-router.get('/posts', asyncWrapper(getAllPosts));
-
-/**
- * @swagger
- * /posts:
- *   get:
- *     summary: Returns the lists of all the posts
- *     tags: [Posts]
- *     parameters:
- *       - in: query
- *         name: field
- *         schema:
- *           type: string
- *         required: false
- *         description: Поле для фільтрації (id, title, message)
- *       - in: query
- *         name: value
- *         schema:
- *           type: string
- *         required: false
- *         description: Значення для фільтрації
- *     responses:
- *       200:
- *         description: The list of the posts
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Posts'
- *       300:
- *         description: Error with reading data to base or no exists
- *       400:
- *         description: Error with reading data to base
- */
-router.get('/my-posts', authenticationToken, asyncWrapper(getFilteredPosts));
 
 /**
  * @swagger
@@ -105,7 +70,13 @@ router.get('/my-posts', authenticationToken, asyncWrapper(getFilteredPosts));
  *             schema:
  *               $ref: '#/components/schemas/Posts'
  */
-router.post('/create-post', asyncWrapper(createPost));
+router.post('/register', asyncWrapper(registerAuthor));
+
+router.post('/login', asyncWrapper(loginAuthor));
+
+router.post('/token', asyncWrapper(checkAndGenerateToken));
+
+router.post('/logout', asyncWrapper(logOutAuthor));
 
 /**
  * @swagger
@@ -138,7 +109,13 @@ router.post('/create-post', asyncWrapper(createPost));
  *       400:
  *         description: Post not updated.
  */
-router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
+router.patch(
+  '/update-author-profile',
+  authenticationToken,
+  asyncWrapper(updateAuthorProfile)
+);
+
+router.get('/authors', asyncWrapper(getAuthors));
 
 /**
  * @swagger
@@ -165,6 +142,10 @@ router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
  *       400:
  *         description: The post was not found
  */
-router.delete('/delete-post', authenticationToken, asyncWrapper(deletePost));
+router.delete(
+  '/delete-author',
+  authenticationToken,
+  asyncWrapper(deleteAuthor)
+);
 
-module.exports = { postRouter: router };
+module.exports = { authorRouter: router };

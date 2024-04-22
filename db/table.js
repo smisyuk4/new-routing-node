@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 
 // connect to db
-let db = new sqlite3.Database(
+const db = new sqlite3.Database(
   './posts-new.db',
   sqlite3.OPEN_READWRITE,
   (err) => {
@@ -13,7 +13,12 @@ let db = new sqlite3.Database(
 );
 
 // create table
-const sql = `CREATE TABLE posts(post_id INTEGER PRIMARY KEY,author_id INTEGER,title TEXT,message TEXT,date_publish TEXT,date_update TEXT)`;
+//const sql = `CREATE TABLE posts(post_id INTEGER PRIMARY KEY,author_id INTEGER,title TEXT,message TEXT,date_publish TEXT,date_update TEXT)`;
+const sql = `CREATE TABLE authors(author_id INTEGER PRIMARY KEY,name TEXT,email TEXT,location TEXT,avatar_url TEXT,token TEXT,date_publish TEXT,date_update TEXT)`;
+
+//const sql = `ALTER TABLE authors ADD COLUMN token`;
+//const sql = 'DROP TABLE author;'
+
 db.run(sql);
 console.log('table created');
 

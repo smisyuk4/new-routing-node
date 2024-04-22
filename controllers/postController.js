@@ -3,7 +3,7 @@ const sqlite3 = require('sqlite3').verbose();
 
 // connect to db
 let sql;
-let db = new sqlite3.Database(
+const db = new sqlite3.Database(
   './posts-new.db',
   sqlite3.OPEN_READWRITE,
   (err) => {
@@ -75,11 +75,18 @@ const updatePost = async (req, res) => {
 
   try {
     //generated query as `UPDATE posts SET title = ?, message = ?, date_update = ? WHERE post_id = ?`;
-    db.run(sql, params, (err) => {
+    db.run(sql, params, function (err) {
       if (err) {
         return res.status(300).json({
           success: false,
           error: err,
+        });
+      }
+
+      if (this.changes === 0) {
+        return res.status(300).json({
+          success: false,
+          message: `Post with id: ${post_id} not found.`,
         });
       }
 
@@ -94,15 +101,8 @@ const updatePost = async (req, res) => {
   }
 };
 
-const getFilteredPosts = async (req, res) => {
-  sql = `SELECT * FROM posts`; // get all data
-
-  const queryObject = url.parse(req.url, true).query;
-
-  if (queryObject.field && queryObject.value) {
-    // get filtered data
-    sql += ` WHERE ${queryObject.field} LIKE '%${queryObject.value}%'`;
-  }
+const getAllPosts = async (req, res) => {
+  sql = `SELECT * FROM posts`;
 
   try {
     db.all(sql, [], (err, rows) => {
@@ -116,7 +116,47 @@ const getFilteredPosts = async (req, res) => {
       if (rows.length < 1) {
         return res.status(300).json({
           success: false,
-          error: 'No match',
+          error: 'No match posts',
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: rows,
+      });
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+    });
+  }
+};
+
+const getFilteredPosts = async (req, res) => {
+  const { author_id } = req.author;
+  const queryObject = url.parse(req.url, true).query;
+
+  sql = `SELECT * FROM posts WHERE`;
+
+  if (queryObject.field && queryObject.value) {
+    sql += ` ${queryObject.field} LIKE '%${queryObject.value}%' AND`;
+  }
+
+  sql += ` author_id = ?`;
+
+  try {
+    db.all(sql, [author_id], (err, rows) => {
+      if (err) {
+        return res.status(300).json({
+          success: false,
+          error: err,
+        });
+      }
+
+      if (rows.length < 1) {
+        return res.status(300).json({
+          success: false,
+          error: 'No match posts',
         });
       }
 
@@ -157,6 +197,7 @@ const deletePost = async (req, res) => {
 };
 
 module.exports = {
+  getAllPosts,
   getFilteredPosts,
   createPost,
   updatePost,

@@ -5,6 +5,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 require('dotenv').config();
 
 const { postRouter } = require('./routes/postRoutes');
+const { authorRouter } = require('./routes/authorRoutes');
 
 const openapiSpecification = swaggerJsdoc({
   definition: {
@@ -22,6 +23,7 @@ const app = express();
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use(bodyParser.json());
 app.use(postRouter);
+app.use(authorRouter);
 
 app.get('/', async (req, res) => {
   return res.json({
