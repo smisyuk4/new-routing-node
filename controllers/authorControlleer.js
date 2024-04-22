@@ -1,4 +1,3 @@
-const url = require('url');
 const sqlite3 = require('sqlite3').verbose();
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -97,6 +96,40 @@ const loginAuthor = async (req, res) => {
   }
 };
 
+const checkAndGenerateToken = async (req, res) => {
+  const refreshToken = req.body.token;
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Token not found' });
+  }
+
+  try {
+    const { name, email } = await getAuthorToken(refreshToken);
+
+    if (!email) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    let decodedToken = await jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    if (!decodedToken) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    const accessToken = generateAccessToken({
+      name,
+      email,
+    });
+
+    return res.status(200).json({ accessToken });
+  } catch (error) {
+    return res.status(401).json(error);
+  }
+};
+
 const logOutAuthor = async (req, res) => {
   const refreshToken = req.body.token;
 
@@ -141,14 +174,7 @@ const logOutAuthor = async (req, res) => {
 const updateAuthorProfile = async (req, res) => {};
 
 const getAuthors = async (req, res) => {
-  sql = `SELECT * FROM authors`; // get all data
-
-  //const queryObject = url.parse(req.url, true).query;
-
-  //if (queryObject.field && queryObject.value) {
-  //  // get filtered data
-  //  sql += ` WHERE ${queryObject.field} LIKE '%${queryObject.value}%'`;
-  //}
+  sql = `SELECT * FROM authors`;
 
   try {
     db.all(sql, [], (err, rows) => {
@@ -219,6 +245,7 @@ const deleteAuthor = async (req, res) => {
 module.exports = {
   registerAuthor,
   loginAuthor,
+  checkAndGenerateToken,
   logOutAuthor,
   updateAuthorProfile,
   getAuthors,

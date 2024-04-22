@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const { getAuthorByEmail } = require('../services/authorServices');
+const { constants } = require('../constants');
 
 const authenticationToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -27,7 +28,7 @@ const authenticationToken = async (req, res, next) => {
     req.author = currentAuthor;
     next();
   } catch (error) {
-    if (error.message === 'No match author') {
+    if (error.message === constants.NO_MATCH_AUTHOR) {
       return res.status(403).json(error);
     }
   }

@@ -1,4 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
+const { constants } = require('../constants');
+
 // connect to db
 let sql;
 const db = new sqlite3.Database(
@@ -26,7 +28,7 @@ const getAuthorByEmail = async (email) => {
       }
 
       if (rows.length < 1) {
-        return reject({ message: 'No match author' });
+        return reject({ message: constants.NO_MATCH_AUTHOR });
       }
 
       return resolve(rows[0]);
