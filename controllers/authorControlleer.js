@@ -5,6 +5,7 @@ const {
   addAuthor,
   addToken,
   removeToken,
+  updateFieldsAuthor,
   getAuthorByToken,
   getAuthorByEmail,
   getAllAuthors,
@@ -129,7 +130,32 @@ const logOutAuthor = async (req, res) => {
   }
 };
 
-const updateAuthorProfile = async (req, res) => {};
+const updateAuthorProfile = async (req, res) => {
+  const { author_id, name, location, avatar_url } = req.body;
+
+  if (!author_id) {
+    return res.status(400).json({
+      success: false,
+      message: 'author_id required',
+    });
+  }
+
+  try {
+    const result = await updateFieldsAuthor(
+      author_id,
+      name,
+      location,
+      avatar_url
+    );
+
+    if (result?.status) {
+      console.log(result);
+      return res.status(200).json(result);
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
 
 const getAuthors = async (req, res) => {
   try {

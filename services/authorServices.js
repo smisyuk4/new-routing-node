@@ -3,6 +3,7 @@ const { constants } = require('../constants');
 
 // connect to db
 let sql;
+const dateISO = new Date().toISOString();
 const db = new sqlite3.Database(
   './posts-new.db',
   sqlite3.OPEN_READWRITE,
@@ -16,7 +17,6 @@ const db = new sqlite3.Database(
 
 const addAuthor = async (name, email, accessToken) => {
   return new Promise((resolve, reject) => {
-    const dateISO = new Date().toISOString();
     sql = `INSERT INTO authors(name, email, token, date_publish, date_update) VALUES(?,?,?,?,?)`;
 
     return db.run(sql, [name, email, accessToken, dateISO, dateISO], (err) => {
@@ -31,7 +31,6 @@ const addAuthor = async (name, email, accessToken) => {
 
 const addToken = async (refreshToken, email) => {
   return new Promise((resolve, reject) => {
-    const dateISO = new Date().toISOString();
     sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
 
     return db.run(sql, [refreshToken, dateISO, email], function (err) {
@@ -51,7 +50,6 @@ const addToken = async (refreshToken, email) => {
 const removeToken = async (email) => {
   return new Promise((resolve, reject) => {
     sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
-    const dateISO = new Date().toISOString();
 
     return db.run(sql, [null, dateISO, email], function (err) {
       if (err) {
@@ -63,6 +61,67 @@ const removeToken = async (email) => {
       }
 
       return resolve({ message: constants.LOGOUT_SUCCESS });
+    });
+  });
+};
+
+const updateFieldsAuthor = async (author_id, name, location, avatar_url) => {
+  return new Promise((resolve, reject) => {
+    sql = 'UPDATE authors SET';
+    const params = [];
+
+    if (!author_id) {
+      return res.status(400).json({
+        success: false,
+        message: 'author_id is required',
+      });
+    }
+
+    if (name) {
+      sql += ' name = ?,';
+      params.push(name);
+    }
+
+    if (location) {
+      sql += ' location = ?,';
+      params.push(location);
+    }
+
+    if (avatar_url) {
+      sql += ' avatar_url = ?,';
+      params.push(avatar_url);
+    }
+
+    sql += ' date_update = ? WHERE author_id = ?';
+    params.push(dateISO);
+    params.push(author_id);
+
+    return db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
+
+      db.run(sql, params, function (err) {
+        if (err) {
+          return reject(err);
+        }
+
+        if (this.changes === 0) {
+          return reject({ message: 'No changed' });
+        }
+
+        db.get(
+          'SELECT * FROM authors WHERE author_id = ?',
+          [author_id],
+          (err, row) => {
+            if (err) {
+              db.run('ROLLBACK');
+              return reject(err);
+            }
+
+            db.run('COMMIT');
+            resolve({ status: true, data: row });
+          }
+        );
+      });
     });
   });
 };
@@ -155,6 +214,7 @@ module.exports = {
   addAuthor,
   addToken,
   removeToken,
+  updateFieldsAuthor,
   getAuthorByEmail,
   getAuthorByToken,
   getAllAuthors,
