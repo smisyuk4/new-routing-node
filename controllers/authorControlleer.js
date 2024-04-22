@@ -1,9 +1,11 @@
 const url = require('url');
 const sqlite3 = require('sqlite3').verbose();
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // connect to db
 let sql;
-let db = new sqlite3.Database(
+const db = new sqlite3.Database(
   './posts-new.db',
   sqlite3.OPEN_READWRITE,
   (err) => {
@@ -49,43 +51,51 @@ const registerAuthor = async (req, res) => {
 
 const loginAuthor = async (req, res) => {
   const { name, email } = req.body;
-  const dateISO = new Date().toISOString();
-  sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
-  const token = 'test_login_token_000000000';
 
-  if (!name || !email) {
-    return res.status(400).json({
-      success: false,
-      message: 'name and email required',
-    });
-  }
+  const user = { name, email };
 
-  try {
-    db.run(sql, [token, dateISO, email], function (err) {
-      if (err) {
-        return res.status(300).json({
-          success: false,
-          error: err,
-        });
-      }
+  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+  res.status(200).json({
+    success: true,
+    accessToken,
+  });
+  //const dateISO = new Date().toISOString();
+  //sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
+  //const token = 'test_login_token_000000000';
 
-      if (this.changes === 0) {
-        return res.status(300).json({
-          success: false,
-          message: `Author with ${email} not found.`,
-        });
-      }
+  //if (!name || !email) {
+  //  return res.status(400).json({
+  //    success: false,
+  //    message: 'name and email required',
+  //  });
+  //}
 
-      res.status(200).json({
-        success: true,
-        token,
-      });
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-    });
-  }
+  //try {
+  //  db.run(sql, [token, dateISO, email], function (err) {
+  //    if (err) {
+  //      return res.status(300).json({
+  //        success: false,
+  //        error: err,
+  //      });
+  //    }
+
+  //    if (this.changes === 0) {
+  //      return res.status(300).json({
+  //        success: false,
+  //        message: `Author with ${email} not found.`,
+  //      });
+  //    }
+
+  //    res.status(200).json({
+  //      success: true,
+  //      token,
+  //    });
+  //  });
+  //} catch (error) {
+  //  return res.status(400).json({
+  //    success: false,
+  //  });
+  //}
 };
 
 const logOutAuthor = async (req, res) => {

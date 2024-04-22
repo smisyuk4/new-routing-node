@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 
 // connect to db
-let db = new sqlite3.Database(
+const db = new sqlite3.Database(
   './posts-new.db',
   sqlite3.OPEN_READWRITE,
   (err) => {

@@ -32,11 +32,15 @@ const router = express.Router();
 
 const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
+  getAllPosts,
   getFilteredPosts,
   createPost,
   updatePost,
   deletePost,
 } = require('../controllers/postController');
+const { authenticationToken } = require('../middleware/authenticationToken');
+
+router.get('/posts', asyncWrapper(getAllPosts));
 
 /**
  * @swagger
@@ -66,12 +70,12 @@ const {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Posts'
- *       300: 
+ *       300:
  *         description: Error with reading data to base or no exists
- *       400: 
+ *       400:
  *         description: Error with reading data to base
  */
-router.get('/posts', asyncWrapper(getFilteredPosts));
+router.get('/my-posts', authenticationToken, asyncWrapper(getFilteredPosts));
 
 /**
  * @swagger
@@ -134,7 +138,7 @@ router.post('/create-post', asyncWrapper(createPost));
  *       400:
  *         description: Post not updated.
  */
-router.patch('/update-post', asyncWrapper(updatePost));
+router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
 
 /**
  * @swagger
@@ -161,6 +165,6 @@ router.patch('/update-post', asyncWrapper(updatePost));
  *       400:
  *         description: The post was not found
  */
-router.delete('/delete-post', asyncWrapper(deletePost));
+router.delete('/delete-post', authenticationToken, asyncWrapper(deletePost));
 
 module.exports = { postRouter: router };
