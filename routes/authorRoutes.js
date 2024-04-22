@@ -40,6 +40,7 @@ const {
   getAuthors,
   deleteAuthor,
 } = require('../controllers/authorControlleer');
+const { authenticationToken } = require('../middleware/authenticationToken');
 
 /**
  * @swagger
@@ -108,7 +109,11 @@ router.post('/logout', asyncWrapper(logOutAuthor));
  *       400:
  *         description: Post not updated.
  */
-router.patch('/update-author-profile', asyncWrapper(updateAuthorProfile));
+router.patch(
+  '/update-author-profile',
+  authenticationToken,
+  asyncWrapper(updateAuthorProfile)
+);
 
 router.get('/authors', asyncWrapper(getAuthors));
 
@@ -137,6 +142,10 @@ router.get('/authors', asyncWrapper(getAuthors));
  *       400:
  *         description: The post was not found
  */
-router.delete('/delete-author', asyncWrapper(deleteAuthor));
+router.delete(
+  '/delete-author',
+  authenticationToken,
+  asyncWrapper(deleteAuthor)
+);
 
 module.exports = { authorRouter: router };

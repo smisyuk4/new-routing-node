@@ -17,6 +17,7 @@
 
 - [200](https://www.akto.io/academy/200-status-code)
 - [204](https://www.akto.io/academy/204-status-code)
+- [409](https://www.webfx.com/web-development/glossary/http-status-codes/what-is-a-409-status-code/)
 
 ## other
 

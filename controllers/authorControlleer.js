@@ -1,27 +1,19 @@
-const sqlite3 = require('sqlite3').verbose();
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
-const { getAuthorToken } = require('../services/authorServices');
-
-// connect to db
-let sql;
-const db = new sqlite3.Database(
-  './posts-new.db',
-  sqlite3.OPEN_READWRITE,
-  (err) => {
-    if (err) {
-      return console.error(err.message);
-    }
-    console.log('Connected to the in-memory SQlite database.');
-  }
-);
+const {
+  addAuthor,
+  addToken,
+  removeToken,
+  getAuthorByToken,
+  getAuthorByEmail,
+  getAllAuthors,
+  removeAuthor,
+} = require('../services/authorServices');
+const { constants } = require('../constants');
 
 const registerAuthor = async (req, res) => {
   const { name, email } = req.body;
-  const dateISO = new Date().toISOString();
-  sql = `INSERT INTO authors(name, email, token, date_publish, date_update) VALUES(?,?,?,?,?)`;
-  const token = 'test_register_token_000000000';
 
   if (!name || !email) {
     return res.status(400).json({
@@ -31,35 +23,32 @@ const registerAuthor = async (req, res) => {
   }
 
   try {
-    db.run(sql, [name, email, token, dateISO, dateISO], (err) => {
-      if (err) {
-        return res.status(300).json({
-          success: false,
-          error: err,
-        });
-      }
-      res.status(200).json({
-        success: true,
-        token,
+    const resultCheck = await getAuthorByEmail(email);
+
+    if (resultCheck?.email) {
+      return res.status(409).json({
+        success: false,
+        message: 'Email already exists',
       });
-    });
+    }
+
+    const author = { name, email };
+    const accessToken = generateAccessToken(author);
+    const refreshToken = jwt.sign(author, process.env.REFRESH_TOKEN_SECRET);
+
+    const result = await addAuthor(name, email, refreshToken);
+
+    if (result?.status) {
+      return res.status(200).json({ accessToken, refreshToken });
+    }
   } catch (error) {
-    return res.status(400).json({
-      success: false,
-    });
+    return res.status(400).json(error);
   }
 };
 
 const loginAuthor = async (req, res) => {
   const { name, email } = req.body;
 
-  const user = { name, email };
-  const accessToken = generateAccessToken(user);
-  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET); // save to SQLite
-
-  const dateISO = new Date().toISOString();
-  sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
-
   if (!name || !email) {
     return res.status(400).json({
       success: false,
@@ -67,44 +56,30 @@ const loginAuthor = async (req, res) => {
     });
   }
 
+  const author = { name, email };
+  const accessToken = generateAccessToken(author);
+  const refreshToken = jwt.sign(author, process.env.REFRESH_TOKEN_SECRET);
+
   try {
-    db.run(sql, [refreshToken, dateISO, email], function (err) {
-      if (err) {
-        return res.status(300).json({
-          success: false,
-          error: err,
-        });
-      }
+    const result = await addToken(refreshToken, email);
 
-      if (this.changes === 0) {
-        return res.status(300).json({
-          success: false,
-          message: `Author with ${email} not found.`,
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        accessToken,
-        refreshToken,
-      });
-    });
+    if (result?.status) {
+      return res.status(200).json({ accessToken, refreshToken });
+    }
   } catch (error) {
-    return res.status(400).json({
-      success: false,
-    });
+    return res.status(400).json(error);
   }
 };
 
 const checkAndGenerateToken = async (req, res) => {
-  const refreshToken = req.body.token;
+  const { refreshToken } = req.body;
 
   if (!refreshToken) {
     return res.status(401).json({ message: 'Token not found' });
   }
 
   try {
-    const { name, email } = await getAuthorToken(refreshToken);
+    const { name, email } = await getAuthorByToken(refreshToken);
 
     if (!email) {
       return res.status(403).json({ message: 'Not authorized' });
@@ -131,72 +106,38 @@ const checkAndGenerateToken = async (req, res) => {
 };
 
 const logOutAuthor = async (req, res) => {
-  const refreshToken = req.body.token;
+  const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.status(401).json({ message: 'Token not found' });
+    return res.status(401).json({ message: 'Author not found' });
   }
 
   try {
-    const { email } = await getAuthorToken(refreshToken);
+    const { email } = await getAuthorByToken(refreshToken);
 
     if (!email) {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    const dateISO = new Date().toISOString();
-    sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
+    const result = await removeToken(email);
 
-    db.run(sql, [null, dateISO, email], function (err) {
-      if (err) {
-        return res.status(300).json({
-          success: false,
-          error: err,
-        });
-      }
-
-      if (this.changes === 0) {
-        return res.status(300).json({
-          success: false,
-          message: `Author with ${email} not found.`,
-        });
-      }
-
-      return res.status(204);
-    });
+    if (result?.message === constants.LOGOUT_SUCCESS) {
+      return res.sendStatus(204);
+    }
   } catch (error) {
-    return res.status(400).json({
-      success: false,
-    });
+    return res.status(400).json(error);
   }
 };
 
 const updateAuthorProfile = async (req, res) => {};
 
 const getAuthors = async (req, res) => {
-  sql = `SELECT * FROM authors`;
-
   try {
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        return res.status(300).json({
-          success: false,
-          error: err,
-        });
-      }
+    const result = await getAllAuthors();
 
-      if (rows.length < 1) {
-        return res.status(300).json({
-          success: false,
-          error: 'No match',
-        });
-      }
-
-      return res.status(200).json({
-        success: true,
-        data: rows,
-      });
-    });
+    if (result.length > 0) {
+      return res.status(200).json({ authors: result });
+    }
   } catch (error) {
     return res.status(400).json({
       success: false,
@@ -205,40 +146,23 @@ const getAuthors = async (req, res) => {
 };
 
 const deleteAuthor = async (req, res) => {
-  const { author_id, token } = req.body;
-  sql = `DELETE FROM authors WHERE author_id = ? AND token = ?`;
+  const { author_id, refreshToken } = req.body;
 
-  if (!author_id || !token) {
+  if (!author_id || !refreshToken) {
     return res.status(400).json({
       success: false,
-      message: 'author_id and token required',
+      message: 'author_id and refreshToken required',
     });
   }
 
   try {
-    db.run(sql, [author_id, token], function (err) {
-      if (err) {
-        return res.status(300).json({
-          success: false,
-          error: err,
-        });
-      }
+    const result = await removeAuthor(author_id, refreshToken);
 
-      if (this.changes === 0) {
-        return res.status(300).json({
-          success: false,
-          message: `Author not found or token not correct.`,
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-      });
-    });
+    if (result?.status) {
+      return res.sendStatus(204);
+    }
   } catch (error) {
-    return res.status(400).json({
-      success: false,
-    });
+    return res.status(400).json(error);
   }
 };
 

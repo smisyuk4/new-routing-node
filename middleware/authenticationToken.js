@@ -9,7 +9,7 @@ const authenticationToken = async (req, res, next) => {
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ message: 'Token not found' });
+    return res.status(401).json({ message: 'Token in headers not found' });
   }
 
   let decodedToken;
