@@ -165,16 +165,16 @@ const getAuthors = async (req, res) => {
 };
 
 const deleteAuthor = async (req, res) => {
-  const { author_id, refreshToken } = req.body;
+  const { author_id } = req.body;
 
-  if (!author_id || !refreshToken) {
+  if (!author_id) {
     return res.status(400).json({
-      message: 'author_id and refreshToken required',
+      message: 'author_id is required',
     });
   }
 
   try {
-    const result = await removeAuthor(author_id, refreshToken);
+    const result = await removeAuthor(author_id);
 
     if (result?.status) {
       return res.sendStatus(204);

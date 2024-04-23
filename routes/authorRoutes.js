@@ -48,6 +48,13 @@
  * tags:
  *   name: Authors
  *   description: The authors managing API
+ *
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: "Bearer <your-accessToken>"
  */
 
 const express = require('express');
@@ -204,10 +211,12 @@ router.post('/logout', asyncWrapper(logOutAuthor));
 
 /**
  * @swagger
- * /update-post:
+ * /update-author-profile:
  *   patch:
- *     summary: Update post
- *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Update author profile fields (need accessToken in header)
+ *     tags: [Authors]
  *     requestBody:
  *       required: true
  *       content:
@@ -215,23 +224,25 @@ router.post('/logout', asyncWrapper(logOutAuthor));
  *           schema:
  *             type: object
  *             required:
- *               - id
+ *               - author_id
  *             properties:
- *               id:
+ *               author_id:
  *                 type: integer
- *               title:
+ *               name:
  *                 type: string
- *               message:
+ *               location:
+ *                 type: string
+ *               avatar_url:
  *                 type: string
  *     responses:
  *       200:
- *         description: The created post.
+ *         description: Fields updated.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Posts'
+ *               $ref: '#/components/schemas/Authors'
  *       400:
- *         description: Post not updated.
+ *         description: author_id is required or other errors.
  */
 router.patch(
   '/update-author-profile',
@@ -239,14 +250,32 @@ router.patch(
   asyncWrapper(updateAuthorProfile)
 );
 
+/**
+ * @swagger
+ * /authors:
+ *   get:
+ *     summary: Get all authors
+ *     tags: [Authors]
+ *     responses:
+ *       200:
+ *         description: List of authors found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Authors'
+ *       400:
+ *         description: Error.
+ */
 router.get('/authors', asyncWrapper(getAuthors));
 
 /**
  * @swagger
- * /delete-post:
+ * /delete-author:
  *   delete:
- *     summary: Remove the post by id
- *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Remove author profile (need accessToken in header)
+ *     tags: [Authors]
  *     requestBody:
  *       required: true
  *       content:
@@ -254,17 +283,15 @@ router.get('/authors', asyncWrapper(getAuthors));
  *           schema:
  *             type: object
  *             required:
- *               - id
+ *               - author_id
  *             properties:
- *               id:
+ *               author_id:
  *                 type: integer
  *     responses:
- *       200:
- *         description: The post was deleted
- *       300:
- *         description: Some error
+ *       204:
+ *         description: Profile removed.
  *       400:
- *         description: The post was not found
+ *         description: author_id is required or other errors.
  */
 router.delete(
   '/delete-author',
