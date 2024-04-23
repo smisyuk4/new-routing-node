@@ -66,6 +66,8 @@ const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
   createBook,
   getFilteredBooks,
+  updateBook,
+  deleteBook,
 } = require('../controllers/bookControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
@@ -128,5 +130,75 @@ router.post('/create-book', asyncWrapper(createBook));
  *         description: Error.
  */
 router.get('/books', asyncWrapper(getFilteredBooks));
+
+/**
+ * @swagger
+ * /update-book:
+ *   patch:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Update book (need accessToken in header)
+ *     tags: [Books]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - book_id
+ *             properties:
+ *               book_id:
+ *                 type: integer
+ *               title:
+ *                 type: string
+ *               short_desc:
+ *                 type: string
+ *               cover_image_url:
+ *                 type: string
+ *               literary_genre:
+ *                 type: string
+ *               cost:
+ *                 type: integer
+ *               count:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Fields updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Books'
+ *       400:
+ *         description: Error.
+ */
+router.patch('/update-book', authenticationToken, asyncWrapper(updateBook));
+
+/**
+ * @swagger
+ * /delete-book:
+ *   delete:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Remove the book by id (need accessToken in header)
+ *     tags: [Books]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - book_id
+ *             properties:
+ *               book_id:
+ *                 type: integer
+ *     responses:
+ *       204:
+ *         description: Book removed.
+ *       400:
+ *         description: book_id is required or other errors.
+ */
+router.delete('/delete-book', authenticationToken, asyncWrapper(deleteBook));
 
 module.exports = { bookRouter: router };
