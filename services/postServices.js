@@ -62,6 +62,7 @@ const updateFieldsPost = (post_id, title, message) => {
   });
 };
 
+// need write pagination query
 const getAllPosts = () => {
   return new Promise((resolve, reject) => {
     sql = `SELECT * FROM posts`;
@@ -80,6 +81,7 @@ const getAllPosts = () => {
   });
 };
 
+// need write pagination query
 const getPostsByQuery = (author_id, field, value) => {
   return new Promise((resolve, reject) => {
     sql = `SELECT * FROM posts WHERE`;
@@ -102,9 +104,28 @@ const getPostsByQuery = (author_id, field, value) => {
   });
 };
 
+const removePost = (post_id, author_id) => {
+  return new Promise((resolve, reject) => {
+    sql = `DELETE FROM posts WHERE post_id = ? AND author_id = ?`;
+
+    return db.run(sql, [post_id, author_id], function (err) {
+      if (err) {
+        return reject(err);
+      }
+
+      if (this.changes === 0) {
+        reject({ message: 'Not removed' });
+      }
+
+      return resolve({ status: true });
+    });
+  });
+};
+
 module.exports = {
   addPost,
   updateFieldsPost,
   getAllPosts,
   getPostsByQuery,
+  removePost,
 };
