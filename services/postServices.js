@@ -1,5 +1,4 @@
 const sqlite3 = require('sqlite3').verbose();
-const { constants } = require('../constants');
 
 // connect to db
 let sql;
@@ -29,7 +28,7 @@ const addPost = (author_id, title, message) => {
   });
 };
 
-const updateFieldsPost = (post_id, title, message) => {
+const updateFieldsPost = (author_id, post_id, title, message) => {
   return new Promise((resolve, reject) => {
     sql = 'UPDATE posts SET';
     const params = [];
@@ -44,20 +43,39 @@ const updateFieldsPost = (post_id, title, message) => {
       params.push(message);
     }
 
-    sql += ' date_update = ? WHERE post_id = ?';
+    sql += ' date_update = ? WHERE author_id = ? AND post_id = ?';
     params.push(dateISO);
+    params.push(author_id);
     params.push(post_id);
 
-    return db.run(sql, params, function (err) {
-      if (err) {
-        return reject(err);
-      }
+    return db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
 
-      if (this.changes === 0) {
-        reject({ message: `Post with id: ${post_id} not found.` });
-      }
+      db.run(sql, params, function (err) {
+        if (err) {
+          return reject(err);
+        }
 
-      return resolve(rows);
+        if (this.changes === 0) {
+          reject({
+            message: `Post with id: ${post_id} by author_id: ${author_id} not found`,
+          });
+        }
+
+        db.get(
+          'SELECT * FROM posts WHERE post_id = ?',
+          [post_id],
+          (err, row) => {
+            if (err) {
+              db.run('ROLLBACK');
+              return reject(err);
+            }
+
+            db.run('COMMIT');
+            resolve({ status: true, data: row });
+          }
+        );
+      });
     });
   });
 };
