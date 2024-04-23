@@ -188,11 +188,11 @@ const getAllAuthors = async () => {
   });
 };
 
-const removeAuthor = async (author_id, refreshToken) => {
+const removeAuthor = async (author_id) => {
   return new Promise((resolve, reject) => {
-    sql = `DELETE FROM authors WHERE author_id = ? AND token = ?`;
+    sql = `DELETE FROM authors WHERE author_id = ?`;
 
-    return db.run(sql, [author_id, refreshToken], function (err) {
+    return db.run(sql, [author_id], function (err) {
       if (err) {
         if (err) {
           return reject(err);
@@ -200,9 +200,7 @@ const removeAuthor = async (author_id, refreshToken) => {
       }
 
       if (this.changes === 0) {
-        return reject({
-          message: 'No match author or token in body not correct',
-        });
+        return resolve({ message: constants.NO_MATCH_AUTHOR });
       }
 
       resolve({ status: true });
