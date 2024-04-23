@@ -5,19 +5,35 @@
  *     Posts:
  *       type: object
  *       properties:
- *         id:
+ *         post_id:
  *           type: integer
  *           description: The auto-generated id of the post
+ *         author_id:
+ *           type: integer
+ *           description: id of the author this post
  *         title:
  *           type: string
- *           description: The title of your post
+ *           description: The title of this post
  *         message:
  *           type: string
- *           description: The message of your post
+ *           description: The message of this post
+ *         date_publish:
+ *           type: string
+ *           description: The date publish of this post
+ *         date_update:
+ *           type: string
+ *           description: The date update of this post
+ *       required:
+ *         - author_id
+ *         - title
+ *         - message
  *       example:
- *          id: 1
- *          title: React
- *          message: Good tool for dev SPA
+ *          post_id: 65
+ *          author_id: 12
+ *          title: 403 Forbidden
+ *          message: The HTTP 403 Forbidden response status code indicates that the server understands the request but refuses to authorize it.
+ *          date_publish: 2024-04-23T13:44:05.312Z
+ *          date_update: 2024-04-23T13:44:05.312Z
  */
 
 /**
@@ -40,13 +56,31 @@ const {
 } = require('../controllers/postController');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
-router.get('/posts', asyncWrapper(getPosts));
-
 /**
  * @swagger
  * /posts:
  *   get:
- *     summary: Returns the lists of all the posts
+ *     summary: Get all posts
+ *     tags: [Posts]
+ *     responses:
+ *       200:
+ *         description: List of posts found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Posts'
+ *       400:
+ *         description: Error.
+ */
+router.get('/posts', asyncWrapper(getPosts));
+
+/**
+ * @swagger
+ * /my-posts:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Returns a filtered list of all posts by the one author (need accessToken in header)
  *     tags: [Posts]
  *     parameters:
  *       - in: query
@@ -54,13 +88,12 @@ router.get('/posts', asyncWrapper(getPosts));
  *         schema:
  *           type: string
  *         required: false
- *         description: Поле для фільтрації (id, title, message)
+ *         description: \"title\" or \"message\"
  *       - in: query
  *         name: value
  *         schema:
  *           type: string
  *         required: false
- *         description: Значення для фільтрації
  *     responses:
  *       200:
  *         description: The list of the posts
@@ -70,10 +103,8 @@ router.get('/posts', asyncWrapper(getPosts));
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Posts'
- *       300:
- *         description: Error with reading data to base or no exists
  *       400:
- *         description: Error with reading data to base
+ *         description: Error
  */
 router.get('/my-posts', authenticationToken, asyncWrapper(getFilteredPosts));
 
@@ -90,20 +121,21 @@ router.get('/my-posts', authenticationToken, asyncWrapper(getFilteredPosts));
  *           schema:
  *             type: object
  *             required:
+ *               - author_id
  *               - title
  *               - message
  *             properties:
+ *               author_id:
+ *                 type: integer
  *               title:
  *                 type: string
  *               message:
  *                 type: string
  *     responses:
- *       200:
+ *       204:
  *         description: The created post.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Posts'
+ *       400:
+ *         description: Error.
  */
 router.post('/create-post', asyncWrapper(createPost));
 
@@ -111,7 +143,9 @@ router.post('/create-post', asyncWrapper(createPost));
  * @swagger
  * /update-post:
  *   patch:
- *     summary: Update post
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Update post (need accessToken in header)
  *     tags: [Posts]
  *     requestBody:
  *       required: true
@@ -120,9 +154,9 @@ router.post('/create-post', asyncWrapper(createPost));
  *           schema:
  *             type: object
  *             required:
- *               - id
+ *               - post_id
  *             properties:
- *               id:
+ *               post_id:
  *                 type: integer
  *               title:
  *                 type: string
@@ -130,13 +164,13 @@ router.post('/create-post', asyncWrapper(createPost));
  *                 type: string
  *     responses:
  *       200:
- *         description: The created post.
+ *         description: Fields updated.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Posts'
  *       400:
- *         description: Post not updated.
+ *         description: Error.
  */
 router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
 
@@ -144,7 +178,9 @@ router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
  * @swagger
  * /delete-post:
  *   delete:
- *     summary: Remove the post by id
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Remove the post by id (need accessToken in header)
  *     tags: [Posts]
  *     requestBody:
  *       required: true
@@ -153,17 +189,15 @@ router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
  *           schema:
  *             type: object
  *             required:
- *               - id
+ *               - post_id
  *             properties:
- *               id:
+ *               post_id:
  *                 type: integer
  *     responses:
- *       200:
- *         description: The post was deleted
- *       300:
- *         description: Some error
+ *       204:
+ *         description: Post removed.
  *       400:
- *         description: The post was not found
+ *         description: post_id is required or other errors.
  */
 router.delete('/delete-post', authenticationToken, asyncWrapper(deletePost));
 

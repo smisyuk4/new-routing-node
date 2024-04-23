@@ -7,6 +7,31 @@ const {
   removePost,
 } = require('../services/postServices');
 
+const getPosts = async (req, res) => {
+  try {
+    const result = await getAllPosts();
+    if (result?.length > 0) {
+      return res.status(200).json({ posts: result });
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const getFilteredPosts = async (req, res) => {
+  const { author_id } = req.author;
+  const { field, value } = url.parse(req.url, true).query;
+
+  try {
+    const result = await getPostsByQuery(author_id, field, value);
+
+    if (result?.length > 0) {
+      return res.status(200).json({ posts: result });
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
 
 const createPost = async (req, res) => {
   const { author_id, title, message } = req.body;
@@ -30,6 +55,7 @@ const createPost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   const { post_id, title, message } = req.body;
+  const { author_id, email } = req.author;
 
   if (!post_id) {
     return res.status(400).json({
@@ -37,36 +63,23 @@ const updatePost = async (req, res) => {
     });
   }
 
+  if (!author_id) {
+    return res.status(400).json({
+      message: 'author_id is required',
+    });
+  }
+
+  if (!title && !message) {
+    return res.status(400).json({
+      message: 'Need minimum one field for change',
+    });
+  }
+
   try {
-    const result = await updateFieldsPost(post_id, title, message);
+    const result = await updateFieldsPost(author_id, post_id, title, message);
+
     if (result?.status) {
-      return res.sendStatus(204);
-    }
-  } catch (error) {
-    return res.status(400).json(error);
-  }
-};
-
-const getPosts = async (req, res) => {
-  try {
-    const result = await getAllPosts();
-    if (result?.length > 0) {
-      return res.status(200).json({ posts: result });
-    }
-  } catch (error) {
-    return res.status(400).json(error);
-  }
-};
-
-const getFilteredPosts = async (req, res) => {
-  const { author_id } = req.author;
-  const { field, value } = url.parse(req.url, true).query;
-
-  try {
-    const result = await getPostsByQuery(author_id, field, value);
-
-    if (result?.length > 0) {
-      return res.status(200).json({ posts: result });
+      return res.status(200).json(result.data);
     }
   } catch (error) {
     return res.status(400).json(error);
