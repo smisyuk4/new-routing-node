@@ -16,7 +16,7 @@ const db = new sqlite3.Database(
 
 const addBook = (params) => {
   return new Promise((resolve, reject) => {
-    sql = `INSERT INTO books(author_id, title, description, cover_image_url, literary_genre,
+    sql = `INSERT INTO books(author_id, title, short_desc, cover_image_url, literary_genre,
       cost, count, date_publish, date_update) VALUES(?,?,?,?,?,?,?,?,?)`;
 
     return db.run(sql, [...params, dateISO, dateISO], (err) => {
@@ -30,15 +30,35 @@ const addBook = (params) => {
 };
 
 // need write pagination query
-const getAllBooks = () => {
+const getBooksByQuery = (field, value) => {
   return new Promise((resolve, reject) => {
     sql = `SELECT * FROM books`;
 
-    return db.all(sql, [], (err, rows) => {
+    if (
+      (field == 'cost' ||
+        field == 'count' ||
+        field == 'book_id' ||
+        field == 'author_id') &&
+      value
+    ) {
+      sql += ` WHERE ${field} = ${value}`;
+    }
+
+    if (
+      (field == 'title' ||
+        field == 'short_desc' ||
+        field == 'literary_genre') &&
+      value
+    ) {
+      sql += ` WHERE ${field} LIKE '%${value}%'`;
+    }
+    console.log(sql);
+    return db.all(sql, [], function (err, rows) {
+      console.log(err);
+      
       if (err) {
         return reject(err);
       }
-
       if (rows.length < 1) {
         return reject({ message: 'No match books' });
       }
@@ -48,100 +68,7 @@ const getAllBooks = () => {
   });
 };
 
-//const updateFieldsPost = (author_id, post_id, title, message) => {
-//  return new Promise((resolve, reject) => {
-//    sql = 'UPDATE posts SET';
-//    const params = [];
-
-//    if (title) {
-//      sql += ' title = ?,';
-//      params.push(title);
-//    }
-
-//    if (message) {
-//      sql += ' message = ?,';
-//      params.push(message);
-//    }
-
-//    sql += ' date_update = ? WHERE author_id = ? AND post_id = ?';
-//    params.push(dateISO);
-//    params.push(author_id);
-//    params.push(post_id);
-
-//    return db.serialize(() => {
-//      db.run('BEGIN TRANSACTION');
-
-//      db.run(sql, params, function (err) {
-//        if (err) {
-//          return reject(err);
-//        }
-
-//        if (this.changes === 0) {
-//          reject({
-//            message: `Post with id: ${post_id} by author_id: ${author_id} not found`,
-//          });
-//        }
-
-//        db.get(
-//          'SELECT * FROM posts WHERE post_id = ?',
-//          [post_id],
-//          (err, row) => {
-//            if (err) {
-//              db.run('ROLLBACK');
-//              return reject(err);
-//            }
-
-//            db.run('COMMIT');
-//            resolve({ status: true, data: row });
-//          }
-//        );
-//      });
-//    });
-//  });
-//};
-
-// need write pagination query
-//const getPostsByQuery = (author_id, field, value) => {
-//  return new Promise((resolve, reject) => {
-//    sql = `SELECT * FROM posts WHERE`;
-//    if (field && value) {
-//      sql += ` ${field} LIKE '%${value}%' AND`;
-//    }
-//    sql += ` author_id = ?`;
-
-//    return db.all(sql, [author_id], (err, rows) => {
-//      if (err) {
-//        return reject(err);
-//      }
-
-//      if (rows.length < 1) {
-//        return reject({ message: 'No match posts' });
-//      }
-
-//      return resolve(rows);
-//    });
-//  });
-//};
-
-//const removePost = (post_id, author_id) => {
-//  return new Promise((resolve, reject) => {
-//    sql = `DELETE FROM posts WHERE post_id = ? AND author_id = ?`;
-
-//    return db.run(sql, [post_id, author_id], function (err) {
-//      if (err) {
-//        return reject(err);
-//      }
-
-//      if (this.changes === 0) {
-//        reject({ message: 'Not removed' });
-//      }
-
-//      return resolve({ status: true });
-//    });
-//  });
-//};
-
 module.exports = {
   addBook,
-  getAllBooks,
+  getBooksByQuery,
 };

@@ -14,9 +14,9 @@
  *         title:
  *           type: string
  *           description: The title of this book
- *         description:
+ *         short_desc:
  *           type: string
- *           description: The description of this book
+ *           description: The short description about this book
  *         cover_image_url:
  *           type: string
  *           description: The cover image url of this book
@@ -38,12 +38,12 @@
  *       required:
  *         - author_id
  *         - title
- *         - description
+ *         - short_desc
  *       example:
  *          book_id: 43
  *          author_id: 7
- *          title: The Lord of the Rings: Return to Moria
- *          description: The Lord of the Rings: Return to Moria is a 2023 survival-crafting video game developed by Free Range Games and published by North Beach Games on October 24, 2023. It is based on the fictional world of Middle-earth created by J. R. R. Tolkien and takes place during its Fourth Age after the events of the The Lord of the Rings novels. It follows a company of dwarves as they try to retake their homeland Moria and restore the long-lost ancient kingdom of Khazad-dûm.
+ *          title: The Lord of the Rings. Return to Moria
+ *          short_desc: The Lord of the Rings. Return to Moria is a 2023 survival-crafting video game developed by Free Range Games and published by North Beach Games on October 24, 2023. It is.
  *          cover_image_url: https://upload.wikimedia.org/wikipedia/en/c/c2/The_Lord_of_the_Rings_Return_to_Moria.png
  *          literary_genre: Survival-crafting Tutorial
  *          cost: 456
@@ -63,15 +63,18 @@ const express = require('express');
 const router = express.Router();
 
 const { asyncWrapper } = require('../helpers/asyncWrapper');
-const { createBook, getBooks } = require('../controllers/bookControllers');
+const {
+  createBook,
+  getFilteredBooks,
+} = require('../controllers/bookControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
 /**
  * @swagger
- * /create-post:
+ * /create-book:
  *   post:
- *     summary: Create a new post
- *     tags: [Posts]
+ *     summary: Create a new book
+ *     tags: [Books]
  *     requestBody:
  *       required: true
  *       content:
@@ -81,17 +84,17 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *             required:
  *               - author_id
  *               - title
- *               - message
+ *               - short_desc
  *             properties:
  *               author_id:
  *                 type: integer
  *               title:
  *                 type: string
- *               message:
+ *               short_desc:
  *                 type: string
  *     responses:
  *       204:
- *         description: The created post.
+ *         description: The created book.
  *       400:
  *         description: Error.
  */
@@ -101,8 +104,19 @@ router.post('/create-book', asyncWrapper(createBook));
  * @swagger
  * /books:
  *   get:
- *     summary: Get all books
+ *     summary: Get all filtered books
  *     tags: [Books]
+ *     parameters:
+ *       - in: query
+ *         name: field
+ *         schema:
+ *           type: string
+ *         required: false
+ *       - in: query
+ *         name: value
+ *         schema:
+ *           type: string
+ *         required: false
  *     responses:
  *       200:
  *         description: List of books found.
@@ -113,6 +127,6 @@ router.post('/create-book', asyncWrapper(createBook));
  *       400:
  *         description: Error.
  */
-router.get('/books', asyncWrapper(getBooks));
+router.get('/books', asyncWrapper(getFilteredBooks));
 
 module.exports = { bookRouter: router };

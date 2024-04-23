@@ -1,10 +1,11 @@
-const { addBook, getAllBooks } = require('../services/bookServices');
+const url = require('url');
+const { addBook, getBooksByQuery } = require('../services/bookServices');
 
 const createBook = async (req, res) => {
   const {
     author_id,
     title,
-    description,
+    short_desc,
     cover_image_url,
     literary_genre,
     cost,
@@ -14,16 +15,16 @@ const createBook = async (req, res) => {
   const params = [
     author_id,
     title,
-    description,
+    short_desc,
     cover_image_url,
     literary_genre,
     cost,
     count,
   ];
 
-  if (!author_id || !title || !description) {
+  if (!author_id || !title || !short_desc) {
     return res.status(400).json({
-      message: 'author_id, title and description required',
+      message: 'author_id, title and short_desc required',
     });
   }
 
@@ -38,9 +39,12 @@ const createBook = async (req, res) => {
   }
 };
 
-const getBooks = async (req, res) => {
+const getFilteredBooks = async (req, res) => {
+  const { field, value } = url.parse(req.url, true).query;
+
   try {
-    const result = await getAllBooks();
+    const result = await getBooksByQuery(field, value);
+
     if (result?.length > 0) {
       return res.status(200).json({ books: result });
     }
@@ -51,5 +55,5 @@ const getBooks = async (req, res) => {
 
 module.exports = {
   createBook,
-  getBooks,
+  getFilteredBooks,
 };

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
-    "createTable": "node db/table.js"
+    "table": "node db/table.js"
   },
   "author": "",
   "license": "ISC",
