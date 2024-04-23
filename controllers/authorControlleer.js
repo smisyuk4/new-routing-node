@@ -18,7 +18,6 @@ const registerAuthor = async (req, res) => {
 
   if (!name || !email) {
     return res.status(400).json({
-      success: false,
       message: 'name and email required',
     });
   }
@@ -28,7 +27,6 @@ const registerAuthor = async (req, res) => {
 
     if (resultCheck?.email) {
       return res.status(409).json({
-        success: false,
         message: 'Email already exists',
       });
     }
@@ -52,7 +50,6 @@ const loginAuthor = async (req, res) => {
 
   if (!name || !email) {
     return res.status(400).json({
-      success: false,
       message: 'name and email required',
     });
   }
@@ -110,14 +107,14 @@ const logOutAuthor = async (req, res) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.status(401).json({ message: 'Author not found' });
+    return res.status(400).json({ message: 'refreshToken is required' });
   }
 
   try {
     const { email } = await getAuthorByToken(refreshToken);
 
     if (!email) {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(401).json({ message: 'Not authorized' });
     }
 
     const result = await removeToken(email);
@@ -135,8 +132,7 @@ const updateAuthorProfile = async (req, res) => {
 
   if (!author_id) {
     return res.status(400).json({
-      success: false,
-      message: 'author_id required',
+      message: 'author_id is required',
     });
   }
 
@@ -149,7 +145,6 @@ const updateAuthorProfile = async (req, res) => {
     );
 
     if (result?.status) {
-      console.log(result);
       return res.status(200).json(result);
     }
   } catch (error) {
@@ -165,9 +160,7 @@ const getAuthors = async (req, res) => {
       return res.status(200).json({ authors: result });
     }
   } catch (error) {
-    return res.status(400).json({
-      success: false,
-    });
+    return res.status(400).json(error);
   }
 };
 
@@ -176,7 +169,6 @@ const deleteAuthor = async (req, res) => {
 
   if (!author_id || !refreshToken) {
     return res.status(400).json({
-      success: false,
       message: 'author_id and refreshToken required',
     });
   }

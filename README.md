@@ -17,6 +17,9 @@
 
 - [200](https://www.akto.io/academy/200-status-code)
 - [204](https://www.akto.io/academy/204-status-code)
+- [400](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400)
+- [401](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401)
+- [403](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403)
 - [409](https://www.webfx.com/web-development/glossary/http-status-codes/what-is-a-409-status-code/)
 
 ## other
