@@ -156,7 +156,7 @@ const getAuthors = async (req, res) => {
   try {
     const result = await getAllAuthors();
 
-    if (result.length > 0) {
+    if (result?.length > 0) {
       return res.status(200).json({ authors: result });
     }
   } catch (error) {

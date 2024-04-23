@@ -32,7 +32,7 @@ const router = express.Router();
 
 const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
-  getAllPosts,
+  getPosts,
   getFilteredPosts,
   createPost,
   updatePost,
@@ -40,7 +40,7 @@ const {
 } = require('../controllers/postController');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
-router.get('/posts', asyncWrapper(getAllPosts));
+router.get('/posts', asyncWrapper(getPosts));
 
 /**
  * @swagger

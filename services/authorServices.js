@@ -200,7 +200,7 @@ const removeAuthor = async (author_id) => {
       }
 
       if (this.changes === 0) {
-        return resolve({ message: constants.NO_MATCH_AUTHOR });
+        return reject({ message: constants.NO_MATCH_AUTHOR });
       }
 
       resolve({ status: true });
