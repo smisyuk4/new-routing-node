@@ -69,7 +69,7 @@ const {
   updateAuthorProfile,
   getAuthors,
   deleteAuthor,
-} = require('../controllers/authorControlleer');
+} = require('../controllers/authorControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
 /**

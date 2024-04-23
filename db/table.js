@@ -14,10 +14,22 @@ const db = new sqlite3.Database(
 
 // create table
 //const sql = `CREATE TABLE posts(post_id INTEGER PRIMARY KEY,author_id INTEGER,title TEXT,message TEXT,date_publish TEXT,date_update TEXT)`;
-const sql = `CREATE TABLE authors(author_id INTEGER PRIMARY KEY,name TEXT,email TEXT,location TEXT,avatar_url TEXT,token TEXT,date_publish TEXT,date_update TEXT)`;
+//const sql = `CREATE TABLE authors(author_id INTEGER PRIMARY KEY,name TEXT,email TEXT,location TEXT,avatar_url TEXT,token TEXT,date_publish TEXT,date_update TEXT)`;
+
+const sql = `CREATE TABLE books(
+  book_id INTEGER PRIMARY KEY,
+  author_id INTEGER,
+  title TEXT,
+  short_desc TEXT,
+  cover_image_url TEXT,
+  literary_genre TEXT,
+  cost INTEGER,
+  count INTEGER,
+  date_publish TEXT,
+  date_update TEXT)`;
 
 //const sql = `ALTER TABLE authors ADD COLUMN token`;
-//const sql = 'DROP TABLE author;'
+//const sql = 'DROP TABLE books;'
 
 db.run(sql);
 console.log('table created');
