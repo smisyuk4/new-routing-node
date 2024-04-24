@@ -4,6 +4,8 @@ const {
   updateFieldsBook,
   getBooksByQuery,
   removeBook,
+  addGenre,
+  getGenresByQuery,
 } = require('../services/bookServices');
 
 const createBook = async (req, res) => {
@@ -138,9 +140,45 @@ const deleteBook = async (req, res) => {
   }
 };
 
+const createGenre = async (req, res) => {
+  const { title } = req.body;
+
+  if (!title) {
+    return res.status(400).json({
+      message: 'title is required',
+    });
+  }
+
+  try {
+    const result = await addGenre(title);
+
+    if (result?.status) {
+      return res.sendStatus(204);
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const getFilteredGenres = async (req, res) => {
+  const { field, value } = url.parse(req.url, true).query;
+
+  try {
+    const result = await getGenresByQuery(field, value);
+
+    if (result?.length > 0) {
+      return res.status(200).json({ genres: result });
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
 module.exports = {
   createBook,
   updateBook,
   getFilteredBooks,
   deleteBook,
+  createGenre,
+  getFilteredGenres,
 };

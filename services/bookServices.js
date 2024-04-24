@@ -166,9 +166,46 @@ const removeBook = (book_id, user_id) => {
   });
 };
 
+const addGenre = (title) => {
+  return new Promise((resolve, reject) => {
+    sql = `INSERT INTO genres(title) VALUES(LOWER(?))`;
+
+    return db.run(sql, [title], (err) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve({ status: true });
+    });
+  });
+};
+
+const getGenresByQuery = (field, value) => {
+  return new Promise((resolve, reject) => {
+    sql = `SELECT * FROM genres`;
+
+    if (field && value) {
+      sql += ` WHERE ${field} LIKE '%${value}%'`;
+    }
+
+    return db.all(sql, [], function (err, rows) {
+      if (err) {
+        return reject(err);
+      }
+      if (rows.length < 1) {
+        return reject({ message: constants.NO_MATCH_GENRES });
+      }
+
+      return resolve(rows);
+    });
+  });
+};
+
 module.exports = {
   addBook,
   updateFieldsBook,
   getBooksByQuery,
   removeBook,
+  addGenre,
+  getGenresByQuery,
 };

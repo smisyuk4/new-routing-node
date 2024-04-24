@@ -68,6 +68,8 @@ const {
   updateBook,
   getFilteredBooks,
   deleteBook,
+  createGenre,
+  getFilteredGenres,
 } = require('../controllers/bookControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
@@ -202,5 +204,66 @@ router.get('/books', asyncWrapper(getFilteredBooks));
  *         description: book_id is required or other errors.
  */
 router.delete('/delete-book', authenticationToken, asyncWrapper(deleteBook));
+
+/**
+ * @swagger
+ *  /api-v1/create-genre:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Create a new genre (need accessToken in header)
+ *     tags: [Books]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *             properties:
+ *               title:
+ *                 type: string
+ *     responses:
+ *       204:
+ *         description: The created new genre.
+ *       400:
+ *         description: Error.
+ */
+router.post('/create-genre', authenticationToken, asyncWrapper(createGenre));
+
+/**
+ * @swagger
+ * /api-v1/genres:
+ *   get:
+ *     summary: Get all filtered genres
+ *     tags: [Books]
+ *     parameters:
+ *       - in: query
+ *         name: field
+ *         schema:
+ *           type: string
+ *         required: false
+ *       - in: query
+ *         name: value
+ *         schema:
+ *           type: string
+ *         required: false
+ *     responses:
+ *       200:
+ *         description: List of genres found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 genre_id:
+ *                   type: integer
+ *                 title:
+ *                   type: string
+ *       400:
+ *         description: Error.
+ */
+router.get('/genres', asyncWrapper(getFilteredGenres));
 
 module.exports = { bookRouter: router };

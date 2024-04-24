@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+const dateISO = new Date().toISOString();
 
 // connect to db
 const db = new sqlite3.Database(
@@ -12,11 +13,11 @@ const db = new sqlite3.Database(
   }
 );
 
-// create table
+// ============== create table - users ==============
 //const sql = `CREATE TABLE users(
 //  user_id INTEGER PRIMARY KEY,
 //  name TEXT,
-//  email TEXT,
+//  email TEXT UNIQUE,
 //  role TEXT,
 //  sign_plan TEXT,
 //  payment TEXT,
@@ -26,6 +27,12 @@ const db = new sqlite3.Database(
 //  date_register TEXT,
 //  date_update TEXT)`;
 
+// ============== create table - roles ==============
+//const sql = `CREATE TABLE roles(
+//  role_id INTEGER PRIMARY KEY,
+//  title TEXT UNIQUE)`;
+
+// ============== create table - posts ==============
 //const sql = `CREATE TABLE posts(
 //  post_id INTEGER PRIMARY KEY,
 //  user_id INTEGER,
@@ -34,21 +41,31 @@ const db = new sqlite3.Database(
 //  date_publish TEXT,
 //  date_update TEXT)`;
 
-const sql = `CREATE TABLE books(
-  book_id INTEGER PRIMARY KEY,
-  user_id INTEGER,
-  title TEXT,
-  short_desc TEXT,
-  cover_image_url TEXT,
-  literary_genre TEXT,
-  cost INTEGER,
-  count INTEGER,
-  date_publish TEXT,
-  date_update TEXT)`;
+// ============== create table - books ==============
+//const sql = `CREATE TABLE books(
+//  book_id INTEGER PRIMARY KEY,
+//  user_id INTEGER,
+//  title TEXT,
+//  short_desc TEXT,
+//  cover_image_url TEXT,
+//  literary_genre TEXT,
+//  cost INTEGER,
+//  count INTEGER,
+//  date_publish TEXT,
+//  date_update TEXT)`;
+
+// ============== create table - genres ==============
+const sql = `CREATE TABLE genres(
+  genre_id INTEGER PRIMARY KEY,
+  title TEXT UNIQUE)`;
 
 //const sql = `ALTER TABLE authors ADD COLUMN token`;
-//const sql = 'DROP TABLE books;'
+//const sql = `INSERT INTO roles(title) VALUES(?)`;
+//db.run(sql, ['admin']);
+//db.run(sql, ['author']);
+//db.run(sql, ['customer']);
 
+//const sql = 'DROP TABLE genres;'
 db.run(sql);
 console.log(`process for ${sql} - done`);
 
