@@ -58,7 +58,7 @@ const { authenticationToken } = require('../middleware/authenticationToken');
 
 /**
  * @swagger
- * /create-post:
+ * /api-v1/create-post:
  *   post:
  *     summary: Create a new post
  *     tags: [Posts]
@@ -89,7 +89,7 @@ router.post('/create-post', asyncWrapper(createPost));
 
 /**
  * @swagger
- * /update-post:
+ * /api-v1/update-post:
  *   patch:
  *     security:
  *       - bearerAuth: []
@@ -124,7 +124,7 @@ router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
 
 /**
  * @swagger
- * /posts:
+ * /api-v1/posts:
  *   get:
  *     summary: Get all posts
  *     tags: [Posts]
@@ -142,7 +142,7 @@ router.get('/posts', asyncWrapper(getPosts));
 
 /**
  * @swagger
- * /my-posts:
+ * /api-v1/my-posts:
  *   get:
  *     security:
  *       - bearerAuth: []
@@ -176,7 +176,7 @@ router.get('/my-posts', authenticationToken, asyncWrapper(getFilteredPosts));
 
 /**
  * @swagger
- * /delete-post:
+ * /api-v1/delete-post:
  *   delete:
  *     security:
  *       - bearerAuth: []

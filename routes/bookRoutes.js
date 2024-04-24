@@ -73,7 +73,7 @@ const { authenticationToken } = require('../middleware/authenticationToken');
 
 /**
  * @swagger
- * /create-book:
+ *  /api-v1/create-book:
  *   post:
  *     security:
  *       - bearerAuth: []
@@ -106,7 +106,7 @@ router.post('/create-book', authenticationToken, asyncWrapper(createBook));
 
 /**
  * @swagger
- * /update-book:
+ * /api-v1/update-book:
  *   patch:
  *     security:
  *       - bearerAuth: []
@@ -149,7 +149,7 @@ router.patch('/update-book', authenticationToken, asyncWrapper(updateBook));
 
 /**
  * @swagger
- * /books:
+ * /api-v1/books:
  *   get:
  *     summary: Get all filtered books
  *     tags: [Books]
@@ -178,7 +178,7 @@ router.get('/books', asyncWrapper(getFilteredBooks));
 
 /**
  * @swagger
- * /delete-book:
+ * /api-v1/delete-book:
  *   delete:
  *     security:
  *       - bearerAuth: []

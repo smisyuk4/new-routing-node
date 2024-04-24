@@ -84,7 +84,7 @@ const { authenticationToken } = require('../middleware/authenticationToken');
 
 /**
  * @swagger
- * /register:
+ * /api-v1/user/register:
  *   post:
  *     summary: Create a new user
  *     tags: [Users]
@@ -126,7 +126,7 @@ router.post('/register', asyncWrapper(register));
 
 /**
  * @swagger
- * /login:
+ * /api-v1/user/login:
  *   post:
  *     summary: Authentication user
  *     tags: [Users]
@@ -163,7 +163,7 @@ router.post('/login', asyncWrapper(login));
 
 /**
  * @swagger
- * /token:
+ * /api-v1/user/token:
  *   post:
  *     summary: Refresh accessToken
  *     tags: [Users]
@@ -197,7 +197,7 @@ router.post('/token', asyncWrapper(checkAndGenerateToken));
 
 /**
  * @swagger
- * /logout:
+ * /api-v1/user/logout:
  *   post:
  *     summary: Logout user
  *     tags: [Users]
@@ -224,7 +224,7 @@ router.post('/logout', asyncWrapper(logOut));
 
 /**
  * @swagger
- * /update-profile:
+ * /api-v1/user/update-profile:
  *   patch:
  *     security:
  *       - bearerAuth: []
@@ -267,7 +267,7 @@ router.patch(
 
 /**
  * @swagger
- * /users:
+ * /api-v1/user/get-all-profiles:
  *   get:
  *     summary: Get all users
  *     tags: [Users]
@@ -281,11 +281,11 @@ router.patch(
  *       400:
  *         description: Error.
  */
-router.get('/users', asyncWrapper(getUsers));
+router.get('/get-all-profiles', asyncWrapper(getUsers));
 
 /**
  * @swagger
- * /delete-profile:
+ * /api-v1/user/delete-profile:
  *   delete:
  *     security:
  *       - bearerAuth: []

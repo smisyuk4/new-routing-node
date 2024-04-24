@@ -18,7 +18,7 @@ const createPost = async (req, res) => {
 
   try {
     const result = await addPost(user_id, title, message);
-    console.log(result);
+
     if (result?.status) {
       return res.sendStatus(204);
     }
