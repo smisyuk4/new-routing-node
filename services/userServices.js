@@ -15,23 +15,27 @@ const db = new sqlite3.Database(
   }
 );
 
-const addAuthor = async (name, email, accessToken) => {
+const addUser = async (name, email, role, accessToken) => {
   return new Promise((resolve, reject) => {
-    sql = `INSERT INTO authors(name, email, token, date_publish, date_update) VALUES(?,?,?,?,?)`;
+    sql = `INSERT INTO users(name, email, role, token, date_register, date_update) VALUES(?,?,?,?,?,?)`;
 
-    return db.run(sql, [name, email, accessToken, dateISO, dateISO], (err) => {
-      if (err) {
-        return reject(err);
+    return db.run(
+      sql,
+      [name, email, role, accessToken, dateISO, dateISO],
+      (err) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve({ status: true });
       }
-
-      resolve({ status: true });
-    });
+    );
   });
 };
 
 const addToken = async (refreshToken, email) => {
   return new Promise((resolve, reject) => {
-    sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
+    sql = `UPDATE users SET token = ?, date_update = ? WHERE email = ?`;
 
     return db.run(sql, [refreshToken, dateISO, email], function (err) {
       if (err) {
@@ -39,7 +43,7 @@ const addToken = async (refreshToken, email) => {
       }
 
       if (this.changes === 0) {
-        return reject({ message: 'No match author' });
+        return reject({ message: constants.NO_MATCH_USERS });
       }
 
       resolve({ status: true });
@@ -49,7 +53,7 @@ const addToken = async (refreshToken, email) => {
 
 const removeToken = async (email) => {
   return new Promise((resolve, reject) => {
-    sql = `UPDATE authors SET token = ?, date_update = ? WHERE email = ?`;
+    sql = `UPDATE users SET token = ?, date_update = ? WHERE email = ?`;
 
     return db.run(sql, [null, dateISO, email], function (err) {
       if (err) {
@@ -57,7 +61,7 @@ const removeToken = async (email) => {
       }
 
       if (this.changes === 0) {
-        return reject({ message: 'No match author' });
+        return reject({ message: constants.NO_MATCH_USERS });
       }
 
       return resolve({ message: constants.LOGOUT_SUCCESS });
@@ -65,12 +69,18 @@ const removeToken = async (email) => {
   });
 };
 
-const updateFieldsAuthor = async (author_id, name, location, avatar_url) => {
+const updateFieldsUser = async (
+  user_id,
+  name,
+  sign_plan,
+  payment,
+  location
+) => {
   return new Promise((resolve, reject) => {
-    sql = 'UPDATE authors SET';
+    sql = 'UPDATE users SET';
     const params = [];
 
-    if (!author_id) {
+    if (!user_id) {
       return res.status(400).json({
         success: false,
         message: 'author_id is required',
@@ -82,19 +92,24 @@ const updateFieldsAuthor = async (author_id, name, location, avatar_url) => {
       params.push(name);
     }
 
+    if (sign_plan) {
+      sql += ' sign_plan = ?,';
+      params.push(sign_plan);
+    }
+
+    if (payment) {
+      sql += ' payment = ?,';
+      params.push(payment);
+    }
+
     if (location) {
       sql += ' location = ?,';
       params.push(location);
     }
 
-    if (avatar_url) {
-      sql += ' avatar_url = ?,';
-      params.push(avatar_url);
-    }
-
-    sql += ' date_update = ? WHERE author_id = ?';
+    sql += ' date_update = ? WHERE user_id = ?';
     params.push(dateISO);
-    params.push(author_id);
+    params.push(user_id);
 
     return db.serialize(() => {
       db.run('BEGIN TRANSACTION');
@@ -105,12 +120,12 @@ const updateFieldsAuthor = async (author_id, name, location, avatar_url) => {
         }
 
         if (this.changes === 0) {
-          return reject({ message: 'No changed' });
+          return reject({ message: constants.NO_CHANGED });
         }
 
         db.get(
-          'SELECT * FROM authors WHERE author_id = ?',
-          [author_id],
+          'SELECT * FROM users WHERE user_id = ?',
+          [user_id],
           (err, row) => {
             if (err) {
               db.run('ROLLBACK');
@@ -126,13 +141,13 @@ const updateFieldsAuthor = async (author_id, name, location, avatar_url) => {
   });
 };
 
-const getAuthorByEmail = async (email) => {
+const getUserByEmail = async (email) => {
   if (!email) {
     return 'email is required';
   }
 
   return new Promise((resolve, reject) => {
-    sql = `SELECT * FROM authors WHERE email = ?`;
+    sql = `SELECT * FROM users WHERE email = ?`;
 
     return db.all(sql, [email], (err, rows) => {
       if (err) {
@@ -140,7 +155,7 @@ const getAuthorByEmail = async (email) => {
       }
 
       if (rows.length < 1) {
-        return resolve({ message: constants.NO_MATCH_AUTHOR });
+        return resolve({ message: constants.NO_MATCH_USERS });
       }
 
       return resolve(rows[0]);
@@ -148,13 +163,13 @@ const getAuthorByEmail = async (email) => {
   });
 };
 
-const getAuthorByToken = async (refreshToken) => {
+const getUserByToken = async (refreshToken) => {
   if (!refreshToken) {
     return 'refreshToken is required';
   }
 
   return new Promise((resolve, reject) => {
-    sql = `SELECT * FROM authors WHERE token = ?`;
+    sql = `SELECT * FROM users WHERE token = ?`;
 
     return db.all(sql, [refreshToken], (err, rows) => {
       if (err) {
@@ -162,7 +177,7 @@ const getAuthorByToken = async (refreshToken) => {
       }
 
       if (rows.length < 1) {
-        return resolve({ message: constants.NO_MATCH_AUTHOR });
+        return resolve({ message: constants.NO_MATCH_USERS });
       }
 
       return resolve(rows[0]);
@@ -170,9 +185,9 @@ const getAuthorByToken = async (refreshToken) => {
   });
 };
 
-const getAllAuthors = async () => {
+const getAllUsers = async () => {
   return new Promise((resolve, reject) => {
-    sql = `SELECT * FROM authors`;
+    sql = `SELECT * FROM users`;
 
     return db.all(sql, [], (err, rows) => {
       if (err) {
@@ -180,7 +195,7 @@ const getAllAuthors = async () => {
       }
 
       if (rows.length < 1) {
-        return resolve({ message: constants.NO_MATCH_AUTHOR });
+        return resolve({ message: constants.NO_MATCH_USERS });
       }
 
       return resolve(rows);
@@ -188,11 +203,11 @@ const getAllAuthors = async () => {
   });
 };
 
-const removeAuthor = async (author_id) => {
+const removeUser = async (user_id) => {
   return new Promise((resolve, reject) => {
-    sql = `DELETE FROM authors WHERE author_id = ?`;
+    sql = `DELETE FROM users WHERE user_id = ?`;
 
-    return db.run(sql, [author_id], function (err) {
+    return db.run(sql, [user_id], function (err) {
       if (err) {
         if (err) {
           return reject(err);
@@ -200,7 +215,7 @@ const removeAuthor = async (author_id) => {
       }
 
       if (this.changes === 0) {
-        return reject({ message: constants.NO_MATCH_AUTHOR });
+        return reject({ message: constants.NO_MATCH_USERS });
       }
 
       resolve({ status: true });
@@ -209,12 +224,12 @@ const removeAuthor = async (author_id) => {
 };
 
 module.exports = {
-  addAuthor,
+  addUser,
   addToken,
   removeToken,
-  updateFieldsAuthor,
-  getAuthorByEmail,
-  getAuthorByToken,
-  getAllAuthors,
-  removeAuthor,
+  updateFieldsUser,
+  getUserByToken,
+  getUserByEmail,
+  getAllUsers,
+  removeUser,
 };

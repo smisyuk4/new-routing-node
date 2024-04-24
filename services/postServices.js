@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+const { constants } = require('../constants');
 
 // connect to db
 let sql;
@@ -14,11 +15,11 @@ const db = new sqlite3.Database(
   }
 );
 
-const addPost = (author_id, title, message) => {
+const addPost = (user_id, title, message) => {
   return new Promise((resolve, reject) => {
-    sql = `INSERT INTO posts(author_id, title, message, date_publish, date_update) VALUES(?,?,?,?,?)`;
+    sql = `INSERT INTO posts(user_id, title, message, date_publish, date_update) VALUES(?,?,?,?,?)`;
 
-    return db.run(sql, [author_id, title, message, dateISO, dateISO], (err) => {
+    return db.run(sql, [user_id, title, message, dateISO, dateISO], (err) => {
       if (err) {
         return reject(err);
       }
@@ -28,7 +29,7 @@ const addPost = (author_id, title, message) => {
   });
 };
 
-const updateFieldsPost = (author_id, post_id, title, message) => {
+const updateFieldsPost = (user_id, post_id, title, message) => {
   return new Promise((resolve, reject) => {
     sql = 'UPDATE posts SET';
     const params = [];
@@ -43,9 +44,9 @@ const updateFieldsPost = (author_id, post_id, title, message) => {
       params.push(message);
     }
 
-    sql += ' date_update = ? WHERE author_id = ? AND post_id = ?';
+    sql += ' date_update = ? WHERE user_id = ? AND post_id = ?';
     params.push(dateISO);
-    params.push(author_id);
+    params.push(user_id);
     params.push(post_id);
 
     return db.serialize(() => {
@@ -58,7 +59,7 @@ const updateFieldsPost = (author_id, post_id, title, message) => {
 
         if (this.changes === 0) {
           reject({
-            message: `Post with id: ${post_id} by author_id: ${author_id} not found`,
+            message: `Post with id: ${post_id} by user_id: ${user_id} not found`,
           });
         }
 
@@ -91,7 +92,7 @@ const getAllPosts = () => {
       }
 
       if (rows.length < 1) {
-        return reject({ message: 'No match posts' });
+        return reject({ message: constants.NO_MATCH_POSTS });
       }
 
       return resolve(rows);
@@ -100,21 +101,21 @@ const getAllPosts = () => {
 };
 
 // need write pagination query
-const getPostsByQuery = (author_id, field, value) => {
+const getPostsByQuery = (user_id, field, value) => {
   return new Promise((resolve, reject) => {
     sql = `SELECT * FROM posts WHERE`;
     if (field && value) {
       sql += ` ${field} LIKE '%${value}%' AND`;
     }
-    sql += ` author_id = ?`;
+    sql += ` user_id = ?`;
 
-    return db.all(sql, [author_id], (err, rows) => {
+    return db.all(sql, [user_id], (err, rows) => {
       if (err) {
         return reject(err);
       }
 
       if (rows.length < 1) {
-        return reject({ message: 'No match posts' });
+        return reject({ message: constants.NO_MATCH_POSTS });
       }
 
       return resolve(rows);
@@ -122,17 +123,17 @@ const getPostsByQuery = (author_id, field, value) => {
   });
 };
 
-const removePost = (post_id, author_id) => {
+const removePost = (post_id, user_id) => {
   return new Promise((resolve, reject) => {
-    sql = `DELETE FROM posts WHERE post_id = ? AND author_id = ?`;
+    sql = `DELETE FROM posts WHERE post_id = ? AND user_id = ?`;
 
-    return db.run(sql, [post_id, author_id], function (err) {
+    return db.run(sql, [post_id, user_id], function (err) {
       if (err) {
         return reject(err);
       }
 
       if (this.changes === 0) {
-        reject({ message: 'Not removed' });
+        reject({ message: constants.NO_REMOVED });
       }
 
       return resolve({ status: true });

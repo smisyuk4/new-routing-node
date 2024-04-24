@@ -8,9 +8,9 @@
  *         post_id:
  *           type: integer
  *           description: The auto-generated id of the post
- *         author_id:
+ *         user_id:
  *           type: integer
- *           description: id of the author this post
+ *           description: id of the user who added this post
  *         title:
  *           type: string
  *           description: The title of this post
@@ -24,12 +24,12 @@
  *           type: string
  *           description: The date update of this post
  *       required:
- *         - author_id
+ *         - user_id
  *         - title
  *         - message
  *       example:
  *          post_id: 65
- *          author_id: 12
+ *          user_id: 12
  *          title: 403 Forbidden
  *          message: The HTTP 403 Forbidden response status code indicates that the server understands the request but refuses to authorize it.
  *          date_publish: 2024-04-23T13:44:05.312Z
@@ -48,69 +48,17 @@ const router = express.Router();
 
 const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
-  getPosts,
-  getFilteredPosts,
   createPost,
   updatePost,
+  getPosts,
+  getFilteredPosts,
   deletePost,
 } = require('../controllers/postController');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
 /**
  * @swagger
- * /posts:
- *   get:
- *     summary: Get all posts
- *     tags: [Posts]
- *     responses:
- *       200:
- *         description: List of posts found.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Posts'
- *       400:
- *         description: Error.
- */
-router.get('/posts', asyncWrapper(getPosts));
-
-/**
- * @swagger
- * /my-posts:
- *   get:
- *     security:
- *       - bearerAuth: []
- *     summary: Returns a filtered list of all posts by the one author (need accessToken in header)
- *     tags: [Posts]
- *     parameters:
- *       - in: query
- *         name: field
- *         schema:
- *           type: string
- *         required: false
- *         description: \"title\" or \"message\"
- *       - in: query
- *         name: value
- *         schema:
- *           type: string
- *         required: false
- *     responses:
- *       200:
- *         description: The list of the posts
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Posts'
- *       400:
- *         description: Error
- */
-router.get('/my-posts', authenticationToken, asyncWrapper(getFilteredPosts));
-
-/**
- * @swagger
- * /create-post:
+ * /api-v1/create-post:
  *   post:
  *     summary: Create a new post
  *     tags: [Posts]
@@ -121,11 +69,11 @@ router.get('/my-posts', authenticationToken, asyncWrapper(getFilteredPosts));
  *           schema:
  *             type: object
  *             required:
- *               - author_id
+ *               - user_id
  *               - title
  *               - message
  *             properties:
- *               author_id:
+ *               user_id:
  *                 type: integer
  *               title:
  *                 type: string
@@ -141,7 +89,7 @@ router.post('/create-post', asyncWrapper(createPost));
 
 /**
  * @swagger
- * /update-post:
+ * /api-v1/update-post:
  *   patch:
  *     security:
  *       - bearerAuth: []
@@ -176,7 +124,59 @@ router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
 
 /**
  * @swagger
- * /delete-post:
+ * /api-v1/posts:
+ *   get:
+ *     summary: Get all posts
+ *     tags: [Posts]
+ *     responses:
+ *       200:
+ *         description: List of posts found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Posts'
+ *       400:
+ *         description: Error.
+ */
+router.get('/posts', asyncWrapper(getPosts));
+
+/**
+ * @swagger
+ * /api-v1/my-posts:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Returns a filtered list of all posts by the one user (need accessToken in header)
+ *     tags: [Posts]
+ *     parameters:
+ *       - in: query
+ *         name: field
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: \"title\" or \"message\"
+ *       - in: query
+ *         name: value
+ *         schema:
+ *           type: string
+ *         required: false
+ *     responses:
+ *       200:
+ *         description: The list of the posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Posts'
+ *       400:
+ *         description: Error
+ */
+router.get('/my-posts', authenticationToken, asyncWrapper(getFilteredPosts));
+
+/**
+ * @swagger
+ * /api-v1/delete-post:
  *   delete:
  *     security:
  *       - bearerAuth: []

@@ -13,12 +13,30 @@ const db = new sqlite3.Database(
 );
 
 // create table
-//const sql = `CREATE TABLE posts(post_id INTEGER PRIMARY KEY,author_id INTEGER,title TEXT,message TEXT,date_publish TEXT,date_update TEXT)`;
-//const sql = `CREATE TABLE authors(author_id INTEGER PRIMARY KEY,name TEXT,email TEXT,location TEXT,avatar_url TEXT,token TEXT,date_publish TEXT,date_update TEXT)`;
+//const sql = `CREATE TABLE users(
+//  user_id INTEGER PRIMARY KEY,
+//  name TEXT,
+//  email TEXT,
+//  role TEXT,
+//  sign_plan TEXT,
+//  payment TEXT,
+//  location TEXT,
+//  avatar_url TEXT,
+//  token TEXT,
+//  date_register TEXT,
+//  date_update TEXT)`;
+
+//const sql = `CREATE TABLE posts(
+//  post_id INTEGER PRIMARY KEY,
+//  user_id INTEGER,
+//  title TEXT,
+//  message TEXT,
+//  date_publish TEXT,
+//  date_update TEXT)`;
 
 const sql = `CREATE TABLE books(
   book_id INTEGER PRIMARY KEY,
-  author_id INTEGER,
+  user_id INTEGER,
   title TEXT,
   short_desc TEXT,
   cover_image_url TEXT,
@@ -32,7 +50,7 @@ const sql = `CREATE TABLE books(
 //const sql = 'DROP TABLE books;'
 
 db.run(sql);
-console.log('table created');
+console.log(`process for ${sql} - done`);
 
 // Щоб додати нову властивість до існуючої таблиці SQLite, вам потрібно виконати SQL запит ALTER TABLE,
 // який додасть новий стовпчик. Ось як це можна зробити:
