@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const { getAuthorByEmail } = require('../services/authorServices');
+const { getAuthorByEmail } = require('../services/userServices');
 const { constants } = require('../constants');
 
 const authenticationToken = async (req, res, next) => {
@@ -9,7 +9,9 @@ const authenticationToken = async (req, res, next) => {
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ message: 'AccessToken in headers not found' });
+    return res
+      .status(401)
+      .json({ message: 'AccessToken in headers not found' });
   }
 
   let decodedToken;
@@ -28,7 +30,7 @@ const authenticationToken = async (req, res, next) => {
     req.author = currentAuthor;
     next();
   } catch (error) {
-    if (error.message === constants.NO_MATCH_AUTHOR) {
+    if (error.message === constants.NO_MATCH_USERS) {
       return res.status(403).json(error);
     }
   }

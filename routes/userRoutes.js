@@ -2,52 +2,62 @@
  * @swagger
  * components:
  *   schemas:
- *     Authors:
+ *     Users:
  *       type: object
  *       properties:
- *         author_id:
+ *         user_id:
  *           type: integer
- *           description: The auto-generated id of the author
+ *           description: The auto-generated id of the user
  *         name:
  *           type: string
- *           description: The name of author
+ *           description: The name of user
  *         email:
  *           type: string
- *           description: The email of author
+ *           description: The email of user
+ *         role:
+ *           type: string
+ *           description: The role of user
+ *         payment:
+ *           type: string
+ *           description: Payment by sign plan of user
  *         location:
  *           type: sting
- *           description: The location of author
+ *           description: The location of user
  *         avatar_url:
  *           type: sting
- *           description: The avatar url of author
+ *           description: The avatar url of user
  *         token:
  *           type: sting
- *           description: The refreshToken of author
- *         date_publish:
+ *           description: The refreshToken of user
+ *         date_register:
  *           type: sting
- *           description: The date register of author
+ *           description: The date register of user
  *         date_update:
  *           type: sting
- *           description: The date update profile author
+ *           description: The date update profile user
  *       required:
  *         - name
  *         - email
+ *         - role
  *       example:
- *          author_id: 32
+ *          user_id: 32
  *          name: Mary Grabovski
  *          email: mary_gra@gmail.com
+ *          role: author
+ *          sign_plan: 1 month
+ *          payment: true
  *          location: Spain, Madrid
  *          avatar_url: https://static.vecteezy.com/system/resources/thumbnails/022/714/697/small/cute-black-and-white-girl-posing-vector.jpg
  *          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
- *          date_publish: 2024-04-22T21:00:47.748Z
+ *          date_register: 2024-04-22T21:00:47.748Z
  *          date_update: 2024-04-22T22:05:57.255Z
  */
 
 /**
  * @swagger
  * tags:
- *   name: Authors
- *   description: The authors managing API
+ *   name: Users
+ *   description: The users managing API
  *
  * components:
  *   securitySchemes:
@@ -62,22 +72,22 @@ const router = express.Router();
 
 const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
-  registerAuthor,
-  loginAuthor,
+  register,
+  login,
   checkAndGenerateToken,
-  logOutAuthor,
-  updateAuthorProfile,
-  getAuthors,
-  deleteAuthor,
-} = require('../controllers/authorControllers');
+  logOut,
+  updateUserProfile,
+  getUsers,
+  deleteUser,
+} = require('../controllers/userControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
 /**
  * @swagger
  * /register:
  *   post:
- *     summary: Create a new author
- *     tags: [Authors]
+ *     summary: Create a new user
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -87,14 +97,17 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *             required:
  *               - name
  *               - email
+ *               - role
  *             properties:
  *               name:
  *                 type: string
  *               email:
  *                 type: string
+ *               role:
+ *                 type: string
  *     responses:
  *       200:
- *         description: The created post.
+ *         description: The created new profile.
  *         content:
  *           application/json:
  *             schema:
@@ -109,14 +122,14 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *       409:
  *         description: Email already exists.
  */
-router.post('/register', asyncWrapper(registerAuthor));
+router.post('/register', asyncWrapper(register));
 
 /**
  * @swagger
  * /login:
  *   post:
- *     summary: Authentication author
- *     tags: [Authors]
+ *     summary: Authentication user
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -133,7 +146,7 @@ router.post('/register', asyncWrapper(registerAuthor));
  *                 type: string
  *     responses:
  *       200:
- *         description: The created post.
+ *         description: The authentication successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -146,14 +159,14 @@ router.post('/register', asyncWrapper(registerAuthor));
  *       400:
  *         description: Name and email required or other errors.
  */
-router.post('/login', asyncWrapper(loginAuthor));
+router.post('/login', asyncWrapper(login));
 
 /**
  * @swagger
  * /token:
  *   post:
  *     summary: Refresh accessToken
- *     tags: [Authors]
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -186,8 +199,8 @@ router.post('/token', asyncWrapper(checkAndGenerateToken));
  * @swagger
  * /logout:
  *   post:
- *     summary: Logout author
- *     tags: [Authors]
+ *     summary: Logout user
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -207,16 +220,16 @@ router.post('/token', asyncWrapper(checkAndGenerateToken));
  *       401:
  *         description: Not authorized.
  */
-router.post('/logout', asyncWrapper(logOutAuthor));
+router.post('/logout', asyncWrapper(logOut));
 
 /**
  * @swagger
- * /update-author-profile:
+ * /update-profile:
  *   patch:
  *     security:
  *       - bearerAuth: []
- *     summary: Update author profile fields (need accessToken in header)
- *     tags: [Authors]
+ *     summary: Update user profile fields (need accessToken in header)
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -224,15 +237,17 @@ router.post('/logout', asyncWrapper(logOutAuthor));
  *           schema:
  *             type: object
  *             required:
- *               - author_id
+ *               - users_id
  *             properties:
- *               author_id:
+ *               users_id:
  *                 type: integer
  *               name:
  *                 type: string
- *               location:
+ *               sign_plan:
  *                 type: string
- *               avatar_url:
+ *               payment:
+ *                 type: string
+ *               location:
  *                 type: string
  *     responses:
  *       200:
@@ -240,42 +255,42 @@ router.post('/logout', asyncWrapper(logOutAuthor));
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Authors'
+ *               $ref: '#/components/schemas/Users'
  *       400:
- *         description: author_id is required or other errors.
+ *         description: user_id is required or other errors.
  */
 router.patch(
-  '/update-author-profile',
+  '/update-profile',
   authenticationToken,
-  asyncWrapper(updateAuthorProfile)
+  asyncWrapper(updateUserProfile)
 );
 
 /**
  * @swagger
- * /authors:
+ * /users:
  *   get:
- *     summary: Get all authors
- *     tags: [Authors]
+ *     summary: Get all users
+ *     tags: [Users]
  *     responses:
  *       200:
- *         description: List of authors found.
+ *         description: List of users found.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Authors'
+ *               $ref: '#/components/schemas/Users'
  *       400:
  *         description: Error.
  */
-router.get('/authors', asyncWrapper(getAuthors));
+router.get('/users', asyncWrapper(getUsers));
 
 /**
  * @swagger
- * /delete-author:
+ * /delete-profile:
  *   delete:
  *     security:
  *       - bearerAuth: []
- *     summary: Remove author profile (need accessToken in header)
- *     tags: [Authors]
+ *     summary: Remove profile (need accessToken in header)
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -283,20 +298,16 @@ router.get('/authors', asyncWrapper(getAuthors));
  *           schema:
  *             type: object
  *             required:
- *               - author_id
+ *               - user_id
  *             properties:
- *               author_id:
+ *               user_id:
  *                 type: integer
  *     responses:
  *       204:
  *         description: Profile removed.
  *       400:
- *         description: author_id is required or other errors.
+ *         description: user_id is required or other errors.
  */
-router.delete(
-  '/delete-author',
-  authenticationToken,
-  asyncWrapper(deleteAuthor)
-);
+router.delete('/delete-profile', authenticationToken, asyncWrapper(deleteUser));
 
-module.exports = { authorRouter: router };
+module.exports = { userRouter: router };
