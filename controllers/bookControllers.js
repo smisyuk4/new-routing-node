@@ -68,7 +68,7 @@ const updateBook = async (req, res) => {
     cost,
     count,
   } = req.body;
-  const { author_id } = req.author;
+  const { author_id } = req.user;
 
   if (!book_id) {
     return res.status(400).json({
@@ -119,7 +119,7 @@ const updateBook = async (req, res) => {
 
 const deleteBook = async (req, res) => {
   const { book_id } = req.body;
-  const { author_id } = req.author;
+  const { author_id } = req.user;
 
   if (!book_id) {
     return res.status(400).json({

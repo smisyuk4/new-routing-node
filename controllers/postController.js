@@ -19,7 +19,7 @@ const getPosts = async (req, res) => {
 };
 
 const getFilteredPosts = async (req, res) => {
-  const { author_id } = req.author;
+  const { author_id } = req.user;
   const { field, value } = url.parse(req.url, true).query;
 
   try {
@@ -55,7 +55,7 @@ const createPost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   const { post_id, title, message } = req.body;
-  const { author_id, email } = req.author;
+  const { author_id, email } = req.user;
 
   if (!post_id) {
     return res.status(400).json({
@@ -88,7 +88,7 @@ const updatePost = async (req, res) => {
 
 const deletePost = async (req, res) => {
   const { post_id } = req.body;
-  const { author_id } = req.author;
+  const { author_id } = req.user;
 
   if (!post_id) {
     return res.status(400).json({

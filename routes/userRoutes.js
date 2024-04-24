@@ -291,17 +291,6 @@ router.get('/users', asyncWrapper(getUsers));
  *       - bearerAuth: []
  *     summary: Remove profile (need accessToken in header)
  *     tags: [Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - user_id
- *             properties:
- *               user_id:
- *                 type: integer
  *     responses:
  *       204:
  *         description: Profile removed.

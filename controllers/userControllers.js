@@ -128,7 +128,8 @@ const logOut = async (req, res) => {
 };
 
 const updateUserProfile = async (req, res) => {
-  const { user_id, name, sign_plan, payment, location } = req.body;
+  const { user_id } = req.user;
+  const { name, sign_plan, payment, location } = req.body;
 
   if (!user_id) {
     return res.status(400).json({
@@ -176,7 +177,7 @@ const getUsers = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const { user_id } = req.body;
+  const { user_id } = req.user;
 
   if (!user_id) {
     return res.status(400).json({
