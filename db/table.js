@@ -13,23 +13,30 @@ const db = new sqlite3.Database(
 );
 
 // create table
-const sql = `CREATE TABLE users(
-  user_id INTEGER PRIMARY KEY,
-  name TEXT,
-  email TEXT,
-  role TEXT,
-  sign_plan TEXT,
-  payment TEXT,
-  location TEXT,
-  avatar_url TEXT,
-  token TEXT,
-  date_register TEXT,
+//const sql = `CREATE TABLE users(
+//  user_id INTEGER PRIMARY KEY,
+//  name TEXT,
+//  email TEXT,
+//  role TEXT,
+//  sign_plan TEXT,
+//  payment TEXT,
+//  location TEXT,
+//  avatar_url TEXT,
+//  token TEXT,
+//  date_register TEXT,
+//  date_update TEXT)`;
+
+const sql = `CREATE TABLE posts(
+  post_id INTEGER PRIMARY KEY,
+  user_id INTEGER,
+  title TEXT,
+  message TEXT,
+  date_publish TEXT,
   date_update TEXT)`;
-//const sql = `CREATE TABLE posts(post_id INTEGER PRIMARY KEY,author_id INTEGER,title TEXT,message TEXT,date_publish TEXT,date_update TEXT)`;
 
 //const sql = `CREATE TABLE books(
 //  book_id INTEGER PRIMARY KEY,
-//  author_id INTEGER,
+//  user_id INTEGER,
 //  title TEXT,
 //  short_desc TEXT,
 //  cover_image_url TEXT,
@@ -40,7 +47,7 @@ const sql = `CREATE TABLE users(
 //  date_update TEXT)`;
 
 //const sql = `ALTER TABLE authors ADD COLUMN token`;
-//const sql = 'DROP TABLE authors;'
+//const sql = 'DROP TABLE posts;'
 
 db.run(sql);
 console.log(`process for ${sql} - done`);
