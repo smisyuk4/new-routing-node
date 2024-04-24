@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+const { constants } = require('../constants');
 
 // connect to db
 let sql;
@@ -16,7 +17,7 @@ const db = new sqlite3.Database(
 
 const addBook = (params) => {
   return new Promise((resolve, reject) => {
-    sql = `INSERT INTO books(author_id, title, short_desc, cover_image_url, literary_genre,
+    sql = `INSERT INTO books(user_id, title, short_desc, cover_image_url, literary_genre,
       cost, count, date_publish, date_update) VALUES(?,?,?,?,?,?,?,?,?)`;
 
     return db.run(sql, [...params, dateISO, dateISO], (err) => {
@@ -29,47 +30,8 @@ const addBook = (params) => {
   });
 };
 
-// need write pagination query
-const getBooksByQuery = (field, value) => {
-  return new Promise((resolve, reject) => {
-    sql = `SELECT * FROM books`;
-
-    if (
-      (field == 'cost' ||
-        field == 'count' ||
-        field == 'book_id' ||
-        field == 'author_id') &&
-      value
-    ) {
-      sql += ` WHERE ${field} = ${value}`;
-    }
-
-    if (
-      (field == 'title' ||
-        field == 'short_desc' ||
-        field == 'literary_genre') &&
-      value
-    ) {
-      sql += ` WHERE ${field} LIKE '%${value}%'`;
-    }
-    console.log(sql);
-    return db.all(sql, [], function (err, rows) {
-      console.log(err);
-
-      if (err) {
-        return reject(err);
-      }
-      if (rows.length < 1) {
-        return reject({ message: 'No match books' });
-      }
-
-      return resolve(rows);
-    });
-  });
-};
-
 const updateFieldsBook = (
-  author_id,
+  user_id,
   book_id,
   title,
   short_desc,
@@ -112,9 +74,9 @@ const updateFieldsBook = (
       params.push(count);
     }
 
-    sql += ' date_update = ? WHERE author_id = ? AND book_id = ?';
+    sql += ' date_update = ? WHERE user_id = ? AND book_id = ?';
     params.push(dateISO);
-    params.push(author_id);
+    params.push(user_id);
     params.push(book_id);
 
     return db.serialize(() => {
@@ -127,7 +89,7 @@ const updateFieldsBook = (
 
         if (this.changes === 0) {
           reject({
-            message: `Book with id: ${book_id} by author_id: ${author_id} not found`,
+            message: `Book with id: ${book_id} by user_id: ${user_id} not found`,
           });
         }
 
@@ -149,17 +111,54 @@ const updateFieldsBook = (
   });
 };
 
-const removeBook = (book_id, author_id) => {
+// need write pagination query
+const getBooksByQuery = (field, value) => {
   return new Promise((resolve, reject) => {
-    sql = `DELETE FROM books WHERE book_id = ? AND author_id = ?`;
+    sql = `SELECT * FROM books`;
 
-    return db.run(sql, [book_id, author_id], function (err) {
+    if (
+      (field == 'cost' ||
+        field == 'count' ||
+        field == 'book_id' ||
+        field == 'user_id') &&
+      value
+    ) {
+      sql += ` WHERE ${field} = ${value}`;
+    }
+
+    if (
+      (field == 'title' ||
+        field == 'short_desc' ||
+        field == 'literary_genre') &&
+      value
+    ) {
+      sql += ` WHERE ${field} LIKE '%${value}%'`;
+    }
+
+    return db.all(sql, [], function (err, rows) {
+      if (err) {
+        return reject(err);
+      }
+      if (rows.length < 1) {
+        return reject({ message: constants.NO_MATCH_BOOKS });
+      }
+
+      return resolve(rows);
+    });
+  });
+};
+
+const removeBook = (book_id, user_id) => {
+  return new Promise((resolve, reject) => {
+    sql = `DELETE FROM books WHERE book_id = ? AND user_id = ?`;
+
+    return db.run(sql, [book_id, user_id], function (err) {
       if (err) {
         return reject(err);
       }
 
       if (this.changes === 0) {
-        reject({ message: 'Not removed' });
+        reject({ message: constants.NO_REMOVED });
       }
 
       return resolve({ status: true });
@@ -169,7 +168,7 @@ const removeBook = (book_id, author_id) => {
 
 module.exports = {
   addBook,
-  getBooksByQuery,
   updateFieldsBook,
+  getBooksByQuery,
   removeBook,
 };

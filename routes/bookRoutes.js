@@ -8,9 +8,9 @@
  *         book_id:
  *           type: integer
  *           description: The auto-generated id of the book
- *         author_id:
+ *         user_id:
  *           type: integer
- *           description: id of the author this book
+ *           description: id of the user who added this book
  *         title:
  *           type: string
  *           description: The title of this book
@@ -36,12 +36,12 @@
  *           type: string
  *           description: The date update of this book
  *       required:
- *         - author_id
+ *         - user_id
  *         - title
  *         - short_desc
  *       example:
  *          book_id: 43
- *          author_id: 7
+ *          user_id: 7
  *          title: The Lord of the Rings. Return to Moria
  *          short_desc: The Lord of the Rings. Return to Moria is a 2023 survival-crafting video game developed by Free Range Games and published by North Beach Games on October 24, 2023. It is.
  *          cover_image_url: https://upload.wikimedia.org/wikipedia/en/c/c2/The_Lord_of_the_Rings_Return_to_Moria.png
@@ -65,8 +65,8 @@ const router = express.Router();
 const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
   createBook,
-  getFilteredBooks,
   updateBook,
+  getFilteredBooks,
   deleteBook,
 } = require('../controllers/bookControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
@@ -75,7 +75,9 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  * @swagger
  * /create-book:
  *   post:
- *     summary: Create a new book
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Create a new book (need accessToken in header)
  *     tags: [Books]
  *     requestBody:
  *       required: true
@@ -84,11 +86,11 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *           schema:
  *             type: object
  *             required:
- *               - author_id
+ *               - user_id
  *               - title
  *               - short_desc
  *             properties:
- *               author_id:
+ *               user_id:
  *                 type: integer
  *               title:
  *                 type: string
@@ -100,36 +102,7 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *       400:
  *         description: Error.
  */
-router.post('/create-book', asyncWrapper(createBook));
-
-/**
- * @swagger
- * /books:
- *   get:
- *     summary: Get all filtered books
- *     tags: [Books]
- *     parameters:
- *       - in: query
- *         name: field
- *         schema:
- *           type: string
- *         required: false
- *       - in: query
- *         name: value
- *         schema:
- *           type: string
- *         required: false
- *     responses:
- *       200:
- *         description: List of books found.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Books'
- *       400:
- *         description: Error.
- */
-router.get('/books', asyncWrapper(getFilteredBooks));
+router.post('/create-book', authenticationToken, asyncWrapper(createBook));
 
 /**
  * @swagger
@@ -173,6 +146,35 @@ router.get('/books', asyncWrapper(getFilteredBooks));
  *         description: Error.
  */
 router.patch('/update-book', authenticationToken, asyncWrapper(updateBook));
+
+/**
+ * @swagger
+ * /books:
+ *   get:
+ *     summary: Get all filtered books
+ *     tags: [Books]
+ *     parameters:
+ *       - in: query
+ *         name: field
+ *         schema:
+ *           type: string
+ *         required: false
+ *       - in: query
+ *         name: value
+ *         schema:
+ *           type: string
+ *         required: false
+ *     responses:
+ *       200:
+ *         description: List of books found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Books'
+ *       400:
+ *         description: Error.
+ */
+router.get('/books', asyncWrapper(getFilteredBooks));
 
 /**
  * @swagger

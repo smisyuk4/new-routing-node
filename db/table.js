@@ -26,28 +26,28 @@ const db = new sqlite3.Database(
 //  date_register TEXT,
 //  date_update TEXT)`;
 
-const sql = `CREATE TABLE posts(
-  post_id INTEGER PRIMARY KEY,
-  user_id INTEGER,
-  title TEXT,
-  message TEXT,
-  date_publish TEXT,
-  date_update TEXT)`;
-
-//const sql = `CREATE TABLE books(
-//  book_id INTEGER PRIMARY KEY,
+//const sql = `CREATE TABLE posts(
+//  post_id INTEGER PRIMARY KEY,
 //  user_id INTEGER,
 //  title TEXT,
-//  short_desc TEXT,
-//  cover_image_url TEXT,
-//  literary_genre TEXT,
-//  cost INTEGER,
-//  count INTEGER,
+//  message TEXT,
 //  date_publish TEXT,
 //  date_update TEXT)`;
 
+const sql = `CREATE TABLE books(
+  book_id INTEGER PRIMARY KEY,
+  user_id INTEGER,
+  title TEXT,
+  short_desc TEXT,
+  cover_image_url TEXT,
+  literary_genre TEXT,
+  cost INTEGER,
+  count INTEGER,
+  date_publish TEXT,
+  date_update TEXT)`;
+
 //const sql = `ALTER TABLE authors ADD COLUMN token`;
-//const sql = 'DROP TABLE posts;'
+//const sql = 'DROP TABLE books;'
 
 db.run(sql);
 console.log(`process for ${sql} - done`);

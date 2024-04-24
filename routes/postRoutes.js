@@ -10,7 +10,7 @@
  *           description: The auto-generated id of the post
  *         user_id:
  *           type: integer
- *           description: id of the user this post
+ *           description: id of the user who added this post
  *         title:
  *           type: string
  *           description: The title of this post
