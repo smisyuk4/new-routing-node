@@ -17,7 +17,7 @@ const db = new sqlite3.Database(
 
 const addUser = async (name, email, role, accessToken) => {
   return new Promise((resolve, reject) => {
-    sql = `INSERT INTO users(name, email, role, token, date_register, date_update) VALUES(?,?,?,?,?,?)`;
+    sql = `INSERT INTO users(name, email, role, token, date_register, date_update) VALUES(?,LOWER(?),?,?,?,?)`;
 
     return db.run(
       sql,
@@ -223,6 +223,24 @@ const removeUser = async (user_id) => {
   });
 };
 
+const getRoles = async () => {
+  return new Promise((resolve, reject) => {
+    sql = `SELECT * FROM roles`;
+
+    return db.all(sql, [], (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      if (rows.length < 1) {
+        return resolve({ message: constants.NO_MATCH_ROLES });
+      }
+
+      return resolve(rows);
+    });
+  });
+};
+
 module.exports = {
   addUser,
   addToken,
@@ -232,4 +250,5 @@ module.exports = {
   getUserByEmail,
   getAllUsers,
   removeUser,
+  getRoles,
 };

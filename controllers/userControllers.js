@@ -10,6 +10,7 @@ const {
   getUserByEmail,
   getAllUsers,
   removeUser,
+  getRoles,
 } = require('../services/userServices');
 const { constants } = require('../constants');
 
@@ -22,19 +23,11 @@ const register = async (req, res) => {
     });
   }
 
+  const user = { name, email };
+  const accessToken = generateAccessToken(user);
+  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+
   try {
-    const resultCheck = await getUserByEmail(email);
-
-    if (resultCheck?.email) {
-      return res.status(409).json({
-        message: 'Email already exists',
-      });
-    }
-
-    const user = { name, email };
-    const accessToken = generateAccessToken(user);
-    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-
     const result = await addUser(name, email, role, refreshToken);
 
     if (result?.status) {
@@ -196,6 +189,18 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getUserRoles = async (req, res) => {
+  try {
+    const result = await getRoles();
+
+    if (result?.length > 0) {
+      return res.status(200).json({ roles: result });
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -204,4 +209,5 @@ module.exports = {
   updateUserProfile,
   getUsers,
   deleteUser,
+  getUserRoles,
 };

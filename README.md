@@ -7,6 +7,7 @@
 - [sqlite-trigger](https://www.sqlitetutorial.net/sqlite-trigger/)
 - [statements-control-flow](https://www.sqlitetutorial.net/sqlite-nodejs/statements-control-flow/)
 - [sqlite-limit](https://www.sqlitetutorial.net/sqlite-limit/)
+- [res code](https://www.sqlite.org/rescode.html)
 
 ## Auth
 

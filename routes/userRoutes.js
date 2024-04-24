@@ -79,6 +79,7 @@ const {
   updateUserProfile,
   getUsers,
   deleteUser,
+  getUserRoles,
 } = require('../controllers/userControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
@@ -267,7 +268,7 @@ router.patch(
 
 /**
  * @swagger
- * /api-v1/user/get-all-profiles:
+ * /api-v1/user/all-profiles:
  *   get:
  *     summary: Get all users
  *     tags: [Users]
@@ -281,7 +282,7 @@ router.patch(
  *       400:
  *         description: Error.
  */
-router.get('/get-all-profiles', asyncWrapper(getUsers));
+router.get('/all-profiles', asyncWrapper(getUsers));
 
 /**
  * @swagger
@@ -298,5 +299,28 @@ router.get('/get-all-profiles', asyncWrapper(getUsers));
  *         description: user_id is required or other errors.
  */
 router.delete('/delete-profile', authenticationToken, asyncWrapper(deleteUser));
+
+/**
+ * @swagger
+ * /api-v1/user/roles:
+ *   get:
+ *     summary: Get user roles
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: List of roles found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 role_id:
+ *                   type: integer
+ *                 title:
+ *                   type: string
+ *       400:
+ *         description: Error.
+ */
+router.get('/roles', asyncWrapper(getUserRoles));
 
 module.exports = { userRouter: router };
