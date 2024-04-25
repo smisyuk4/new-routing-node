@@ -15,13 +15,13 @@ const db = new sqlite3.Database(
   }
 );
 
-const addUser = async (name, email, role, accessToken) => {
+const addUser = async (password, email, role, accessToken) => {
   return new Promise((resolve, reject) => {
-    sql = `INSERT INTO users(name, email, role, token, date_register, date_update) VALUES(?,LOWER(?),?,?,?,?)`;
+    sql = `INSERT INTO users(password, email, role, token, date_register, date_update) VALUES(?,LOWER(?),?,?,?,?)`;
 
     return db.run(
       sql,
-      [name, email, role, accessToken, dateISO, dateISO],
+      [password, email, role, accessToken, dateISO, dateISO],
       (err) => {
         if (err) {
           return reject(err);
@@ -71,7 +71,7 @@ const removeToken = async (email) => {
 
 const updateFieldsUser = async (
   user_id,
-  name,
+  password,
   sign_plan,
   payment,
   location
@@ -87,9 +87,9 @@ const updateFieldsUser = async (
       });
     }
 
-    if (name) {
-      sql += ' name = ?,';
-      params.push(name);
+    if (password) {
+      sql += ' password = ?,';
+      params.push(password);
     }
 
     if (sign_plan) {

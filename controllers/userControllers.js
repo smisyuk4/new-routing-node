@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
 const {
@@ -15,20 +16,33 @@ const {
 const { constants } = require('../constants');
 
 const register = async (req, res) => {
-  const { name, email, role } = req.body;
+  const { password, email, role } = req.body;
 
-  if (!name || !email || !role) {
+  if (!password || !email || !role) {
     return res.status(400).json({
-      message: 'name, email and role required',
+      message: 'password, email and role required',
     });
   }
 
-  const user = { name, email };
-  const accessToken = generateAccessToken(user);
-  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-
   try {
-    const result = await addUser(name, email, role, refreshToken);
+    const userInBase = await getUserByEmail(email);
+
+    if (userInBase?.length > 0) {
+      return res.status(400).json({
+        message: 'email is wrong',
+      });
+    }
+
+    const hashPassword = await bcrypt.hash(
+      password,
+      Number(process.env.BCRYPT_SALT_ROUNDS)
+    );
+
+    const user = { password: hashPassword, email };
+    const accessToken = generateAccessToken(user);
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+
+    const result = await addUser(hashPassword, email, role, refreshToken);
 
     if (result?.status) {
       return res.status(200).json({ accessToken, refreshToken });
@@ -39,15 +53,27 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { name, email } = req.body;
+  const { password, email } = req.body;
 
-  if (!name || !email) {
+  if (!password || !email) {
     return res.status(400).json({
-      message: 'name and email required',
+      message: 'password and email required',
     });
   }
 
-  const user = { name, email };
+  // get user in db
+  const userInBase = await getUserByEmail(email);
+
+  if (userInBase?.length > 0) {
+    return res.status(400).json({
+      message: 'email is wrong',
+    });
+  }
+
+  // compare password
+  //await bcrypt.compare(password, hash);
+
+  const user = { password: hashPassword, email };
   const accessToken = generateAccessToken(user);
   const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 
@@ -70,7 +96,7 @@ const checkAndGenerateToken = async (req, res) => {
   }
 
   try {
-    const { name, email } = await getUserByToken(refreshToken);
+    const { password, email } = await getUserByToken(refreshToken);
 
     if (!email) {
       return res.status(403).json({ message: 'Not authorized' });
@@ -86,7 +112,7 @@ const checkAndGenerateToken = async (req, res) => {
     }
 
     const accessToken = generateAccessToken({
-      name,
+      password,
       email,
     });
 
@@ -122,7 +148,7 @@ const logOut = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   const { user_id } = req.user;
-  const { name, sign_plan, payment, location } = req.body;
+  const { password, sign_plan, payment, location } = req.body;
 
   if (!user_id) {
     return res.status(400).json({
@@ -130,7 +156,7 @@ const updateUserProfile = async (req, res) => {
     });
   }
 
-  const checkFields = [name, sign_plan, payment, location].find(
+  const checkFields = [password, sign_plan, payment, location].find(
     (item) => item !== undefined
   );
 
@@ -143,7 +169,7 @@ const updateUserProfile = async (req, res) => {
   try {
     const result = await updateFieldsUser(
       user_id,
-      name,
+      password,
       sign_plan,
       payment,
       location

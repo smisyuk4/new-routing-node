@@ -8,9 +8,9 @@
  *         user_id:
  *           type: integer
  *           description: The auto-generated id of the user
- *         name:
+ *         password:
  *           type: string
- *           description: The name of user
+ *           description: The password of user
  *         email:
  *           type: string
  *           description: The email of user
@@ -36,12 +36,12 @@
  *           type: sting
  *           description: The date update profile user
  *       required:
- *         - name
+ *         - password
  *         - email
  *         - role
  *       example:
  *          user_id: 32
- *          name: Mary Grabovski
+ *          password: asdasdasdwelfwkdsflksdkflkowqkdo3i3201id0iq0id0sadlaksldkmaskdnkansdkasdasldpo0-9898
  *          email: mary_gra@gmail.com
  *          role: author
  *          sign_plan: 1 month
@@ -96,11 +96,11 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - password
  *               - email
  *               - role
  *             properties:
- *               name:
+ *               password:
  *                 type: string
  *               email:
  *                 type: string
@@ -119,7 +119,7 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *                 refreshToken:
  *                   type: string
  *       400:
- *         description: Name and email required or other errors.
+ *         description: password and email required or other errors.
  *       409:
  *         description: Email already exists.
  */
@@ -138,10 +138,10 @@ router.post('/register', asyncWrapper(register));
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - password
  *               - email
  *             properties:
- *               name:
+ *               password:
  *                 type: string
  *               email:
  *                 type: string
@@ -158,7 +158,7 @@ router.post('/register', asyncWrapper(register));
  *                 refreshToken:
  *                   type: string
  *       400:
- *         description: Name and email required or other errors.
+ *         description: password and email required or other errors.
  */
 router.post('/login', asyncWrapper(login));
 
@@ -242,7 +242,7 @@ router.post('/logout', asyncWrapper(logOut));
  *             properties:
  *               users_id:
  *                 type: integer
- *               name:
+ *               password:
  *                 type: string
  *               sign_plan:
  *                 type: string

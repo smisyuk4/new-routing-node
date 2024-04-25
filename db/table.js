@@ -14,18 +14,18 @@ const db = new sqlite3.Database(
 );
 
 // ============== create table - users ==============
-//const sql = `CREATE TABLE users(
-//  user_id INTEGER PRIMARY KEY,
-//  name TEXT,
-//  email TEXT UNIQUE,
-//  role TEXT,
-//  sign_plan TEXT,
-//  payment TEXT,
-//  location TEXT,
-//  avatar_url TEXT,
-//  token TEXT,
-//  date_register TEXT,
-//  date_update TEXT)`;
+const sql = `CREATE TABLE users(
+  user_id INTEGER PRIMARY KEY,
+  password TEXT,
+  email TEXT UNIQUE,
+  role TEXT,
+  sign_plan TEXT,
+  payment TEXT,
+  location TEXT,
+  avatar_url TEXT,
+  token TEXT,
+  date_register TEXT,
+  date_update TEXT)`;
 
 // ============== create table - roles ==============
 //const sql = `CREATE TABLE roles(
@@ -55,9 +55,9 @@ const db = new sqlite3.Database(
 //  date_update TEXT)`;
 
 // ============== create table - genres ==============
-const sql = `CREATE TABLE genres(
-  genre_id INTEGER PRIMARY KEY,
-  title TEXT UNIQUE)`;
+//const sql = `CREATE TABLE genres(
+//  genre_id INTEGER PRIMARY KEY,
+//  title TEXT UNIQUE)`;
 
 //const sql = `ALTER TABLE authors ADD COLUMN token`;
 //const sql = `INSERT INTO roles(title) VALUES(?)`;
@@ -65,7 +65,7 @@ const sql = `CREATE TABLE genres(
 //db.run(sql, ['author']);
 //db.run(sql, ['customer']);
 
-//const sql = 'DROP TABLE genres;'
+//const sql = 'DROP TABLE users;'
 db.run(sql);
 console.log(`process for ${sql} - done`);
 
