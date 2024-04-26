@@ -36,7 +36,7 @@ const db = new sqlite3.Database(
 const sql = `CREATE TABLE plans(
   plan_id INTEGER PRIMARY KEY,
   title TEXT UNIQUE,
-  cost INTEGER,)`;
+  cost INTEGER)`;
 
 // ============== create table - posts ==============
 //const sql = `CREATE TABLE posts(

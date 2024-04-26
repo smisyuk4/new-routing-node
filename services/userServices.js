@@ -332,7 +332,6 @@ const updateFieldsPlan = (plan_id, title, cost) => {
     sql += ' WHERE plan_id = ?';
     params.push(plan_id);
 
-    console.log(sql);
     return db.serialize(() => {
       db.run('BEGIN TRANSACTION');
 
@@ -357,7 +356,6 @@ const updateFieldsPlan = (plan_id, title, cost) => {
             }
 
             db.run('COMMIT');
-            console.log(row);
             resolve({ status: true, data: row });
           }
         );
@@ -366,11 +364,11 @@ const updateFieldsPlan = (plan_id, title, cost) => {
   });
 };
 
-const removePlan = (plan_id, user_id) => {
+const removePlan = (plan_id) => {
   return new Promise((resolve, reject) => {
-    sql = `DELETE FROM plans WHERE plan_id = ? AND user_id = ?`;
+    sql = `DELETE FROM plans WHERE plan_id = ?`;
 
-    return db.run(sql, [plan_id, user_id], function (err) {
+    return db.run(sql, [plan_id], function (err) {
       if (err) {
         return reject(err);
       }

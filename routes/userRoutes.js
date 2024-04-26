@@ -17,6 +17,9 @@
  *         role:
  *           type: string
  *           description: The role of user
+ *         sign_plan:
+ *           type: integer
+ *           description: The sign plan
  *         payment:
  *           type: string
  *           description: Payment by sign plan of user
@@ -44,7 +47,7 @@
  *          password: asdasdasdwelfwkdsflksdkflkowqkdo3i3201id0iq0id0sadlaksldkmaskdnkansdkasdasldpo0-9898
  *          email: mary_gra@gmail.com
  *          role: author
- *          sign_plan: 1 month
+ *          sign_plan: 3
  *          payment: true
  *          location: Spain, Madrid
  *          avatar_url: https://static.vecteezy.com/system/resources/thumbnails/022/714/697/small/cute-black-and-white-girl-posing-vector.jpg
@@ -81,6 +84,10 @@ const {
   getUsers,
   deleteUser,
   getUserRoles,
+  createPlan,
+  getAllPlans,
+  updatePlan,
+  deletePlan,
 } = require('../controllers/userControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
 
@@ -354,5 +361,127 @@ router.delete('/delete-profile', authenticationToken, asyncWrapper(deleteUser));
  *         description: Error.
  */
 router.get('/roles', asyncWrapper(getUserRoles));
+
+/**
+ * @swagger
+ * /api-v1/user/create-plan:
+ *   post:
+ *     summary: Create a new sign plan (need accessToken in header)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - cost
+ *             properties:
+ *               title:
+ *                 type: string
+ *               cost:
+ *                 type: integer
+ *     responses:
+ *       204:
+ *         description: The created new sing plan.
+ *       400:
+ *         description: title and cost required or other errors.
+ */
+router.post('/create-plan', asyncWrapper(createPlan)); //authenticationToken
+
+/**
+ * @swagger
+ * /api-v1/user/plans:
+ *   get:
+ *     summary: Get sing plans
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: List of plans found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   plan_id:
+ *                     type: integer
+ *                   title:
+ *                     type: string
+ *                   cost:
+ *                     type: integer
+ *       400:
+ *         description: Error.
+ */
+router.get('/plans', asyncWrapper(getAllPlans));
+
+/**
+ * @swagger
+ * /api-v1/user/update-plan:
+ *   patch:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Update sign plan (need accessToken in header)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               plan_id:
+ *                 type: integer
+ *               title:
+ *                 type: string
+ *               cost:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Fields updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *             type: object
+ *             properties:
+ *               plan_id:
+ *                 type: integer
+ *               title:
+ *                 type: string
+ *               cost:
+ *                 type: integer
+ *       400:
+ *         description: Errors.
+ */
+router.patch('/update-plan', asyncWrapper(updatePlan)); //authenticationToken
+
+/**
+ * @swagger
+ * /api-v1/user/delete-plan:
+ *   delete:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Remove the plan by id (need accessToken in header)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - plan_id
+ *             properties:
+ *               plan_id:
+ *                 type: integer
+ *     responses:
+ *       204:
+ *         description: Plan removed.
+ *       400:
+ *         description: plan_id is required or other errors.
+ */
+router.delete('/delete-plan', asyncWrapper(deletePlan)); //authenticationToken
 
 module.exports = { userRouter: router };
