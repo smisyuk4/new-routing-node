@@ -69,13 +69,7 @@ const removeToken = async (email) => {
   });
 };
 
-const updateFieldsUser = async (
-  user_id,
-  password,
-  sign_plan,
-  payment,
-  location
-) => {
+const updateFieldsUser = async (user_id, sign_plan, payment, location) => {
   return new Promise((resolve, reject) => {
     sql = 'UPDATE users SET';
     const params = [];
@@ -83,13 +77,8 @@ const updateFieldsUser = async (
     if (!user_id) {
       return res.status(400).json({
         success: false,
-        message: 'author_id is required',
+        message: 'user_id is required',
       });
-    }
-
-    if (password) {
-      sql += ' password = ?,';
-      params.push(password);
     }
 
     if (sign_plan) {
@@ -105,6 +94,57 @@ const updateFieldsUser = async (
     if (location) {
       sql += ' location = ?,';
       params.push(location);
+    }
+
+    sql += ' date_update = ? WHERE user_id = ?';
+    params.push(dateISO);
+    params.push(user_id);
+
+    return db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
+
+      db.run(sql, params, function (err) {
+        if (err) {
+          return reject(err);
+        }
+
+        if (this.changes === 0) {
+          return reject({ message: constants.NO_CHANGED });
+        }
+
+        db.get(
+          'SELECT * FROM users WHERE user_id = ?',
+          [user_id],
+          (err, row) => {
+            if (err) {
+              db.run('ROLLBACK');
+              return reject(err);
+            }
+
+            db.run('COMMIT');
+            resolve({ status: true, data: row });
+          }
+        );
+      });
+    });
+  });
+};
+
+const updateUserPassword = async (user_id, password) => {
+  return new Promise((resolve, reject) => {
+    sql = 'UPDATE users SET';
+    const params = [];
+
+    if (!user_id) {
+      return res.status(400).json({
+        success: false,
+        message: 'user_id is required',
+      });
+    }
+
+    if (password) {
+      sql += ' password = ?,';
+      params.push(password);
     }
 
     sql += ' date_update = ? WHERE user_id = ?';
@@ -246,6 +286,7 @@ module.exports = {
   addToken,
   removeToken,
   updateFieldsUser,
+  updateUserPassword,
   getUserByToken,
   getUserByEmail,
   getAllUsers,

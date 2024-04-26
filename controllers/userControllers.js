@@ -7,6 +7,7 @@ const {
   addToken,
   removeToken,
   updateFieldsUser,
+  updateUserPassword,
   getUserByToken,
   getUserByEmail,
   getAllUsers,
@@ -61,23 +62,27 @@ const login = async (req, res) => {
     });
   }
 
-  // get user in db
-  const userInBase = await getUserByEmail(email);
-
-  if (userInBase?.length > 0) {
-    return res.status(400).json({
-      message: 'email is wrong',
-    });
-  }
-
-  // compare password
-  //await bcrypt.compare(password, hash);
-
-  const user = { password: hashPassword, email };
-  const accessToken = generateAccessToken(user);
-  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-
   try {
+    const userInBase = await getUserByEmail(email);
+
+    if (userInBase.message === constants.NO_MATCH_USERS) {
+      return res.status(400).json({
+        message: 'email is wrong',
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, userInBase.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        message: 'password is wrong',
+      });
+    }
+
+    const user = { password: userInBase.password, email };
+    const accessToken = generateAccessToken(user);
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+
     const result = await addToken(refreshToken, email);
 
     if (result?.status) {
@@ -148,7 +153,7 @@ const logOut = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   const { user_id } = req.user;
-  const { password, sign_plan, payment, location } = req.body;
+  const { sign_plan, payment, location } = req.body;
 
   if (!user_id) {
     return res.status(400).json({
@@ -156,7 +161,7 @@ const updateUserProfile = async (req, res) => {
     });
   }
 
-  const checkFields = [password, sign_plan, payment, location].find(
+  const checkFields = [sign_plan, payment, location].find(
     (item) => item !== undefined
   );
 
@@ -169,7 +174,6 @@ const updateUserProfile = async (req, res) => {
   try {
     const result = await updateFieldsUser(
       user_id,
-      password,
       sign_plan,
       payment,
       location
@@ -179,6 +183,35 @@ const updateUserProfile = async (req, res) => {
       return res.status(200).json(result);
     }
   } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const changeUserPassword = async (req, res) => {
+  const { user_id, password: hashPassword } = req.user;
+  const { password_old, password_new } = req.body;
+
+  try {
+    const isMatch = await bcrypt.compare(password_old, req.user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        message: 'password is wrong',
+      });
+    }
+
+    const newHashedPassword = await bcrypt.hash(
+      password_new,
+      Number(process.env.BCRYPT_SALT_ROUNDS)
+    );
+
+    const result = await updateUserPassword(user_id, newHashedPassword);
+    console.log(result);
+    if (result?.status) {
+      return res.status(200).json(result);
+    }
+  } catch (error) {
+    console.log(error);
     return res.status(400).json(error);
   }
 };
@@ -233,6 +266,7 @@ module.exports = {
   checkAndGenerateToken,
   logOut,
   updateUserProfile,
+  changeUserPassword,
   getUsers,
   deleteUser,
   getUserRoles,

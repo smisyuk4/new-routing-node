@@ -77,6 +77,7 @@ const {
   checkAndGenerateToken,
   logOut,
   updateUserProfile,
+  changeUserPassword,
   getUsers,
   deleteUser,
   getUserRoles,
@@ -240,10 +241,6 @@ router.post('/logout', asyncWrapper(logOut));
  *             required:
  *               - users_id
  *             properties:
- *               users_id:
- *                 type: integer
- *               password:
- *                 type: string
  *               sign_plan:
  *                 type: string
  *               payment:
@@ -264,6 +261,41 @@ router.patch(
   '/update-profile',
   authenticationToken,
   asyncWrapper(updateUserProfile)
+);
+
+/**
+ * @swagger
+ * /api-v1/user/update-password:
+ *   patch:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Update user password (need accessToken in header)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password_old:
+ *                 type: string
+ *               password_new:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Fields updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Users'
+ *       400:
+ *         description: user_id is required or other errors.
+ */
+router.patch(
+  '/update-password',
+  authenticationToken,
+  asyncWrapper(changeUserPassword)
 );
 
 /**
