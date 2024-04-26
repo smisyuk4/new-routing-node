@@ -281,6 +281,107 @@ const getRoles = async () => {
   });
 };
 
+const addPlan = (title, cost) => {
+  return new Promise((resolve, reject) => {
+    sql = `INSERT INTO plans(title, cost) VALUES(LOWER(?),?)`;
+
+    return db.run(sql, [title, cost], (err) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve({ status: true });
+    });
+  });
+};
+
+const getPlans = () => {
+  return new Promise((resolve, reject) => {
+    sql = `SELECT * FROM plans`;
+
+    return db.all(sql, [], function (err, rows) {
+      if (err) {
+        return reject(err);
+      }
+
+      if (rows.length < 1) {
+        return reject({ message: constants.NO_MATCH_PLANS });
+      }
+
+      return resolve(rows);
+    });
+  });
+};
+
+const updateFieldsPlan = (plan_id, title, cost) => {
+  return new Promise((resolve, reject) => {
+    sql = 'UPDATE plans SET';
+    const params = [];
+
+    if (title) {
+      sql += ' title = ?,';
+      params.push(title);
+    }
+
+    if (cost) {
+      sql += ' cost = ?,';
+      params.push(cost);
+    }
+
+    sql = sql.slice(0, -1);
+    sql += ' WHERE plan_id = ?';
+    params.push(plan_id);
+
+    return db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
+
+      db.run(sql, params, function (err) {
+        if (err) {
+          return reject(err);
+        }
+
+        if (this.changes === 0) {
+          reject({
+            message: `Plan with id: ${plan_id} not found`,
+          });
+        }
+
+        db.get(
+          'SELECT * FROM plans WHERE plan_id = ?',
+          [plan_id],
+          (err, row) => {
+            if (err) {
+              db.run('ROLLBACK');
+              return reject(err);
+            }
+
+            db.run('COMMIT');
+            resolve({ status: true, data: row });
+          }
+        );
+      });
+    });
+  });
+};
+
+const removePlan = (plan_id) => {
+  return new Promise((resolve, reject) => {
+    sql = `DELETE FROM plans WHERE plan_id = ?`;
+
+    return db.run(sql, [plan_id], function (err) {
+      if (err) {
+        return reject(err);
+      }
+
+      if (this.changes === 0) {
+        reject({ message: constants.NO_REMOVED });
+      }
+
+      return resolve({ status: true });
+    });
+  });
+};
+
 module.exports = {
   addUser,
   addToken,
@@ -292,4 +393,8 @@ module.exports = {
   getAllUsers,
   removeUser,
   getRoles,
+  addPlan,
+  getPlans,
+  updateFieldsPlan,
+  removePlan,
 };

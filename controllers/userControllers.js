@@ -13,6 +13,10 @@ const {
   getAllUsers,
   removeUser,
   getRoles,
+  addPlan,
+  getPlans,
+  updateFieldsPlan,
+  removePlan,
 } = require('../services/userServices');
 const { constants } = require('../constants');
 
@@ -259,6 +263,95 @@ const getUserRoles = async (req, res) => {
   }
 };
 
+const createPlan = async (req, res) => {
+  const { user_id } = req.user;
+  const { title, cost } = req.body;
+
+  if (!user_id || !title || !cost) {
+    return res.status(400).json({
+      message: 'user_id, title and cost required',
+    });
+  }
+
+  try {
+    const result = await addPlan(title, cost);
+
+    if (result?.status) {
+      return res.sendStatus(204);
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const getAllPlans = async (req, res) => {
+  try {
+    const result = await getPlans();
+
+    if (result?.length > 0) {
+      return res.status(200).json(result);
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const updatePlan = async (req, res) => {
+  const { user_id } = req.user;
+  const { plan_id, title, cost } = req.body;
+
+  if (!user_id) {
+    return res.status(400).json({
+      message: 'user_id is required',
+    });
+  }
+
+  const checkFields = [title, cost].find((item) => item !== undefined);
+
+  if (!checkFields) {
+    return res.status(400).json({
+      message: 'Need minimum one field for change',
+    });
+  }
+
+  try {
+    const result = await updateFieldsPlan(plan_id, title, cost);
+
+    if (result?.status) {
+      return res.status(200).json(result.data);
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const deletePlan = async (req, res) => {
+  const { user_id } = req.user;
+  const { plan_id } = req.body;
+
+  if (!user_id) {
+    return res.status(400).json({
+      message: 'user_id is required',
+    });
+  }
+
+  if (!plan_id) {
+    return res.status(400).json({
+      message: 'plan_id is required',
+    });
+  }
+
+  try {
+    const result = await removePlan(plan_id);
+
+    if (result?.status) {
+      return res.sendStatus(204);
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -269,4 +362,8 @@ module.exports = {
   getUsers,
   deleteUser,
   getUserRoles,
+  createPlan,
+  getAllPlans,
+  updatePlan,
+  deletePlan,
 };
