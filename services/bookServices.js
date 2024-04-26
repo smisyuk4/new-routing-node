@@ -104,7 +104,6 @@ const updateFieldsBook = (
             }
 
             db.run('COMMIT');
-            console.log(row);
             resolve({ status: true, data: row });
           }
         );

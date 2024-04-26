@@ -176,7 +176,9 @@ router.patch('/update-book', authenticationToken, asyncWrapper(updateBook));
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Books'
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Books'
  *       400:
  *         description: Error.
  */
@@ -259,12 +261,14 @@ router.post('/create-genre', authenticationToken, asyncWrapper(createGenre));
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 genre_id:
- *                   type: integer
- *                 title:
- *                   type: string
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   genre_id:
+ *                     type: integer
+ *                   title:
+ *                     type: string
  *       400:
  *         description: Error.
  */

@@ -224,7 +224,7 @@ const getUsers = async (req, res) => {
     const result = await getAllUsers();
 
     if (result?.length > 0) {
-      return res.status(200).json({ users: result });
+      return res.status(200).json(result);
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -256,7 +256,7 @@ const getUserRoles = async (req, res) => {
     const result = await getRoles();
 
     if (result?.length > 0) {
-      return res.status(200).json({ roles: result });
+      return res.status(200).json(result);
     }
   } catch (error) {
     return res.status(400).json(error);

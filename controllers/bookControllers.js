@@ -118,7 +118,7 @@ const getFilteredBooks = async (req, res) => {
         };
       });
 
-      return res.status(200).json({ books: updatedBooks });
+      return res.status(200).json(updatedBooks);
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -179,7 +179,7 @@ const getFilteredGenres = async (req, res) => {
     const result = await getGenresByQuery(field, value);
 
     if (result?.length > 0) {
-      return res.status(200).json({ genres: result });
+      return res.status(200).json(result);
     }
   } catch (error) {
     return res.status(400).json(error);
