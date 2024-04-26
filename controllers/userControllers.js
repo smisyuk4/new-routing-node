@@ -188,15 +188,15 @@ const updateUserProfile = async (req, res) => {
 };
 
 const changeUserPassword = async (req, res) => {
-  const { user_id, password: hashPassword } = req.user;
+  const { user_id, password: oldHashPassword } = req.user;
   const { password_old, password_new } = req.body;
 
   try {
-    const isMatch = await bcrypt.compare(password_old, req.user.password);
+    const isMatch = await bcrypt.compare(password_old, oldHashPassword);
 
     if (!isMatch) {
       return res.status(400).json({
-        message: 'password is wrong',
+        message: 'password_old is wrong',
       });
     }
 
@@ -206,12 +206,11 @@ const changeUserPassword = async (req, res) => {
     );
 
     const result = await updateUserPassword(user_id, newHashedPassword);
-    console.log(result);
+
     if (result?.status) {
       return res.status(200).json(result);
     }
   } catch (error) {
-    console.log(error);
     return res.status(400).json(error);
   }
 };
