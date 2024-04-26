@@ -127,7 +127,7 @@ router.patch('/update-comment', asyncWrapper(updateMyComment)); //authentication
  *     security:
  *       - bearerAuth: []
  *     summary: Returns a filtered list of all comments by the one post_id (need accessToken in header)
- *     tags: [Comment]
+ *     tags: [Comments]
  *     parameters:
  *       - in: query
  *         name: field

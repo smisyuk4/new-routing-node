@@ -68,16 +68,14 @@ const updateComment = (user_id, post_id, comment_id, message) => {
 };
 
 // need write pagination query
-const getCommentsByQuery = (post_id) => {
+const getCommentsByQuery = (field, value) => {
   return new Promise((resolve, reject) => {
     sql = `SELECT * FROM comments`;
-    const params = [];
 
-    if (post_id) {
-      sql += ' post_id = ?';
-      params.push(post_id);
+    if (field && value) {
+      sql += ` WHERE ${field} = ${value}`;
     }
-
+    console.log(sql);
     return db.all(sql, [], (err, rows) => {
       if (err) {
         return reject(err);
