@@ -8,9 +8,9 @@
  *         user_id:
  *           type: integer
  *           description: The auto-generated id of the user
- *         name:
+ *         password:
  *           type: string
- *           description: The name of user
+ *           description: The password of user
  *         email:
  *           type: string
  *           description: The email of user
@@ -36,12 +36,12 @@
  *           type: sting
  *           description: The date update profile user
  *       required:
- *         - name
+ *         - password
  *         - email
  *         - role
  *       example:
  *          user_id: 32
- *          name: Mary Grabovski
+ *          password: asdasdasdwelfwkdsflksdkflkowqkdo3i3201id0iq0id0sadlaksldkmaskdnkansdkasdasldpo0-9898
  *          email: mary_gra@gmail.com
  *          role: author
  *          sign_plan: 1 month
@@ -77,6 +77,7 @@ const {
   checkAndGenerateToken,
   logOut,
   updateUserProfile,
+  changeUserPassword,
   getUsers,
   deleteUser,
   getUserRoles,
@@ -96,11 +97,11 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - password
  *               - email
  *               - role
  *             properties:
- *               name:
+ *               password:
  *                 type: string
  *               email:
  *                 type: string
@@ -119,7 +120,7 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *                 refreshToken:
  *                   type: string
  *       400:
- *         description: Name and email required or other errors.
+ *         description: password and email required or other errors.
  *       409:
  *         description: Email already exists.
  */
@@ -138,10 +139,10 @@ router.post('/register', asyncWrapper(register));
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - password
  *               - email
  *             properties:
- *               name:
+ *               password:
  *                 type: string
  *               email:
  *                 type: string
@@ -158,7 +159,7 @@ router.post('/register', asyncWrapper(register));
  *                 refreshToken:
  *                   type: string
  *       400:
- *         description: Name and email required or other errors.
+ *         description: password and email required or other errors.
  */
 router.post('/login', asyncWrapper(login));
 
@@ -240,10 +241,6 @@ router.post('/logout', asyncWrapper(logOut));
  *             required:
  *               - users_id
  *             properties:
- *               users_id:
- *                 type: integer
- *               name:
- *                 type: string
  *               sign_plan:
  *                 type: string
  *               payment:
@@ -264,6 +261,41 @@ router.patch(
   '/update-profile',
   authenticationToken,
   asyncWrapper(updateUserProfile)
+);
+
+/**
+ * @swagger
+ * /api-v1/user/update-password:
+ *   patch:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Update user password (need accessToken in header)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password_old:
+ *                 type: string
+ *               password_new:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Fields updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Users'
+ *       400:
+ *         description: user_id is required or other errors.
+ */
+router.patch(
+  '/update-password',
+  authenticationToken,
+  asyncWrapper(changeUserPassword)
 );
 
 /**

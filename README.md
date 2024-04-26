@@ -13,6 +13,8 @@
 
 - [jsonwebtoken npm](https://www.npmjs.com/package/jsonwebtoken)
 - [JWT Authentication Tutorial - Node.js - video](https://www.youtube.com/watch?v=mbsmsi7l3r4&t=828&ab_channel=WebDevSimplified)
+- [Hashing Passwords in Node and Express using bcrypt - video](https://www.youtube.com/watch?v=AzA_LTDoFqY&ab_channel=SamMeech-Ward)
+- [bcrypt npm](https://www.npmjs.com/package/bcrypt)
 
 ## Status code
 

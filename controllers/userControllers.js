@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
 const {
@@ -6,6 +7,7 @@ const {
   addToken,
   removeToken,
   updateFieldsUser,
+  updateUserPassword,
   getUserByToken,
   getUserByEmail,
   getAllUsers,
@@ -15,20 +17,33 @@ const {
 const { constants } = require('../constants');
 
 const register = async (req, res) => {
-  const { name, email, role } = req.body;
+  const { password, email, role } = req.body;
 
-  if (!name || !email || !role) {
+  if (!password || !email || !role) {
     return res.status(400).json({
-      message: 'name, email and role required',
+      message: 'password, email and role required',
     });
   }
 
-  const user = { name, email };
-  const accessToken = generateAccessToken(user);
-  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-
   try {
-    const result = await addUser(name, email, role, refreshToken);
+    const userInBase = await getUserByEmail(email);
+
+    if (userInBase?.length > 0) {
+      return res.status(400).json({
+        message: 'email is wrong',
+      });
+    }
+
+    const hashPassword = await bcrypt.hash(
+      password,
+      Number(process.env.BCRYPT_SALT_ROUNDS)
+    );
+
+    const user = { password: hashPassword, email };
+    const accessToken = generateAccessToken(user);
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+
+    const result = await addUser(hashPassword, email, role, refreshToken);
 
     if (result?.status) {
       return res.status(200).json({ accessToken, refreshToken });
@@ -39,19 +54,35 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { name, email } = req.body;
+  const { password, email } = req.body;
 
-  if (!name || !email) {
+  if (!password || !email) {
     return res.status(400).json({
-      message: 'name and email required',
+      message: 'password and email required',
     });
   }
 
-  const user = { name, email };
-  const accessToken = generateAccessToken(user);
-  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-
   try {
+    const userInBase = await getUserByEmail(email);
+
+    if (userInBase.message === constants.NO_MATCH_USERS) {
+      return res.status(400).json({
+        message: 'email is wrong',
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, userInBase.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        message: 'password is wrong',
+      });
+    }
+
+    const user = { password: userInBase.password, email };
+    const accessToken = generateAccessToken(user);
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+
     const result = await addToken(refreshToken, email);
 
     if (result?.status) {
@@ -70,7 +101,7 @@ const checkAndGenerateToken = async (req, res) => {
   }
 
   try {
-    const { name, email } = await getUserByToken(refreshToken);
+    const { password, email } = await getUserByToken(refreshToken);
 
     if (!email) {
       return res.status(403).json({ message: 'Not authorized' });
@@ -86,7 +117,7 @@ const checkAndGenerateToken = async (req, res) => {
     }
 
     const accessToken = generateAccessToken({
-      name,
+      password,
       email,
     });
 
@@ -122,7 +153,7 @@ const logOut = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   const { user_id } = req.user;
-  const { name, sign_plan, payment, location } = req.body;
+  const { sign_plan, payment, location } = req.body;
 
   if (!user_id) {
     return res.status(400).json({
@@ -130,7 +161,7 @@ const updateUserProfile = async (req, res) => {
     });
   }
 
-  const checkFields = [name, sign_plan, payment, location].find(
+  const checkFields = [sign_plan, payment, location].find(
     (item) => item !== undefined
   );
 
@@ -143,11 +174,38 @@ const updateUserProfile = async (req, res) => {
   try {
     const result = await updateFieldsUser(
       user_id,
-      name,
       sign_plan,
       payment,
       location
     );
+
+    if (result?.status) {
+      return res.status(200).json(result);
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const changeUserPassword = async (req, res) => {
+  const { user_id, password: oldHashPassword } = req.user;
+  const { password_old, password_new } = req.body;
+
+  try {
+    const isMatch = await bcrypt.compare(password_old, oldHashPassword);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        message: 'password_old is wrong',
+      });
+    }
+
+    const newHashedPassword = await bcrypt.hash(
+      password_new,
+      Number(process.env.BCRYPT_SALT_ROUNDS)
+    );
+
+    const result = await updateUserPassword(user_id, newHashedPassword);
 
     if (result?.status) {
       return res.status(200).json(result);
@@ -207,6 +265,7 @@ module.exports = {
   checkAndGenerateToken,
   logOut,
   updateUserProfile,
+  changeUserPassword,
   getUsers,
   deleteUser,
   getUserRoles,
