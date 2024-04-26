@@ -66,7 +66,7 @@ const getPosts = async (req, res) => {
   try {
     const result = await getAllPosts();
     if (result?.length > 0) {
-      return res.status(200).json({ posts: result });
+      return res.status(200).json(result);
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -81,7 +81,7 @@ const getFilteredPosts = async (req, res) => {
     const result = await getPostsByQuery(user_id, field, value);
 
     if (result?.length > 0) {
-      return res.status(200).json({ posts: result });
+      return res.status(200).json(result);
     }
   } catch (error) {
     return res.status(400).json(error);

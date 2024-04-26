@@ -134,7 +134,9 @@ router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Posts'
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Posts'
  *       400:
  *         description: Error.
  */

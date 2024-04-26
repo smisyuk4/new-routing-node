@@ -317,7 +317,9 @@ router.patch(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Users'
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Users'
  *       400:
  *         description: Error.
  */
@@ -351,12 +353,14 @@ router.delete('/delete-profile', authenticationToken, asyncWrapper(deleteUser));
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 role_id:
- *                   type: integer
- *                 title:
- *                   type: string
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   role_id:
+ *                     type: integer
+ *                   title:
+ *                     type: string
  *       400:
  *         description: Error.
  */
