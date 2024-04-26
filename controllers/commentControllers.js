@@ -56,13 +56,20 @@ const updateMyComment = async (req, res) => {
   }
 };
 
+// або переробити під адресний рядок
 const getComments = async (req, res) => {
   const user_id = 1;
   //const { user_id } = req.user;
-  const { post_id } = req.body;
+  //const { post_id } = req.body;
+  const { field, value } = url.parse(req.url, true).query;
+
+  let query;
+  if (field === 'post_id' && !value) {
+    query = value;
+  }
 
   try {
-    const result = await getCommentsByQuery(post_id);
+    const result = await getCommentsByQuery(query);
     if (result?.length > 0) {
       return res.status(200).json(result);
     }
