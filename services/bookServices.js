@@ -21,6 +21,7 @@ const addBook = (params) => {
       cost, count, date_publish, date_update) VALUES(?,?,?,?,?,?,?,?,?)`;
 
     return db.run(sql, [...params, dateISO, dateISO], (err) => {
+      console.log(sql);
       if (err) {
         return reject(err);
       }
@@ -103,6 +104,7 @@ const updateFieldsBook = (
             }
 
             db.run('COMMIT');
+            console.log(row);
             resolve({ status: true, data: row });
           }
         );
