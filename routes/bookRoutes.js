@@ -21,7 +21,9 @@
  *           type: string
  *           description: The cover image url of this book
  *         literary_genre:
- *           type: string
+ *           type: array
+ *           items:
+ *             type: string
  *           description: The literary genre of this book
  *         cost:
  *           type: integer
@@ -45,7 +47,7 @@
  *          title: The Lord of the Rings. Return to Moria
  *          short_desc: The Lord of the Rings. Return to Moria is a 2023 survival-crafting video game developed by Free Range Games and published by North Beach Games on October 24, 2023. It is.
  *          cover_image_url: https://upload.wikimedia.org/wikipedia/en/c/c2/The_Lord_of_the_Rings_Return_to_Moria.png
- *          literary_genre: Survival-crafting Tutorial
+ *          literary_genre: [Survival-crafting, Tutorial]
  *          cost: 456
  *          count: 100
  *          date_publish: 2024-04-23T13:44:05.312Z
@@ -132,7 +134,9 @@ router.post('/create-book', authenticationToken, asyncWrapper(createBook));
  *               cover_image_url:
  *                 type: string
  *               literary_genre:
- *                 type: string
+ *                 type: array
+ *                 items:
+ *                   type: string
  *               cost:
  *                 type: integer
  *               count:

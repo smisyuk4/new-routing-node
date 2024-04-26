@@ -94,7 +94,7 @@ const updateBook = async (req, res) => {
     if (result?.status) {
       const updatedBook = {
         ...result.data,
-        literary_genre: literary_genre?.split(' | '),
+        literary_genre: result.data.literary_genre?.split(' | ') || null,
       };
 
       return res.status(200).json(updatedBook);
@@ -114,7 +114,7 @@ const getFilteredBooks = async (req, res) => {
       const updatedBooks = result.map((book) => {
         return {
           ...book,
-          literary_genre: book.literary_genre?.split(' | '),
+          literary_genre: book.literary_genre?.split(' | ') || null,
         };
       });
 
