@@ -14,23 +14,29 @@ const db = new sqlite3.Database(
 );
 
 // ============== create table - users ==============
-const sql = `CREATE TABLE users(
-  user_id INTEGER PRIMARY KEY,
-  password TEXT,
-  email TEXT UNIQUE,
-  role TEXT,
-  sign_plan TEXT,
-  payment TEXT,
-  location TEXT,
-  avatar_url TEXT,
-  token TEXT,
-  date_register TEXT,
-  date_update TEXT)`;
+//const sql = `CREATE TABLE users(
+//  user_id INTEGER PRIMARY KEY,
+//  password TEXT,
+//  email TEXT UNIQUE,
+//  role TEXT,
+//  sign_plan TEXT,
+//  payment TEXT,
+//  location TEXT,
+//  avatar_url TEXT,
+//  token TEXT,
+//  date_register TEXT,
+//  date_update TEXT)`;
 
 // ============== create table - roles ==============
 //const sql = `CREATE TABLE roles(
 //  role_id INTEGER PRIMARY KEY,
 //  title TEXT UNIQUE)`;
+
+// ============== create table - plans ==============
+const sql = `CREATE TABLE plans(
+  plan_id INTEGER PRIMARY KEY,
+  title TEXT UNIQUE,
+  cost INTEGER,)`;
 
 // ============== create table - posts ==============
 //const sql = `CREATE TABLE posts(
