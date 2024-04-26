@@ -264,13 +264,12 @@ const getUserRoles = async (req, res) => {
 };
 
 const createPlan = async (req, res) => {
-  //const { user_id } = req.user;
+  const { user_id } = req.user;
   const { title, cost } = req.body;
 
-  if (!title || !cost) {
-    //!user_id ||
+  if (!user_id || !title || !cost) {
     return res.status(400).json({
-      message: 'title and cost required', //user_id,
+      message: 'user_id, title and cost required',
     });
   }
 
@@ -298,14 +297,14 @@ const getAllPlans = async (req, res) => {
 };
 
 const updatePlan = async (req, res) => {
-  //const { user_id } = req.user;
+  const { user_id } = req.user;
   const { plan_id, title, cost } = req.body;
 
-  //if (!user_id) {
-  //  return res.status(400).json({
-  //    message: 'user_id is required',
-  //  });
-  //}
+  if (!user_id) {
+    return res.status(400).json({
+      message: 'user_id is required',
+    });
+  }
 
   const checkFields = [title, cost].find((item) => item !== undefined);
 
@@ -327,14 +326,14 @@ const updatePlan = async (req, res) => {
 };
 
 const deletePlan = async (req, res) => {
-  //const { user_id } = req.user;
+  const { user_id } = req.user;
   const { plan_id } = req.body;
 
-  //if (!user_id) {
-  //  return res.status(400).json({
-  //    message: 'user_id is required',
-  //  });
-  //}
+  if (!user_id) {
+    return res.status(400).json({
+      message: 'user_id is required',
+    });
+  }
 
   if (!plan_id) {
     return res.status(400).json({

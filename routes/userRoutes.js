@@ -388,7 +388,7 @@ router.get('/roles', asyncWrapper(getUserRoles));
  *       400:
  *         description: title and cost required or other errors.
  */
-router.post('/create-plan', asyncWrapper(createPlan)); //authenticationToken
+router.post('/create-plan', authenticationToken, asyncWrapper(createPlan));
 
 /**
  * @swagger
@@ -455,7 +455,7 @@ router.get('/plans', asyncWrapper(getAllPlans));
  *       400:
  *         description: Errors.
  */
-router.patch('/update-plan', asyncWrapper(updatePlan)); //authenticationToken
+router.patch('/update-plan', authenticationToken, asyncWrapper(updatePlan));
 
 /**
  * @swagger
@@ -482,6 +482,6 @@ router.patch('/update-plan', asyncWrapper(updatePlan)); //authenticationToken
  *       400:
  *         description: plan_id is required or other errors.
  */
-router.delete('/delete-plan', asyncWrapper(deletePlan)); //authenticationToken
+router.delete('/delete-plan', authenticationToken, asyncWrapper(deletePlan));
 
 module.exports = { userRouter: router };
