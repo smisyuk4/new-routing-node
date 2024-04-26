@@ -33,10 +33,10 @@ const db = new sqlite3.Database(
 //  title TEXT UNIQUE)`;
 
 // ============== create table - plans ==============
-const sql = `CREATE TABLE plans(
-  plan_id INTEGER PRIMARY KEY,
-  title TEXT UNIQUE,
-  cost INTEGER)`;
+//const sql = `CREATE TABLE plans(
+//  plan_id INTEGER PRIMARY KEY,
+//  title TEXT UNIQUE,
+//  cost INTEGER)`;
 
 // ============== create table - posts ==============
 //const sql = `CREATE TABLE posts(
@@ -46,6 +46,15 @@ const sql = `CREATE TABLE plans(
 //  message TEXT,
 //  date_publish TEXT,
 //  date_update TEXT)`;
+
+// ============== create table - comments ==============
+const sql = `CREATE TABLE comments(
+  comment_id INTEGER PRIMARY KEY,
+  user_id INTEGER,
+  post_id INTEGER,
+  message TEXT,
+  date_publish TEXT,
+  date_update TEXT)`;
 
 // ============== create table - books ==============
 //const sql = `CREATE TABLE books(
@@ -71,7 +80,7 @@ const sql = `CREATE TABLE plans(
 //db.run(sql, ['author']);
 //db.run(sql, ['customer']);
 
-//const sql = 'DROP TABLE users;'
+//const sql = 'DROP TABLE comments;'
 db.run(sql);
 console.log(`process for ${sql} - done`);
 
