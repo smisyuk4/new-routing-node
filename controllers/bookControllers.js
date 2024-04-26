@@ -18,7 +18,7 @@ const createBook = async (req, res) => {
     title,
     short_desc,
     cover_image_url,
-    literary_genre,
+    literary_genre?.join(' | '),
     cost,
     count,
   ];
@@ -68,7 +68,7 @@ const updateBook = async (req, res) => {
     title,
     short_desc,
     cover_image_url,
-    literary_genre,
+    literary_genre?.join(' | '),
     cost,
     count,
   ].find((item) => item !== undefined);
@@ -86,13 +86,18 @@ const updateBook = async (req, res) => {
       title,
       short_desc,
       cover_image_url,
-      literary_genre,
+      literary_genre?.join(' | '),
       cost,
       count
     );
 
     if (result?.status) {
-      return res.status(200).json(result.data);
+      const updatedBook = {
+        ...result.data,
+        literary_genre: literary_genre?.split(' | '),
+      };
+
+      return res.status(200).json(updatedBook);
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -106,7 +111,14 @@ const getFilteredBooks = async (req, res) => {
     const result = await getBooksByQuery(field, value);
 
     if (result?.length > 0) {
-      return res.status(200).json({ books: result });
+      const updatedBooks = result.map((book) => {
+        return {
+          ...book,
+          literary_genre: book.literary_genre?.split(' | '),
+        };
+      });
+
+      return res.status(200).json({ books: updatedBooks });
     }
   } catch (error) {
     return res.status(400).json(error);
