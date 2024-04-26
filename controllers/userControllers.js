@@ -28,7 +28,7 @@ const register = async (req, res) => {
   try {
     const userInBase = await getUserByEmail(email);
 
-    if (userInBase?.length > 0) {
+    if (userInBase?.email) {
       return res.status(400).json({
         message: 'email is wrong',
       });
