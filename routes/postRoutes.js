@@ -128,6 +128,19 @@ router.patch('/update-post', authenticationToken, asyncWrapper(updatePost));
  *   get:
  *     summary: Get all posts
  *     tags: [Posts]
+ *     parameters:
+ *       - in: query
+ *         name: pageNumber
+ *         schema:
+ *             type: integer
+ *         required: false
+ *         description: The page number
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *             type: integer
+ *         required: false
+ *         description: The page size
  *     responses:
  *       200:
  *         description: List of posts found.
