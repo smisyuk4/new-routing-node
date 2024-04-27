@@ -112,31 +112,36 @@ const updateFieldsBook = (
   });
 };
 
-// need write pagination query
-const getBooksByQuery = (field, value) => {
+const getBooksByQuery = (field, value, pageNumber, pageSize) => {
+  const params = [];
+  sql = `SELECT * FROM books`;
+
+  if (
+    (field == 'cost' ||
+      field == 'count' ||
+      field == 'book_id' ||
+      field == 'user_id') &&
+    value
+  ) {
+    sql += ` WHERE ${field} = ${value}`;
+  }
+
+  if (
+    (field == 'title' || field == 'short_desc' || field == 'literary_genre') &&
+    value
+  ) {
+    sql += ` WHERE ${field} LIKE '%${value}%'`;
+  }
+
+  if (pageNumber && pageSize) {
+    sql += ' LIMIT ?, ?';
+    const offset = (pageNumber - 1) * pageSize;
+    params.push(offset);
+    params.push(pageSize);
+  }
+
   return new Promise((resolve, reject) => {
-    sql = `SELECT * FROM books`;
-
-    if (
-      (field == 'cost' ||
-        field == 'count' ||
-        field == 'book_id' ||
-        field == 'user_id') &&
-      value
-    ) {
-      sql += ` WHERE ${field} = ${value}`;
-    }
-
-    if (
-      (field == 'title' ||
-        field == 'short_desc' ||
-        field == 'literary_genre') &&
-      value
-    ) {
-      sql += ` WHERE ${field} LIKE '%${value}%'`;
-    }
-
-    return db.all(sql, [], function (err, rows) {
+    return db.all(sql, params, function (err, rows) {
       if (err) {
         return reject(err);
       }

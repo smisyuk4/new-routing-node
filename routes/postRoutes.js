@@ -187,7 +187,6 @@ router.get('/posts', asyncWrapper(getPosts));
  *             type: integer
  *         required: false
  *         description: The page size
-  
  *     responses:
  *       200:
  *         description: The list of the posts

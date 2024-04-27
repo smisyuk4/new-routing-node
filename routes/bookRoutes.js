@@ -170,6 +170,18 @@ router.patch('/update-book', authenticationToken, asyncWrapper(updateBook));
  *         schema:
  *           type: string
  *         required: false
+ *       - in: query
+ *         name: pageNumber
+ *         schema:
+ *             type: integer
+ *         required: false
+ *         description: The page number
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *             type: integer
+ *         required: false
+ *         description: The page size
  *     responses:
  *       200:
  *         description: List of books found.

@@ -105,10 +105,10 @@ const updateBook = async (req, res) => {
 };
 
 const getFilteredBooks = async (req, res) => {
-  const { field, value } = url.parse(req.url, true).query;
+  const { field, value, pageNumber, pageSize } = url.parse(req.url, true).query;
 
   try {
-    const result = await getBooksByQuery(field, value);
+    const result = await getBooksByQuery(field, value, pageNumber, pageSize);
 
     if (result?.length > 0) {
       const updatedBooks = result.map((book) => {
