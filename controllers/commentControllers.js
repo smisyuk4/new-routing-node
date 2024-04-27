@@ -5,6 +5,7 @@ const {
   getCommentsByQuery,
   removeComment,
 } = require('../services/commentServices');
+const { constants } = require('../constants');
 
 const createComment = async (req, res) => {
   const { user_id } = req.user;
@@ -80,14 +81,14 @@ const getAllComments = async (req, res) => {
   const { role } = req.user;
   const { field, value } = url.parse(req.url, true).query;
 
-  if (role !== 'admin') {
+  if (role !== constants.ADMIN) {
     return res.status(400).json({
       message: 'this query filter available only for user with role admin',
     });
   }
 
   let params = {};
-  if (role === 'admin') {
+  if (role === constants.ADMIN) {
     params = {
       field,
       value,
