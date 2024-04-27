@@ -5,6 +5,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 require('dotenv').config();
 
 const { postRouter } = require('./routes/postRoutes');
+const { commentRouter } = require('./routes/commentRoutes');
 const { userRouter } = require('./routes/userRoutes');
 const { bookRouter } = require('./routes/bookRoutes');
 
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.use('/api-v1/', express.static('public'));
 app.use('/api-v1/doc', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use('/api-v1', postRouter);
+app.use('/api-v1/post', commentRouter);
 app.use('/api-v1/user', userRouter);
 app.use('/api-v1', bookRouter);
 

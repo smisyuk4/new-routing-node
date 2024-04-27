@@ -370,6 +370,8 @@ router.get('/roles', asyncWrapper(getUserRoles));
  * @swagger
  * /api-v1/user/create-plan:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Create a new sign plan (need accessToken in header)
  *     tags: [Users]
  *     requestBody:
