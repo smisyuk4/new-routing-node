@@ -56,7 +56,7 @@ const updateMyComment = async (req, res) => {
 };
 
 const getCommentsBelowPost = async (req, res) => {
-  const { field, value } = url.parse(req.url, true).query;
+  const { field, value, pageNumber, pageSize } = url.parse(req.url, true).query;
 
   if (!field && !value) {
     return res.status(400).json({
@@ -68,6 +68,8 @@ const getCommentsBelowPost = async (req, res) => {
     const result = await getCommentsByQuery({
       field,
       value,
+      pageNumber,
+      pageSize,
     });
     if (result?.length > 0) {
       return res.status(200).json(result);
@@ -79,7 +81,7 @@ const getCommentsBelowPost = async (req, res) => {
 
 const getAllComments = async (req, res) => {
   const { role } = req.user;
-  const { field, value } = url.parse(req.url, true).query;
+  const { field, value, pageNumber, pageSize } = url.parse(req.url, true).query;
 
   if (role !== constants.ADMIN) {
     return res.status(400).json({
@@ -92,6 +94,8 @@ const getAllComments = async (req, res) => {
     params = {
       field,
       value,
+      pageNumber,
+      pageSize,
     };
   }
 
