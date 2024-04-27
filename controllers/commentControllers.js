@@ -7,8 +7,7 @@ const {
 } = require('../services/commentServices');
 
 const createComment = async (req, res) => {
-  const user_id = 1;
-  //const { user_id } = req.user;
+  const { user_id } = req.user;
   const { post_id, message } = req.body;
 
   if (!user_id || !post_id || !message) {
@@ -29,8 +28,7 @@ const createComment = async (req, res) => {
 };
 
 const updateMyComment = async (req, res) => {
-  const user_id = 1;
-  //const { user_id } = req.user;
+  const { user_id } = req.user;
   const { post_id, comment_id, message } = req.body;
 
   if (!user_id) {
@@ -56,14 +54,48 @@ const updateMyComment = async (req, res) => {
   }
 };
 
-// або переробити під адресний рядок
-const getComments = async (req, res) => {
-  const user_id = 1;
-  //const { user_id } = req.user;
+const getCommentsBelowPost = async (req, res) => {
   const { field, value } = url.parse(req.url, true).query;
 
+  if (!field && !value) {
+    return res.status(400).json({
+      message: 'field and value required',
+    });
+  }
+
   try {
-    const result = await getCommentsByQuery(field, value);
+    const result = await getCommentsByQuery({
+      field,
+      value,
+    });
+    if (result?.length > 0) {
+      return res.status(200).json(result);
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const getAllComments = async (req, res) => {
+  const { role } = req.user;
+  const { field, value } = url.parse(req.url, true).query;
+
+  if (role !== 'admin') {
+    return res.status(400).json({
+      message: 'this query filter available only for user with role admin',
+    });
+  }
+
+  let params = {};
+  if (role === 'admin') {
+    params = {
+      field,
+      value,
+    };
+  }
+
+  try {
+    const result = await getCommentsByQuery(params);
     if (result?.length > 0) {
       return res.status(200).json(result);
     }
@@ -73,8 +105,7 @@ const getComments = async (req, res) => {
 };
 
 const deleteComment = async (req, res) => {
-  const user_id = 1;
-  //const { user_id } = req.user;
+  const { user_id } = req.user;
   const { comment_id } = req.body;
 
   if (!user_id) {
@@ -103,6 +134,7 @@ const deleteComment = async (req, res) => {
 module.exports = {
   createComment,
   updateMyComment,
-  getComments,
+  getCommentsBelowPost,
+  getAllComments,
   deleteComment,
 };

@@ -50,7 +50,8 @@ const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
   createComment,
   updateMyComment,
-  getComments,
+  getCommentsBelowPost,
+  getAllComments,
   deleteComment,
 } = require('../controllers/commentControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
@@ -59,7 +60,9 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  * @swagger
  * /api-v1/post/create-comment:
  *   post:
- *     summary: Create a new comment
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Create a new comment (need accessToken in header)
  *     tags: [Comments]
  *     requestBody:
  *       required: true
@@ -81,7 +84,11 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *       400:
  *         description: Error.
  */
-router.post('/create-comment', asyncWrapper(createComment));
+router.post(
+  '/create-comment',
+  authenticationToken,
+  asyncWrapper(createComment)
+);
 
 /**
  * @swagger
@@ -118,11 +125,46 @@ router.post('/create-comment', asyncWrapper(createComment));
  *       400:
  *         description: Error.
  */
-router.patch('/update-comment', asyncWrapper(updateMyComment)); //authenticationToken
+router.patch(
+  '/update-comment',
+  authenticationToken,
+  asyncWrapper(updateMyComment)
+);
 
 /**
  * @swagger
- * /api-v1/post/comments:
+ * /api-v1/post/comments-below-post:
+ *   get:
+ *     tags: [Comments]
+ *     parameters:
+ *       - in: query
+ *         name: field
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: \"post_id\"
+ *       - in: query
+ *         name: value
+ *         schema:
+ *           type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: The list of the all comments below post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Comments'
+ *       400:
+ *         description: Error
+ */
+router.get('/comments-below-post', asyncWrapper(getCommentsBelowPost));
+
+/**
+ * @swagger
+ * /api-v1/post/all-comments:
  *   get:
  *     security:
  *       - bearerAuth: []
@@ -134,7 +176,7 @@ router.patch('/update-comment', asyncWrapper(updateMyComment)); //authentication
  *         schema:
  *           type: string
  *         required: false
- *         description: \"post_id\"
+ *         description: \"post_id\" or \"user_id\"
  *       - in: query
  *         name: value
  *         schema:
@@ -152,7 +194,7 @@ router.patch('/update-comment', asyncWrapper(updateMyComment)); //authentication
  *       400:
  *         description: Error
  */
-router.get('/comments', asyncWrapper(getComments)); //authenticationToken
+router.get('/all-comments', authenticationToken, asyncWrapper(getAllComments));
 
 /**
  * @swagger
@@ -179,6 +221,10 @@ router.get('/comments', asyncWrapper(getComments)); //authenticationToken
  *       400:
  *         description: comment_id is required or other errors.
  */
-router.delete('/delete-comment', asyncWrapper(deleteComment)); //authenticationToken
+router.delete(
+  '/delete-comment',
+  authenticationToken,
+  asyncWrapper(deleteComment)
+);
 
 module.exports = { commentRouter: router };
