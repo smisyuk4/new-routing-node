@@ -67,16 +67,23 @@ const updateComment = (user_id, post_id, comment_id, message) => {
   });
 };
 
-// need write pagination query
-const getCommentsByQuery = ({ field, value }) => {
+const getCommentsByQuery = ({ field, value, pageNumber, pageSize }) => {
+  const params = [];
+  sql = `SELECT * FROM comments`;
+
+  if (field && value) {
+    sql += ` WHERE ${field} = ${value}`;
+  }
+
+  if (pageNumber && pageSize) {
+    sql += ' LIMIT ?, ?';
+    const offset = (pageNumber - 1) * pageSize;
+    params.push(offset);
+    params.push(pageSize);
+  }
+
   return new Promise((resolve, reject) => {
-    sql = `SELECT * FROM comments`;
-
-    if (field && value) {
-      sql += ` WHERE ${field} = ${value}`;
-    }
-
-    return db.all(sql, [], (err, rows) => {
+    return db.all(sql, params, (err, rows) => {
       if (err) {
         return reject(err);
       }

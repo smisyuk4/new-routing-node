@@ -39,26 +39,4 @@
 
 ## Пагінація
 
-SELECT \* FROM table_name LIMIT offset, limit;
-table_name - назва таблиці, з якої ви вибираєте дані.
-offset - кількість рядків, які потрібно пропустити. Це вказує на номер першого рядка, який повинен бути повернений у вибірці.
-limit - максимальна кількість рядків, які потрібно повернути.
-
-Ось приклад використання пагінації в SQLite:
-
-const pageNumber = 1; // Номер сторінки
-const pageSize = 10; // Розмір сторінки
-
-const offset = (pageNumber - 1) \* pageSize; // Обчислення зміщення для поточної сторінки
-
-const sql = `SELECT * FROM your_table_name LIMIT ?, ?`;
-
-db.all(sql, [offset, pageSize], (err, rows) => {
-if (err) {
-return console.error('Помилка запиту на пагінацію:', err);
-}
-
-console.log('Рядки:', rows);
-});
-
-У цьому прикладі pageNumber вказує на номер сторінки, а pageSize вказує на кількість рядків, які потрібно повернути на кожній сторінці. Вираховуючи offset, ви визначаєте, з якого рядка починати вибірку для поточної сторінки.
+- [strategy](https://medium.com/@premdattan/pagination-and-filter-url-strategy-b67d690120ae)
