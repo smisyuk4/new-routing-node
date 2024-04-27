@@ -77,10 +77,16 @@ const getPosts = async (req, res) => {
 
 const getFilteredPosts = async (req, res) => {
   const { user_id } = req.user;
-  const { field, value } = url.parse(req.url, true).query;
+  const { field, value, pageNumber, pageSize } = url.parse(req.url, true).query;
 
   try {
-    const result = await getPostsByQuery(user_id, field, value);
+    const result = await getPostsByQuery(
+      user_id,
+      field,
+      value,
+      pageNumber,
+      pageSize
+    );
 
     if (result?.length > 0) {
       return res.status(200).json(result);

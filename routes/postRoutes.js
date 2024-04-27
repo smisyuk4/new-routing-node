@@ -175,6 +175,19 @@ router.get('/posts', asyncWrapper(getPosts));
  *         schema:
  *           type: string
  *         required: false
+ *       - in: query
+ *         name: pageNumber
+ *         schema:
+ *             type: integer
+ *         required: false
+ *         description: The page number
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *             type: integer
+ *         required: false
+ *         description: The page size
+  
  *     responses:
  *       200:
  *         description: The list of the posts

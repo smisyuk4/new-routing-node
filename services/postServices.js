@@ -81,7 +81,6 @@ const updateFieldsPost = (user_id, post_id, title, message) => {
   });
 };
 
-// need write pagination query
 const getAllPosts = (pageNumber, pageSize) => {
   sql = 'SELECT * FROM posts';
 
@@ -109,16 +108,26 @@ const getAllPosts = (pageNumber, pageSize) => {
   });
 };
 
-// need write pagination query
-const getPostsByQuery = (user_id, field, value) => {
-  return new Promise((resolve, reject) => {
-    sql = `SELECT * FROM posts WHERE`;
-    if (field && value) {
-      sql += ` ${field} LIKE '%${value}%' AND`;
-    }
-    sql += ` user_id = ?`;
+const getPostsByQuery = (user_id, field, value, pageNumber, pageSize) => {
+  const params = [];
+  sql = `SELECT * FROM posts WHERE`;
 
-    return db.all(sql, [user_id], (err, rows) => {
+  if (field && value) {
+    sql += ` ${field} LIKE '%${value}%' AND`;
+  }
+
+  sql += ` user_id = ?`;
+  params.push(user_id);
+
+  if (pageNumber && pageSize) {
+    sql += ' LIMIT ?, ?';
+    const offset = (pageNumber - 1) * pageSize;
+    params.push(offset);
+    params.push(pageSize);
+  }
+
+  return new Promise((resolve, reject) => {
+    return db.all(sql, params, (err, rows) => {
       if (err) {
         return reject(err);
       }
