@@ -236,7 +236,7 @@ const getUserByToken = async (refreshToken) => {
   });
 };
 
-const getAllUsers = async () => {
+const getAllUsers = () => {
   return new Promise((resolve, reject) => {
     sql = `SELECT * FROM users`;
 

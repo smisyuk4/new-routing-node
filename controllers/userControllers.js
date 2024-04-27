@@ -9,6 +9,7 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const sharp = require('sharp');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
+const { s3GeneratorUrl } = require('../middleware/s3GeneratorUrl');
 const {
   addUser,
   addToken,
@@ -271,7 +272,7 @@ const changeUserAvatar = async (req, res) => {
       avatar_url: pathFile,
     });
 
-    // generate link to image from store with life 3600sec
+    // generate link to image from store
     const getObjectParams = {
       Bucket: bucketName,
       Key: pathFile,
@@ -293,7 +294,9 @@ const getUsers = async (req, res) => {
     const result = await getAllUsers();
 
     if (result?.length > 0) {
-      return res.status(200).json(result);
+      const updatedArray = await s3GeneratorUrl(result);
+
+      return res.status(200).json(updatedArray);
     }
   } catch (error) {
     return res.status(400).json(error);
