@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const sharp = require('sharp');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
 const {
@@ -233,20 +239,53 @@ const changeUserAvatar = async (req, res) => {
   const user_id = 1;
   //const { user_id } = req.user;
 
-  const params = {
-    Bucket: bucketName,
-    Key: req.file.originalname,
-    Body: req.file.buffer,
-    ContentType: req.file.mimetype,
-  };
+  try {
+    // resize image
+    const buffer = await sharp(req.file.buffer)
+      .resize({
+        height: 500,
+        width: 500,
+        fit: 'cover',
+      })
+      .jpeg({ quality: 80 })
+      .toBuffer();
 
-  const command = new PutObjectCommand(params);
+    const pathFile = `Avatars/500x500_${user_id}`;
 
-  const result = await s3.send(command);
-  console.log(result);
+    const params = {
+      Bucket: bucketName,
+      Key: pathFile,
+      Body: buffer,
+      ContentType: req.file.mimetype,
+    };
 
-  console.log('req.file ', result, req.file);
-  return res.status(200).json({ res: result, file: req.file });
+    const putCommand = new PutObjectCommand(params);
+    const resultSendFile = await s3.send(putCommand);
+
+    if (!resultSendFile?.['$metadata']) {
+      return res.status(400).json({ error: resultSendFile });
+    }
+
+    const resultSendData = await updateFieldsUser({
+      user_id,
+      avatar_url: pathFile,
+    });
+
+    // generate link to image from store with life 3600sec
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: pathFile,
+    };
+
+    if (resultSendData?.status) {
+      const getCommand = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, getCommand);
+
+      return res.status(200).json({ ...resultSendData.data, avatar_url: url });
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
 };
 
 const getUsers = async (req, res) => {

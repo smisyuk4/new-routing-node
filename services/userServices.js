@@ -69,7 +69,13 @@ const removeToken = async (email) => {
   });
 };
 
-const updateFieldsUser = async (user_id, sign_plan, payment, location) => {
+const updateFieldsUser = async ({
+  user_id,
+  sign_plan,
+  payment,
+  location,
+  avatar_url,
+}) => {
   return new Promise((resolve, reject) => {
     sql = 'UPDATE users SET';
     const params = [];
@@ -94,6 +100,11 @@ const updateFieldsUser = async (user_id, sign_plan, payment, location) => {
     if (location) {
       sql += ' location = ?,';
       params.push(location);
+    }
+
+    if (avatar_url) {
+      sql += ' avatar_url = ?,';
+      params.push(avatar_url);
     }
 
     sql += ' date_update = ? WHERE user_id = ?';

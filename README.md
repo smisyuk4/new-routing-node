@@ -35,6 +35,8 @@
 - [multer npm](https://www.npmjs.com/package/multer)
 - [multer-s3 (for aws s3)](https://www.npmjs.com/package/multer-s3)
 - [aws-sdk/client-s3](https://www.npmjs.com/package/@aws-sdk/client-s3)
+- [sharp npm - convert large images](https://www.npmjs.com/package/sharp)
+- [aws-sdk/s3-request-presigner](https://www.npmjs.com/package/@aws-sdk/s3-request-presigner)
 
 ## other
 
