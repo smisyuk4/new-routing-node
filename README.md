@@ -25,6 +25,17 @@
 - [403](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403)
 - [409](https://www.webfx.com/web-development/glossary/http-status-codes/what-is-a-409-status-code/)
 
+## Pagination
+
+- [strategy](https://medium.com/@premdattan/pagination-and-filter-url-strategy-b67d690120ae)
+
+## File storage
+
+- [Storing Images in S3 from Node Server](https://www.youtube.com/watch?v=eQAIojcArRY&ab_channel=SamMeech-Ward)
+- [multer npm](https://www.npmjs.com/package/multer)
+- [multer-s3 (for aws s3)](https://www.npmjs.com/package/multer-s3)
+- [aws-sdk/client-s3](https://www.npmjs.com/package/@aws-sdk/client-s3)
+
 ## other
 
 - [body-parser](https://www.npmjs.com/package/body-parser)
@@ -36,7 +47,3 @@
 - [Swagger API documentation tutorial - video](https://www.youtube.com/watch?v=dhMlXoTD3mQ&ab_channel=SkillsWithArif)
 - [example repository](https://github.com/developerarif55/sequlize-ORM/blob/dev/routes/book.js)
 - [NodeJS Swagger API Documentation Tutorial Using Swagger JSDoc](https://www.youtube.com/watch?v=S8kmHtQeflo&ab_channel=MaksimIvanov)
-
-## Пагінація
-
-- [strategy](https://medium.com/@premdattan/pagination-and-filter-url-strategy-b67d690120ae)

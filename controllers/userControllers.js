@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
 const {
@@ -19,6 +20,15 @@ const {
   removePlan,
 } = require('../services/userServices');
 const { constants } = require('../constants');
+
+const bucketName = process.env.BUCKET_NAME;
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: process.env.ACCESS_KEY,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+  },
+  region: process.env.BUCKET_REGION,
+});
 
 const register = async (req, res) => {
   const { password, email, role } = req.body;
@@ -219,6 +229,26 @@ const changeUserPassword = async (req, res) => {
   }
 };
 
+const changeUserAvatar = async (req, res) => {
+  const user_id = 1;
+  //const { user_id } = req.user;
+
+  const params = {
+    Bucket: bucketName,
+    Key: req.file.originalname,
+    Body: req.file.buffer,
+    ContentType: req.file.mimetype,
+  };
+
+  const command = new PutObjectCommand(params);
+
+  const result = await s3.send(command);
+  console.log(result);
+
+  console.log('req.file ', result, req.file);
+  return res.status(200).json({ res: result, file: req.file });
+};
+
 const getUsers = async (req, res) => {
   try {
     const result = await getAllUsers();
@@ -359,6 +389,7 @@ module.exports = {
   logOut,
   updateUserProfile,
   changeUserPassword,
+  changeUserAvatar,
   getUsers,
   deleteUser,
   getUserRoles,

@@ -80,6 +80,7 @@ const {
   checkAndGenerateToken,
   logOut,
   updateUserProfile,
+  changeUserAvatar,
   changeUserPassword,
   getUsers,
   deleteUser,
@@ -90,6 +91,11 @@ const {
   deletePlan,
 } = require('../controllers/userControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
+const {
+  uploadFiles,
+  multerMid,
+  multerErrorHandling,
+} = require('../middleware/uploadFiles');
 
 /**
  * @swagger
@@ -303,6 +309,14 @@ router.patch(
   '/update-password',
   authenticationToken,
   asyncWrapper(changeUserPassword)
+);
+
+router.post(
+  '/update-avatar',
+  multerMid.single('avatar'),
+  multerErrorHandling,
+  //authenticationToken,
+  asyncWrapper(changeUserAvatar)
 );
 
 /**
