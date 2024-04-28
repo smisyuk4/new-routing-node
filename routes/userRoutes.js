@@ -1,6 +1,11 @@
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: "Bearer <your-accessToken>"
  *   schemas:
  *     Users:
  *       type: object
@@ -54,6 +59,37 @@
  *          refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
  *          date_register: 2024-04-22T21:00:47.748Z
  *          date_update: 2024-04-22T22:05:57.255Z
+ *
+ *     Roles:
+ *       type: object
+ *       properties:
+ *         role_id:
+ *           type: integer
+ *           description: The auto-generated id of the role
+ *         title:
+ *           type: string
+ *           description: The title of role
+ *       example:
+ *          role_id: 2
+ *          role: customer
+ *
+ *
+ *     Plans:
+ *       type: object
+ *       properties:
+ *         plan_id:
+ *           type: integer
+ *           description: The auto-generated id of the plan
+ *         title:
+ *           type: string
+ *           description: The title of plan
+ *         cost:
+ *           type: integer
+ *           description: The cost of plan
+ *       example:
+ *          plan_id: 5
+ *          title: 1 month
+ *          cost: 4000
  */
 
 /**
@@ -73,12 +109,6 @@
  *          access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6IiQyYiQxMyQ4NHY1ajRBdHdXckJuYkI5VUt3U3EuamJBOFh2RTdpeE5ZRFV3V200SmNTVGxKbThsOHZ0VyIsImVtYWlsIjoib25lLXR3byIsImlhdCI6MTcxNDIyMDY1NH0.ITh93z3WdyvmO6hhDnnbWuU_RNdXmNhBuGlgd_VFX8gF
  *          date_register: 2024-04-22T21:00:47.748Z
  *          date_update: 2024-04-22T22:05:57.255Z
- */
-
-/**
- * @swagger
- * components:
- *   schemas:
  *     UserWithOutPassword:
  *       example:
  *          user_id: 32
@@ -97,14 +127,8 @@
  * @swagger
  * tags:
  *   name: Users
- *   description: The users managing API
- *
- * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: "Bearer <your-accessToken>"
+ *   name: Roles
+ *   name: Plans
  */
 
 const express = require('express');
@@ -428,7 +452,7 @@ router.delete('/delete-profile', authenticationToken, asyncWrapper(deleteUser));
  * /api-v1/user/roles:
  *   get:
  *     summary: Get user roles
- *     tags: [Users]
+ *     tags: [Roles]
  *     responses:
  *       200:
  *         description: List of roles found.
@@ -455,7 +479,7 @@ router.get('/roles', asyncWrapper(getUserRoles));
  *     security:
  *       - bearerAuth: []
  *     summary: Create a new sign plan (need accessToken in header)
- *     tags: [Users]
+ *     tags: [Plans]
  *     requestBody:
  *       required: true
  *       content:
@@ -483,7 +507,7 @@ router.post('/create-plan', authenticationToken, asyncWrapper(createPlan));
  * /api-v1/user/plans:
  *   get:
  *     summary: Get sing plans
- *     tags: [Users]
+ *     tags: [Plans]
  *     responses:
  *       200:
  *         description: List of plans found.
@@ -512,7 +536,7 @@ router.get('/plans', asyncWrapper(getAllPlans));
  *     security:
  *       - bearerAuth: []
  *     summary: Update sign plan (need accessToken in header)
- *     tags: [Users]
+ *     tags: [Plans]
  *     requestBody:
  *       required: true
  *       content:
@@ -552,7 +576,7 @@ router.patch('/update-plan', authenticationToken, asyncWrapper(updatePlan));
  *     security:
  *       - bearerAuth: []
  *     summary: Remove the plan by id (need accessToken in header)
- *     tags: [Users]
+ *     tags: [Plans]
  *     requestBody:
  *       required: true
  *       content:
