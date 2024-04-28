@@ -24,19 +24,19 @@
  *           type: string
  *           description: Payment by sign plan of user
  *         location:
- *           type: sting
+ *           type: string
  *           description: The location of user
  *         avatar_url:
- *           type: sting
+ *           type: string
  *           description: The avatar url of user
- *         token:
- *           type: sting
- *           description: The refreshToken of user
+ *         refresh_token:
+ *           type: string
+ *           description: The refresh_token of user
  *         date_register:
- *           type: sting
+ *           type: string
  *           description: The date register of user
  *         date_update:
- *           type: sting
+ *           type: string
  *           description: The date update profile user
  *       required:
  *         - password
@@ -51,7 +51,44 @@
  *          payment: true
  *          location: Spain, Madrid
  *          avatar_url: https://static.vecteezy.com/system/resources/thumbnails/022/714/697/small/cute-black-and-white-girl-posing-vector.jpg
- *          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
+ *          refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
+ *          date_register: 2024-04-22T21:00:47.748Z
+ *          date_update: 2024-04-22T22:05:57.255Z
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UserWithAccessToken:
+ *       example:
+ *          user_id: 32
+ *          email: mary_gra@gmail.com
+ *          role: author
+ *          sign_plan: 3
+ *          payment: true
+ *          location: Spain, Madrid
+ *          avatar_url: https://static.vecteezy.com/system/resources/thumbnails/022/714/697/small/cute-black-and-white-girl-posing-vector.jpg
+ *          refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
+ *          access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6IiQyYiQxMyQ4NHY1ajRBdHdXckJuYkI5VUt3U3EuamJBOFh2RTdpeE5ZRFV3V200SmNTVGxKbThsOHZ0VyIsImVtYWlsIjoib25lLXR3byIsImlhdCI6MTcxNDIyMDY1NH0.ITh93z3WdyvmO6hhDnnbWuU_RNdXmNhBuGlgd_VFX8gF
+ *          date_register: 2024-04-22T21:00:47.748Z
+ *          date_update: 2024-04-22T22:05:57.255Z
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UserWithOutPassword:
+ *       example:
+ *          user_id: 32
+ *          email: mary_gra@gmail.com
+ *          role: author
+ *          sign_plan: 3
+ *          payment: true
+ *          location: Spain, Madrid
+ *          avatar_url: https://static.vecteezy.com/system/resources/thumbnails/022/714/697/small/cute-black-and-white-girl-posing-vector.jpg
+ *          refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
  *          date_register: 2024-04-22T21:00:47.748Z
  *          date_update: 2024-04-22T22:05:57.255Z
  */
@@ -80,6 +117,8 @@ const {
   checkAndGenerateToken,
   logOut,
   updateUserProfile,
+  changeUserAvatar,
+  deleteUserAvatar,
   changeUserPassword,
   getUsers,
   deleteUser,
@@ -90,6 +129,7 @@ const {
   deletePlan,
 } = require('../controllers/userControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
+const { multerMid, multerErrorHandling } = require('../middleware/uploadFiles');
 
 /**
  * @swagger
@@ -120,12 +160,7 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 accessToken:
- *                   type: string
- *                 refreshToken:
- *                   type: string
+ *               $ref: '#/components/schemas/UserWithAccessToken'
  *       400:
  *         description: password and email required or other errors.
  *       409:
@@ -159,12 +194,7 @@ router.post('/register', asyncWrapper(register));
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 accessToken:
- *                   type: string
- *                 refreshToken:
- *                   type: string
+ *               $ref: '#/components/schemas/UserWithAccessToken'
  *       400:
  *         description: password and email required or other errors.
  */
@@ -249,7 +279,7 @@ router.post('/logout', asyncWrapper(logOut));
  *               - users_id
  *             properties:
  *               sign_plan:
- *                 type: string
+ *                 type: integer
  *               payment:
  *                 type: string
  *               location:
@@ -260,7 +290,7 @@ router.post('/logout', asyncWrapper(logOut));
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Users'
+ *               $ref: '#/components/schemas/UserWithOutPassword'
  *       400:
  *         description: user_id is required or other errors.
  */
@@ -290,12 +320,8 @@ router.patch(
  *               password_new:
  *                 type: string
  *     responses:
- *       200:
- *         description: Fields updated.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Users'
+ *       204:
+ *         description: Password updated.
  *       400:
  *         description: user_id is required or other errors.
  */
@@ -303,6 +329,62 @@ router.patch(
   '/update-password',
   authenticationToken,
   asyncWrapper(changeUserPassword)
+);
+
+/**
+ * @swagger
+ * /api-v1/user/update-avatar:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Update user avatar (need accessToken in header)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               avatar:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Fields updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserWithOutPassword'
+ *       400:
+ *         description: user_id is required or other errors.
+ */
+router.post(
+  '/update-avatar',
+  multerMid.single('avatar'),
+  multerErrorHandling,
+  authenticationToken,
+  asyncWrapper(changeUserAvatar)
+);
+
+/**
+ * @swagger
+ * /api-v1/user/delete-avatar:
+ *   delete:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Remove avatar (need accessToken in header)
+ *     tags: [Users]
+ *     responses:
+ *       204:
+ *         description: Avatar removed.
+ *       400:
+ *         description: user_id is required or other errors.
+ */
+router.delete(
+  '/delete-avatar',
+  authenticationToken,
+  asyncWrapper(deleteUserAvatar)
 );
 
 /**
@@ -319,7 +401,7 @@ router.patch(
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Users'
+ *                 $ref: '#/components/schemas/UserWithOutPassword'
  *       400:
  *         description: Error.
  */

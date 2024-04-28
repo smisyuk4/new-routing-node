@@ -3,6 +3,12 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
 const {
+  s3SendFile,
+  s3RemoveFile,
+  s3GeneratorUrl,
+  s3CreateOneUrl,
+} = require('../middleware/s3CloudStorage');
+const {
   addUser,
   addToken,
   removeToken,
@@ -44,13 +50,17 @@ const register = async (req, res) => {
     );
 
     const user = { password: hashPassword, email };
-    const accessToken = generateAccessToken(user);
-    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+    const access_token = generateAccessToken(user);
+    const refresh_token = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 
-    const result = await addUser(hashPassword, email, role, refreshToken);
+    const result = await addUser(hashPassword, email, role, refresh_token);
 
     if (result?.status) {
-      return res.status(200).json({ accessToken, refreshToken });
+      const { password, ...restrictedData } = result.data;
+
+      return res
+        .status(200)
+        .json({ ...restrictedData, access_token, refresh_token });
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -84,13 +94,21 @@ const login = async (req, res) => {
     }
 
     const user = { password: userInBase.password, email };
-    const accessToken = generateAccessToken(user);
-    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+    const access_token = generateAccessToken(user);
+    const refresh_token = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 
-    const result = await addToken(refreshToken, email);
+    const result = await addToken(refresh_token, email);
 
     if (result?.status) {
-      return res.status(200).json({ accessToken, refreshToken });
+      const newUrl = await s3CreateOneUrl(result.data.avatar_url);
+      const { password, ...restrictedData } = result.data;
+
+      return res.status(200).json({
+        ...restrictedData,
+        avatar_url: newUrl,
+        access_token,
+        refresh_token,
+      });
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -157,11 +175,17 @@ const logOut = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   const { user_id } = req.user;
-  const { sign_plan, payment, location } = req.body;
+  const { sign_plan, payment, location, avatar_url } = req.body;
 
   if (!user_id) {
     return res.status(400).json({
       message: 'user_id is required',
+    });
+  }
+
+  if (avatar_url) {
+    return res.status(400).json({
+      message: 'this field can change in /api-v1/user/update-avatar',
     });
   }
 
@@ -176,15 +200,21 @@ const updateUserProfile = async (req, res) => {
   }
 
   try {
-    const result = await updateFieldsUser(
+    const result = await updateFieldsUser({
       user_id,
       sign_plan,
       payment,
-      location
-    );
+      location,
+    });
 
     if (result?.status) {
-      return res.status(200).json(result);
+      const newUrl = await s3CreateOneUrl(result.data.avatar_url);
+      const { password, ...restrictedData } = result.data;
+
+      return res.status(200).json({
+        ...restrictedData,
+        avatar_url: newUrl,
+      });
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -212,8 +242,59 @@ const changeUserPassword = async (req, res) => {
     const result = await updateUserPassword(user_id, newHashedPassword);
 
     if (result?.status) {
-      return res.status(200).json(result);
+      return res.sendStatus(204);
     }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const changeUserAvatar = async (req, res) => {
+  const { user_id } = req.user;
+  const pathFile = `Avatars/500x500_${user_id}`;
+
+  try {
+    await s3SendFile(req.file, { height: 500, width: 500 }, pathFile);
+
+    const resultSendData = await updateFieldsUser({
+      user_id,
+      avatar_url: pathFile,
+    });
+
+    if (resultSendData?.status) {
+      const newUrl = await s3CreateOneUrl(pathFile);
+
+      return res
+        .status(200)
+        .json({ ...resultSendData.data, avatar_url: newUrl });
+    }
+
+    res.status(400).json(resultSendData);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const deleteUserAvatar = async (req, res) => {
+  const { user_id } = req.user;
+  const pathFile = `Avatars/500x500_${user_id}`;
+
+  try {
+    const result = await updateFieldsUser({
+      user_id,
+      avatar_url: constants.EMPTY,
+    });
+
+    if (
+      result?.status &&
+      (result?.data?.avatar_url || result?.data?.avatar_url !== constants.EMPTY)
+    ) {
+      await s3RemoveFile(pathFile);
+
+      return res.sendStatus(204);
+    }
+
+    return res.status(400).json({ message: constants.NO_REMOVED });
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -224,7 +305,9 @@ const getUsers = async (req, res) => {
     const result = await getAllUsers();
 
     if (result?.length > 0) {
-      return res.status(200).json(result);
+      const updatedArray = await s3GeneratorUrl(result, 'avatar_url');
+
+      return res.status(200).json(updatedArray);
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -359,6 +442,8 @@ module.exports = {
   logOut,
   updateUserProfile,
   changeUserPassword,
+  changeUserAvatar,
+  deleteUserAvatar,
   getUsers,
   deleteUser,
   getUserRoles,

@@ -7,6 +7,13 @@ const {
   addGenre,
   getGenresByQuery,
 } = require('../services/bookServices');
+const {
+  s3SendFile,
+  s3CreateOneUrl,
+  s3GeneratorUrl,
+  s3RemoveFile,
+} = require('../middleware/s3CloudStorage');
+const { constants } = require('../constants');
 
 const createBook = async (req, res) => {
   const { user_id } = req.user;
@@ -64,10 +71,15 @@ const updateBook = async (req, res) => {
     });
   }
 
+  if (cover_image_url) {
+    return res.status(400).json({
+      message: 'this field can change in /api-v1/update-book-cover',
+    });
+  }
+
   const checkFields = [
     title,
     short_desc,
-    cover_image_url,
     literary_genre?.join(' | '),
     cost,
     count,
@@ -80,25 +92,96 @@ const updateBook = async (req, res) => {
   }
 
   try {
-    const result = await updateFieldsBook(
+    const result = await updateFieldsBook({
       user_id,
       book_id,
       title,
       short_desc,
-      cover_image_url,
-      literary_genre?.join(' | '),
+      literary_genre: literary_genre?.join(' | '),
       cost,
-      count
-    );
+      count,
+    });
 
     if (result?.status) {
+      const newUrl = await s3CreateOneUrl(result.data.cover_image_url);
       const updatedBook = {
         ...result.data,
+        cover_image_url: newUrl,
         literary_genre: result.data.literary_genre?.split(' | ') || null,
       };
 
       return res.status(200).json(updatedBook);
     }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const changeBookCover = async (req, res) => {
+  const { user_id } = req.user;
+  const { book_id } = req.body;
+
+  if (!book_id) {
+    return res.status(400).json({
+      message: 'book_id is required',
+    });
+  }
+
+  const pathFile = `Books/800x600_${user_id}_${book_id}`;
+
+  try {
+    await s3SendFile(req.file, { height: 800, width: 600 }, pathFile);
+
+    const resultSendData = await updateFieldsBook({
+      user_id,
+      book_id,
+      cover_image_url: pathFile,
+    });
+
+    if (resultSendData?.status) {
+      const newUrl = await s3CreateOneUrl(pathFile);
+
+      return res
+        .status(200)
+        .json({ ...resultSendData.data, cover_image_url: newUrl });
+    }
+
+    res.status(400).json(resultSendData);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const deleteBookCover = async (req, res) => {
+  const { user_id } = req.user;
+  const { book_id } = req.body;
+
+  if (!book_id) {
+    return res.status(400).json({
+      message: 'book_id is required',
+    });
+  }
+
+  const pathFile = `Books/800x600_${user_id}_${book_id}`;
+
+  try {
+    const result = await updateFieldsBook({
+      user_id,
+      book_id,
+      cover_image_url: constants.EMPTY,
+    });
+
+    if (
+      result?.status &&
+      (result?.data?.cover_image_url ||
+        result?.data?.cover_image_url !== constants.EMPTY)
+    ) {
+      await s3RemoveFile(pathFile);
+
+      return res.sendStatus(204);
+    }
+
+    return res.status(400).json({ message: constants.NO_REMOVED });
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -111,7 +194,9 @@ const getFilteredBooks = async (req, res) => {
     const result = await getBooksByQuery(field, value, pageNumber, pageSize);
 
     if (result?.length > 0) {
-      const updatedBooks = result.map((book) => {
+      const updatedArray = await s3GeneratorUrl(result, 'cover_image_url');
+
+      const updatedBooks = updatedArray.map((book) => {
         return {
           ...book,
           literary_genre: book.literary_genre?.split(' | ') || null,
@@ -189,6 +274,8 @@ const getFilteredGenres = async (req, res) => {
 module.exports = {
   createBook,
   updateBook,
+  changeBookCover,
+  deleteBookCover,
   getFilteredBooks,
   deleteBook,
   createGenre,

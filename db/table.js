@@ -14,18 +14,18 @@ const db = new sqlite3.Database(
 );
 
 // ============== create table - users ==============
-//const sql = `CREATE TABLE users(
-//  user_id INTEGER PRIMARY KEY,
-//  password TEXT,
-//  email TEXT UNIQUE,
-//  role TEXT,
-//  sign_plan TEXT,
-//  payment TEXT,
-//  location TEXT,
-//  avatar_url TEXT,
-//  token TEXT,
-//  date_register TEXT,
-//  date_update TEXT)`;
+const sql = `CREATE TABLE users(
+  user_id INTEGER PRIMARY KEY,
+  password TEXT,
+  email TEXT UNIQUE,
+  role TEXT,
+  sign_plan INTEGER,
+  payment TEXT,
+  location TEXT,
+  avatar_url TEXT,
+  refresh_token TEXT,
+  date_register TEXT,
+  date_update TEXT)`;
 
 // ============== create table - roles ==============
 //const sql = `CREATE TABLE roles(
@@ -48,13 +48,13 @@ const db = new sqlite3.Database(
 //  date_update TEXT)`;
 
 // ============== create table - comments ==============
-const sql = `CREATE TABLE comments(
-  comment_id INTEGER PRIMARY KEY,
-  user_id INTEGER,
-  post_id INTEGER,
-  message TEXT,
-  date_publish TEXT,
-  date_update TEXT)`;
+//const sql = `CREATE TABLE comments(
+//  comment_id INTEGER PRIMARY KEY,
+//  user_id INTEGER,
+//  post_id INTEGER,
+//  message TEXT,
+//  date_publish TEXT,
+//  date_update TEXT)`;
 
 // ============== create table - books ==============
 //const sql = `CREATE TABLE books(
@@ -80,7 +80,7 @@ const sql = `CREATE TABLE comments(
 //db.run(sql, ['author']);
 //db.run(sql, ['customer']);
 
-//const sql = 'DROP TABLE comments;'
+//const sql = 'DROP TABLE users;'
 db.run(sql);
 console.log(`process for ${sql} - done`);
 

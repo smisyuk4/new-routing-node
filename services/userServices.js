@@ -15,45 +15,73 @@ const db = new sqlite3.Database(
   }
 );
 
-const addUser = async (password, email, role, accessToken) => {
+const addUser = async (password, email, role, refresh_token) => {
   return new Promise((resolve, reject) => {
-    sql = `INSERT INTO users(password, email, role, token, date_register, date_update) VALUES(?,LOWER(?),?,?,?,?)`;
+    sql = `INSERT INTO users(password, email, role, refresh_token, date_register, date_update) VALUES(?,LOWER(?),?,?,?,?)`;
 
-    return db.run(
-      sql,
-      [password, email, role, accessToken, dateISO, dateISO],
-      (err) => {
-        if (err) {
-          return reject(err);
+    return db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
+
+      db.run(
+        sql,
+        [password, email, role, refresh_token, dateISO, dateISO],
+        function (err) {
+          if (err) {
+            return reject(err);
+          }
+
+          if (this.changes === 0) {
+            return reject({ message: constants.NO_CREATED });
+          }
+
+          db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
+            if (err) {
+              db.run('ROLLBACK');
+              return reject(err);
+            }
+
+            db.run('COMMIT');
+            resolve({ status: true, data: row });
+          });
         }
-
-        resolve({ status: true });
-      }
-    );
+      );
+    });
   });
 };
 
 const addToken = async (refreshToken, email) => {
   return new Promise((resolve, reject) => {
-    sql = `UPDATE users SET token = ?, date_update = ? WHERE email = ?`;
+    sql = `UPDATE users SET refresh_token = ?, date_update = ? WHERE email = ?`;
 
-    return db.run(sql, [refreshToken, dateISO, email], function (err) {
-      if (err) {
-        return reject(err);
-      }
+    return db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
 
-      if (this.changes === 0) {
-        return reject({ message: constants.NO_MATCH_USERS });
-      }
+      db.run(sql, [refreshToken, dateISO, email], function (err) {
+        if (err) {
+          return reject(err);
+        }
 
-      resolve({ status: true });
+        if (this.changes === 0) {
+          return reject({ message: constants.NO_MATCH_USERS });
+        }
+
+        db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
+          if (err) {
+            db.run('ROLLBACK');
+            return reject(err);
+          }
+
+          db.run('COMMIT');
+          resolve({ status: true, data: row });
+        });
+      });
     });
   });
 };
 
 const removeToken = async (email) => {
   return new Promise((resolve, reject) => {
-    sql = `UPDATE users SET token = ?, date_update = ? WHERE email = ?`;
+    sql = `UPDATE users SET refresh_token = ?, date_update = ? WHERE email = ?`;
 
     return db.run(sql, [null, dateISO, email], function (err) {
       if (err) {
@@ -69,7 +97,13 @@ const removeToken = async (email) => {
   });
 };
 
-const updateFieldsUser = async (user_id, sign_plan, payment, location) => {
+const updateFieldsUser = async ({
+  user_id,
+  sign_plan,
+  payment,
+  location,
+  avatar_url,
+}) => {
   return new Promise((resolve, reject) => {
     sql = 'UPDATE users SET';
     const params = [];
@@ -94,6 +128,11 @@ const updateFieldsUser = async (user_id, sign_plan, payment, location) => {
     if (location) {
       sql += ' location = ?,';
       params.push(location);
+    }
+
+    if (avatar_url || avatar_url === constants.EMPTY) {
+      sql += ' avatar_url = ?,';
+      params.push(avatar_url);
     }
 
     sql += ' date_update = ? WHERE user_id = ?';
@@ -151,32 +190,16 @@ const updateUserPassword = async (user_id, password) => {
     params.push(dateISO);
     params.push(user_id);
 
-    return db.serialize(() => {
-      db.run('BEGIN TRANSACTION');
+    return db.run(sql, params, function (err) {
+      if (err) {
+        return reject(err);
+      }
 
-      db.run(sql, params, function (err) {
-        if (err) {
-          return reject(err);
-        }
+      if (this.changes === 0) {
+        return reject({ message: constants.NO_CHANGED });
+      }
 
-        if (this.changes === 0) {
-          return reject({ message: constants.NO_CHANGED });
-        }
-
-        db.get(
-          'SELECT * FROM users WHERE user_id = ?',
-          [user_id],
-          (err, row) => {
-            if (err) {
-              db.run('ROLLBACK');
-              return reject(err);
-            }
-
-            db.run('COMMIT');
-            resolve({ status: true, data: row });
-          }
-        );
-      });
+      resolve({ status: true });
     });
   });
 };
@@ -205,7 +228,7 @@ const getUserByEmail = async (email) => {
 
 const getUserByToken = async (refreshToken) => {
   if (!refreshToken) {
-    return 'refreshToken is required';
+    return 'refresh_token is required';
   }
 
   return new Promise((resolve, reject) => {
@@ -225,7 +248,7 @@ const getUserByToken = async (refreshToken) => {
   });
 };
 
-const getAllUsers = async () => {
+const getAllUsers = () => {
   return new Promise((resolve, reject) => {
     sql = `SELECT * FROM users`;
 
