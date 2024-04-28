@@ -56,9 +56,11 @@ const register = async (req, res) => {
     const result = await addUser(hashPassword, email, role, refresh_token);
 
     if (result?.status) {
+      const { password, ...restrictedData } = result.data;
+
       return res
         .status(200)
-        .json({ ...result.data, access_token, refresh_token });
+        .json({ ...restrictedData, access_token, refresh_token });
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -92,20 +94,20 @@ const login = async (req, res) => {
     }
 
     const user = { password: userInBase.password, email };
-    const accessToken = generateAccessToken(user);
-    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+    const access_token = generateAccessToken(user);
+    const refresh_token = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 
-    const result = await addToken(refreshToken, email);
+    const result = await addToken(refresh_token, email);
 
     if (result?.status) {
       const newUrl = await s3CreateOneUrl(result.data.avatar_url);
-      const { token, ...restrictedData } = result.data;
+      const { password, ...restrictedData } = result.data;
 
       return res.status(200).json({
         ...restrictedData,
         avatar_url: newUrl,
-        accessToken,
-        refreshToken,
+        access_token,
+        refresh_token,
       });
     }
   } catch (error) {
@@ -198,15 +200,21 @@ const updateUserProfile = async (req, res) => {
   }
 
   try {
-    const result = await updateFieldsUser(
+    const result = await updateFieldsUser({
       user_id,
       sign_plan,
       payment,
-      location
-    );
+      location,
+    });
 
     if (result?.status) {
-      return res.status(200).json(result);
+      const newUrl = await s3CreateOneUrl(result.data.avatar_url);
+      const { password, ...restrictedData } = result.data;
+
+      return res.status(200).json({
+        ...restrictedData,
+        avatar_url: newUrl,
+      });
     }
   } catch (error) {
     return res.status(400).json(error);

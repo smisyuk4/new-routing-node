@@ -77,6 +77,24 @@
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     UserWithOutPassword:
+ *       example:
+ *          user_id: 32
+ *          email: mary_gra@gmail.com
+ *          role: author
+ *          sign_plan: 3
+ *          payment: true
+ *          location: Spain, Madrid
+ *          avatar_url: https://static.vecteezy.com/system/resources/thumbnails/022/714/697/small/cute-black-and-white-girl-posing-vector.jpg
+ *          refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
+ *          date_register: 2024-04-22T21:00:47.748Z
+ *          date_update: 2024-04-22T22:05:57.255Z
+ */
+
+/**
+ * @swagger
  * tags:
  *   name: Users
  *   description: The users managing API
@@ -176,12 +194,7 @@ router.post('/register', asyncWrapper(register));
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 accessToken:
- *                   type: string
- *                 refreshToken:
- *                   type: string
+ *               $ref: '#/components/schemas/UserWithAccessToken'
  *       400:
  *         description: password and email required or other errors.
  */
@@ -266,7 +279,7 @@ router.post('/logout', asyncWrapper(logOut));
  *               - users_id
  *             properties:
  *               sign_plan:
- *                 type: string
+ *                 type: integer
  *               payment:
  *                 type: string
  *               location:
@@ -277,7 +290,7 @@ router.post('/logout', asyncWrapper(logOut));
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Users'
+ *               $ref: '#/components/schemas/UserWithOutPassword'
  *       400:
  *         description: user_id is required or other errors.
  */
