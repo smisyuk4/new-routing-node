@@ -56,14 +56,14 @@ const s3RemoveFile = async (pathFile) => {
   }
 };
 
-const s3GeneratorUrl = async (array) => {
+const s3GeneratorUrl = async (array, fieldName) => {
   let newArray = [];
 
-  for (const user of array) {
-    if (user?.avatar_url && user?.avatar_url !== constants.EMPTY) {
+  for (const item of array) {
+    if (item?.[fieldName] && item?.[fieldName] !== constants.EMPTY) {
       const getObjectParams = {
         Bucket: bucketName,
-        Key: user.avatar_url,
+        Key: item[fieldName],
       };
 
       const getCommand = new GetObjectCommand(getObjectParams);
@@ -72,12 +72,12 @@ const s3GeneratorUrl = async (array) => {
       newArray = [
         ...newArray,
         {
-          ...user,
-          avatar_url: url,
+          ...item,
+          [fieldName]: url,
         },
       ];
     } else {
-      newArray = [...newArray, user];
+      newArray = [...newArray, item];
     }
   }
 

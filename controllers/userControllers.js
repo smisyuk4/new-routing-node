@@ -287,7 +287,7 @@ const getUsers = async (req, res) => {
     const result = await getAllUsers();
 
     if (result?.length > 0) {
-      const updatedArray = await s3GeneratorUrl(result);
+      const updatedArray = await s3GeneratorUrl(result, 'avatar_url');
 
       return res.status(200).json(updatedArray);
     }

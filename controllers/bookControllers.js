@@ -10,6 +10,7 @@ const {
 const {
   s3SendFile,
   s3CreateOneUrl,
+  s3GeneratorUrl,
   s3RemoveFile,
 } = require('../middleware/s3CloudStorage');
 const { constants } = require('../constants');
@@ -70,10 +71,15 @@ const updateBook = async (req, res) => {
     });
   }
 
+  if (cover_image_url) {
+    return res.status(400).json({
+      message: 'this field can change in /api-v1/update-book-cover',
+    });
+  }
+
   const checkFields = [
     title,
     short_desc,
-    cover_image_url,
     literary_genre?.join(' | '),
     cost,
     count,
@@ -86,20 +92,21 @@ const updateBook = async (req, res) => {
   }
 
   try {
-    const result = await updateFieldsBook(
+    const result = await updateFieldsBook({
       user_id,
       book_id,
       title,
       short_desc,
-      cover_image_url,
-      literary_genre?.join(' | '),
+      literary_genre: literary_genre?.join(' | '),
       cost,
-      count
-    );
+      count,
+    });
 
     if (result?.status) {
+      const newUrl = await s3CreateOneUrl(result.data.cover_image_url);
       const updatedBook = {
         ...result.data,
+        cover_image_url: newUrl,
         literary_genre: result.data.literary_genre?.split(' | ') || null,
       };
 
@@ -187,7 +194,9 @@ const getFilteredBooks = async (req, res) => {
     const result = await getBooksByQuery(field, value, pageNumber, pageSize);
 
     if (result?.length > 0) {
-      const updatedBooks = result.map((book) => {
+      const updatedArray = await s3GeneratorUrl(result, 'cover_image_url');
+
+      const updatedBooks = updatedArray.map((book) => {
         return {
           ...book,
           literary_genre: book.literary_genre?.split(' | ') || null,
