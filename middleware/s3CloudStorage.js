@@ -2,6 +2,7 @@ const {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  DeleteObjectCommand,
 } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const sharp = require('sharp');
@@ -39,8 +40,23 @@ const s3SendFile = async (file, pathFile) => {
 
     const putCommand = new PutObjectCommand(params);
     return await s3.send(putCommand);
-  } catch (error) {}
-  return error;
+  } catch (error) {
+    return error;
+  }
+};
+
+const s3RemoveFile = async (pathFile) => {
+  try {
+    const params = {
+      Bucket: bucketName,
+      Key: pathFile,
+    };
+
+    const deleteCommand = new DeleteObjectCommand(params);
+    return await s3.send(deleteCommand);
+  } catch (error) {
+    return error;
+  }
 };
 
 const s3GeneratorUrl = async (array) => {
@@ -89,6 +105,7 @@ const s3CreateOneUrl = async (path) => {
 
 module.exports = {
   s3SendFile,
+  s3RemoveFile,
   s3GeneratorUrl,
   s3CreateOneUrl,
 };

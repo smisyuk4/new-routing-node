@@ -1,16 +1,17 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} = require('@aws-sdk/client-s3');
+//const {
+//  S3Client,
+//  PutObjectCommand,
+//  GetObjectCommand,
+//} = require('@aws-sdk/client-s3');
 //const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 //const sharp = require('sharp');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
 const {
   s3SendFile,
+  s3RemoveFile,
   s3GeneratorUrl,
   s3CreateOneUrl,
 } = require('../middleware/s3CloudStorage');
@@ -241,16 +242,12 @@ const changeUserPassword = async (req, res) => {
 };
 
 const changeUserAvatar = async (req, res) => {
-  const user_id = 3;
+  const user_id = 5;
   const pathFile = `Avatars/500x500_${user_id}`;
   //const { user_id } = req.user;
 
   try {
-    const resultSendFile = await s3SendFile(req.file, pathFile);
-
-    if (!resultSendFile?.['$metadata']) {
-      return res.status(400).json({ error: resultSendFile });
-    }
+    await s3SendFile(req.file, pathFile);
 
     const resultSendData = await updateFieldsUser({
       user_id,
@@ -266,6 +263,26 @@ const changeUserAvatar = async (req, res) => {
     }
 
     res.status(400).json(resultSendData);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const deleteUserAvatar = async (req, res) => {
+  const user_id = 5;
+  const pathFile = `Avatars/500x500_${user_id}`;
+  //const { user_id } = req.user;
+
+  try {
+    const result = await updateFieldsUser({ user_id, avatar_url: null });
+
+    if (result?.status && result?.avatar_url) {
+      await s3RemoveFile(pathFile);
+
+      return res.sendStatus(204);
+    }
+
+    return res.status(400).json({ message: constants.NO_REMOVED });
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -414,6 +431,7 @@ module.exports = {
   updateUserProfile,
   changeUserPassword,
   changeUserAvatar,
+  deleteUserAvatar,
   getUsers,
   deleteUser,
   getUserRoles,

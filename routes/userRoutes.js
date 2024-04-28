@@ -81,6 +81,7 @@ const {
   logOut,
   updateUserProfile,
   changeUserAvatar,
+  deleteUserAvatar,
   changeUserPassword,
   getUsers,
   deleteUser,
@@ -318,6 +319,22 @@ router.post(
   //authenticationToken,
   asyncWrapper(changeUserAvatar)
 );
+
+///**
+// * @swagger
+// * /api-v1/user/delete-avatar:
+// *   delete:
+// *     security:
+// *       - bearerAuth: []
+// *     summary: Remove avatar (need accessToken in header)
+// *     tags: [Users]
+// *     responses:
+// *       204:
+// *         description: Avatar removed.
+// *       400:
+// *         description: user_id is required or other errors.
+// */
+router.delete('/delete-avatar', asyncWrapper(deleteUserAvatar)); //authenticationToken
 
 /**
  * @swagger
