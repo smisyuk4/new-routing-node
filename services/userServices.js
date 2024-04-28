@@ -102,7 +102,7 @@ const updateFieldsUser = async ({
       params.push(location);
     }
 
-    if (avatar_url) {
+    if (avatar_url || avatar_url === constants.EMPTY) {
       sql += ' avatar_url = ?,';
       params.push(avatar_url);
     }

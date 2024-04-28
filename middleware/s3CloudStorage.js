@@ -6,6 +6,7 @@ const {
 } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const sharp = require('sharp');
+const { constants } = require('../constants');
 require('dotenv').config();
 
 const bucketName = process.env.BUCKET_NAME;
@@ -63,7 +64,7 @@ const s3GeneratorUrl = async (array) => {
   let newArray = [];
 
   for (const user of array) {
-    if (user?.avatar_url) {
+    if (user?.avatar_url && user?.avatar_url !== constants.EMPTY) {
       const getObjectParams = {
         Bucket: bucketName,
         Key: user.avatar_url,
@@ -88,7 +89,7 @@ const s3GeneratorUrl = async (array) => {
 };
 
 const s3CreateOneUrl = async (path) => {
-  if (!path) {
+  if (!path || path === constants.EMPTY) {
     return null;
   }
 

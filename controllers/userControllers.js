@@ -179,11 +179,17 @@ const logOut = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   const { user_id } = req.user;
-  const { sign_plan, payment, location } = req.body;
+  const { sign_plan, payment, location, avatar_url } = req.body;
 
   if (!user_id) {
     return res.status(400).json({
       message: 'user_id is required',
+    });
+  }
+
+  if (avatar_url) {
+    return res.status(400).json({
+      message: 'this field can change in /api-v1/user/update-avatar',
     });
   }
 
@@ -242,9 +248,8 @@ const changeUserPassword = async (req, res) => {
 };
 
 const changeUserAvatar = async (req, res) => {
-  const user_id = 5;
+  const { user_id } = req.user;
   const pathFile = `Avatars/500x500_${user_id}`;
-  //const { user_id } = req.user;
 
   try {
     await s3SendFile(req.file, pathFile);
@@ -273,9 +278,15 @@ const deleteUserAvatar = async (req, res) => {
   const pathFile = `Avatars/500x500_${user_id}`;
 
   try {
-    const result = await updateFieldsUser({ user_id, avatar_url: null });
+    const result = await updateFieldsUser({
+      user_id,
+      avatar_url: constants.EMPTY,
+    });
 
-    if (result?.status && result?.avatar_url) {
+    if (
+      result?.status &&
+      (result?.data?.avatar_url || result?.data?.avatar_url !== constants.EMPTY)
+    ) {
       await s3RemoveFile(pathFile);
 
       return res.sendStatus(204);

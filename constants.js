@@ -9,7 +9,8 @@ const constants = {
   LOGOUT_SUCCESS: 'Logout success',
   NO_CHANGED: 'No changed',
   NO_REMOVED: 'No removed',
-  ADMIN: 'admin'
+  EMPTY: 'empty',
+  ADMIN: 'admin',
 };
 
 module.exports = {

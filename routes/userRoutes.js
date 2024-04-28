@@ -312,11 +312,39 @@ router.patch(
   asyncWrapper(changeUserPassword)
 );
 
+/**
+ * @swagger
+ * /api-v1/user/update-avatar:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Update user avatar (need accessToken in header)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               avatar:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Fields updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Users'
+ *       400:
+ *         description: user_id is required or other errors.
+ */
 router.post(
   '/update-avatar',
   multerMid.single('avatar'),
   multerErrorHandling,
-  //authenticationToken,
+  authenticationToken,
   asyncWrapper(changeUserAvatar)
 );
 
