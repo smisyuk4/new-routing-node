@@ -236,7 +236,7 @@ const changeUserAvatar = async (req, res) => {
   const pathFile = `Avatars/500x500_${user_id}`;
 
   try {
-    await s3SendFile(req.file, pathFile);
+    await s3SendFile(req.file, { height: 500, width: 500 }, pathFile);
 
     const resultSendData = await updateFieldsUser({
       user_id,

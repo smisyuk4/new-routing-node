@@ -69,6 +69,7 @@ const {
   createBook,
   updateBook,
   changeBookCover,
+  deleteBookCover,
   getFilteredBooks,
   deleteBook,
   createGenre,
@@ -188,6 +189,35 @@ router.post(
   multerErrorHandling,
   authenticationToken,
   asyncWrapper(changeBookCover)
+);
+
+/**
+ * @swagger
+ * /api-v1/delete-book-cover:
+ *   delete:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Remove book cover (need accessToken in header)
+ *     tags: [Books]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               book_id:
+ *                 type: integer
+ *     responses:
+ *       204:
+ *         description: Avatar removed.
+ *       400:
+ *         description: book_id is required or other errors.
+ */
+router.delete(
+  '/delete-book-cover',
+  authenticationToken,
+  asyncWrapper(deleteBookCover)
 );
 
 /**

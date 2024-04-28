@@ -7,7 +7,12 @@ const {
   addGenre,
   getGenresByQuery,
 } = require('../services/bookServices');
-const { s3SendFile, s3CreateOneUrl } = require('../middleware/s3CloudStorage');
+const {
+  s3SendFile,
+  s3CreateOneUrl,
+  s3RemoveFile,
+} = require('../middleware/s3CloudStorage');
+const { constants } = require('../constants');
 
 const createBook = async (req, res) => {
   const { user_id } = req.user;
@@ -105,7 +110,6 @@ const updateBook = async (req, res) => {
   }
 };
 
-//
 const changeBookCover = async (req, res) => {
   const { user_id } = req.user;
   const { book_id } = req.body;
@@ -116,10 +120,10 @@ const changeBookCover = async (req, res) => {
     });
   }
 
-  const pathFile = `Books/800x500_${user_id}_${book_id}`;
+  const pathFile = `Books/800x600_${user_id}_${book_id}`;
 
   try {
-    await s3SendFile(req.file, pathFile);
+    await s3SendFile(req.file, { height: 800, width: 600 }, pathFile);
 
     const resultSendData = await updateFieldsBook({
       user_id,
@@ -141,19 +145,29 @@ const changeBookCover = async (req, res) => {
   }
 };
 
-const deleteUserAvatar = async (req, res) => {
+const deleteBookCover = async (req, res) => {
   const { user_id } = req.user;
-  const pathFile = `Avatars/500x500_${user_id}`;
+  const { book_id } = req.body;
+
+  if (!book_id) {
+    return res.status(400).json({
+      message: 'book_id is required',
+    });
+  }
+
+  const pathFile = `Books/800x600_${user_id}_${book_id}`;
 
   try {
-    const result = await updateFieldsUser({
+    const result = await updateFieldsBook({
       user_id,
-      avatar_url: constants.EMPTY,
+      book_id,
+      cover_image_url: constants.EMPTY,
     });
 
     if (
       result?.status &&
-      (result?.data?.avatar_url || result?.data?.avatar_url !== constants.EMPTY)
+      (result?.data?.cover_image_url ||
+        result?.data?.cover_image_url !== constants.EMPTY)
     ) {
       await s3RemoveFile(pathFile);
 
@@ -165,8 +179,6 @@ const deleteUserAvatar = async (req, res) => {
     return res.status(400).json(error);
   }
 };
-
-//
 
 const getFilteredBooks = async (req, res) => {
   const { field, value, pageNumber, pageSize } = url.parse(req.url, true).query;
@@ -254,6 +266,7 @@ module.exports = {
   createBook,
   updateBook,
   changeBookCover,
+  deleteBookCover,
   getFilteredBooks,
   deleteBook,
   createGenre,

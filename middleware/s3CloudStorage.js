@@ -18,19 +18,15 @@ const s3 = new S3Client({
   region: process.env.BUCKET_REGION,
 });
 
-const s3SendFile = async (file, pathFile) => {
+const s3SendFile = async (file, resize, pathFile) => {
   try {
-    // resize image
     const buffer = await sharp(file.buffer)
       .resize({
-        height: 500,
-        width: 500,
+        ...resize,
         fit: 'cover',
       })
-      .jpeg({ quality: 80 })
+      .jpeg({ quality: 70 })
       .toBuffer();
-
-    //const pathFile = `Avatars/500x500_${user_id}`;
 
     const params = {
       Bucket: bucketName,
