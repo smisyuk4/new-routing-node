@@ -7,6 +7,7 @@ const constants = {
   NO_MATCH_PLANS: 'No match plans',
   NO_MATCH_COMMENTS: 'No match comments',
   LOGOUT_SUCCESS: 'Logout success',
+  NO_CREATED: 'No created',
   NO_CHANGED: 'No changed',
   NO_REMOVED: 'No removed',
   EMPTY: 'empty',

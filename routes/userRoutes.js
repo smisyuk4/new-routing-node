@@ -24,19 +24,19 @@
  *           type: string
  *           description: Payment by sign plan of user
  *         location:
- *           type: sting
+ *           type: string
  *           description: The location of user
  *         avatar_url:
- *           type: sting
+ *           type: string
  *           description: The avatar url of user
- *         token:
- *           type: sting
- *           description: The refreshToken of user
+ *         refresh_token:
+ *           type: string
+ *           description: The refresh_token of user
  *         date_register:
- *           type: sting
+ *           type: string
  *           description: The date register of user
  *         date_update:
- *           type: sting
+ *           type: string
  *           description: The date update profile user
  *       required:
  *         - password
@@ -51,7 +51,26 @@
  *          payment: true
  *          location: Spain, Madrid
  *          avatar_url: https://static.vecteezy.com/system/resources/thumbnails/022/714/697/small/cute-black-and-white-girl-posing-vector.jpg
- *          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
+ *          refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
+ *          date_register: 2024-04-22T21:00:47.748Z
+ *          date_update: 2024-04-22T22:05:57.255Z
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UserWithAccessToken:
+ *       example:
+ *          user_id: 32
+ *          email: mary_gra@gmail.com
+ *          role: author
+ *          sign_plan: 3
+ *          payment: true
+ *          location: Spain, Madrid
+ *          avatar_url: https://static.vecteezy.com/system/resources/thumbnails/022/714/697/small/cute-black-and-white-girl-posing-vector.jpg
+ *          refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImVtYWlsIjoibW1AbW0uY29tIiwiaWF0IjoxNzEzODE5NjQ3fQ.saeTL2QhLu5HrurMTDy5xLL1uCmaLWa31fZonWyxnLU
+ *          access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6IiQyYiQxMyQ4NHY1ajRBdHdXckJuYkI5VUt3U3EuamJBOFh2RTdpeE5ZRFV3V200SmNTVGxKbThsOHZ0VyIsImVtYWlsIjoib25lLXR3byIsImlhdCI6MTcxNDIyMDY1NH0.ITh93z3WdyvmO6hhDnnbWuU_RNdXmNhBuGlgd_VFX8gF
  *          date_register: 2024-04-22T21:00:47.748Z
  *          date_update: 2024-04-22T22:05:57.255Z
  */
@@ -123,12 +142,7 @@ const { multerMid, multerErrorHandling } = require('../middleware/uploadFiles');
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 accessToken:
- *                   type: string
- *                 refreshToken:
- *                   type: string
+ *               $ref: '#/components/schemas/UserWithAccessToken'
  *       400:
  *         description: password and email required or other errors.
  *       409:

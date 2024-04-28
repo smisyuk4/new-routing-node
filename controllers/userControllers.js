@@ -50,13 +50,15 @@ const register = async (req, res) => {
     );
 
     const user = { password: hashPassword, email };
-    const accessToken = generateAccessToken(user);
-    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+    const access_token = generateAccessToken(user);
+    const refresh_token = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 
-    const result = await addUser(hashPassword, email, role, refreshToken);
+    const result = await addUser(hashPassword, email, role, refresh_token);
 
     if (result?.status) {
-      return res.status(200).json({ accessToken, refreshToken });
+      return res
+        .status(200)
+        .json({ ...result.data, access_token, refresh_token });
     }
   } catch (error) {
     return res.status(400).json(error);
@@ -96,7 +98,15 @@ const login = async (req, res) => {
     const result = await addToken(refreshToken, email);
 
     if (result?.status) {
-      return res.status(200).json({ accessToken, refreshToken });
+      const newUrl = await s3CreateOneUrl(result.data.avatar_url);
+      const { token, ...restrictedData } = result.data;
+
+      return res.status(200).json({
+        ...restrictedData,
+        avatar_url: newUrl,
+        accessToken,
+        refreshToken,
+      });
     }
   } catch (error) {
     return res.status(400).json(error);

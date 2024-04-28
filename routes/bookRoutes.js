@@ -131,8 +131,6 @@ router.post('/create-book', authenticationToken, asyncWrapper(createBook));
  *                 type: string
  *               short_desc:
  *                 type: string
- *               cover_image_url:
- *                 type: string
  *               literary_genre:
  *                 type: array
  *                 items:

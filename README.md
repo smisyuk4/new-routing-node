@@ -47,5 +47,6 @@
 - [BearerAuth](https://swagger.io/docs/specification/authentication/bearer-authentication/?sbsearch=BearerAuth)
 - [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc?tab=readme-ov-file)
 - [Swagger API documentation tutorial - video](https://www.youtube.com/watch?v=dhMlXoTD3mQ&ab_channel=SkillsWithArif)
+- [allof](https://swagger.io/specification/v3/?sbsearch=allof)
 - [example repository](https://github.com/developerarif55/sequlize-ORM/blob/dev/routes/book.js)
 - [NodeJS Swagger API Documentation Tutorial Using Swagger JSDoc](https://www.youtube.com/watch?v=S8kmHtQeflo&ab_channel=MaksimIvanov)
