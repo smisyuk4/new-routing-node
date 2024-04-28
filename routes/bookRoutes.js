@@ -24,7 +24,6 @@
  *           type: array
  *           items:
  *             type: string
- *           description: The literary genre of this book
  *         cost:
  *           type: integer
  *           description: The cost of this book
@@ -52,13 +51,27 @@
  *          count: 100
  *          date_publish: 2024-04-23T13:44:05.312Z
  *          date_update: 2024-04-23T13:44:05.312Z
+ *
+ *     Genres:
+ *       type: object
+ *       properties:
+ *         genre_id:
+ *           type: integer
+ *           description: The auto-generated id of the genre
+ *         title:
+ *           type: array
+ *           items:
+ *             type: string
+ *       example:
+ *          genre_id: 11
+ *          title: [Survival-crafting, Tutorial]
  */
 
 /**
  * @swagger
  * tags:
  *   name: Books
- *   description: The books managing API
+ *   name: Genres
  */
 
 const express = require('express');
@@ -295,7 +308,7 @@ router.delete('/delete-book', authenticationToken, asyncWrapper(deleteBook));
  *     security:
  *       - bearerAuth: []
  *     summary: Create a new genre (need accessToken in header)
- *     tags: [Books]
+ *     tags: [Genres]
  *     requestBody:
  *       required: true
  *       content:
@@ -320,7 +333,7 @@ router.post('/create-genre', authenticationToken, asyncWrapper(createGenre));
  * /api-v1/genres:
  *   get:
  *     summary: Get all filtered genres
- *     tags: [Books]
+ *     tags: [Genres]
  *     parameters:
  *       - in: query
  *         name: field
