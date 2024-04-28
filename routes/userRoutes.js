@@ -320,12 +320,8 @@ router.patch(
  *               password_new:
  *                 type: string
  *     responses:
- *       200:
- *         description: Fields updated.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Users'
+ *       204:
+ *         description: Password updated.
  *       400:
  *         description: user_id is required or other errors.
  */
@@ -359,7 +355,7 @@ router.patch(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Users'
+ *               $ref: '#/components/schemas/UserWithOutPassword'
  *       400:
  *         description: user_id is required or other errors.
  */
@@ -405,7 +401,7 @@ router.delete(
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Users'
+ *                 $ref: '#/components/schemas/UserWithOutPassword'
  *       400:
  *         description: Error.
  */

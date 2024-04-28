@@ -190,32 +190,16 @@ const updateUserPassword = async (user_id, password) => {
     params.push(dateISO);
     params.push(user_id);
 
-    return db.serialize(() => {
-      db.run('BEGIN TRANSACTION');
+    return db.run(sql, params, function (err) {
+      if (err) {
+        return reject(err);
+      }
 
-      db.run(sql, params, function (err) {
-        if (err) {
-          return reject(err);
-        }
+      if (this.changes === 0) {
+        return reject({ message: constants.NO_CHANGED });
+      }
 
-        if (this.changes === 0) {
-          return reject({ message: constants.NO_CHANGED });
-        }
-
-        db.get(
-          'SELECT * FROM users WHERE user_id = ?',
-          [user_id],
-          (err, row) => {
-            if (err) {
-              db.run('ROLLBACK');
-              return reject(err);
-            }
-
-            db.run('COMMIT');
-            resolve({ status: true, data: row });
-          }
-        );
-      });
+      resolve({ status: true });
     });
   });
 };

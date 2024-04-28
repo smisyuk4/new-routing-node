@@ -242,7 +242,7 @@ const changeUserPassword = async (req, res) => {
     const result = await updateUserPassword(user_id, newHashedPassword);
 
     if (result?.status) {
-      return res.status(200).json(result);
+      return res.sendStatus(204);
     }
   } catch (error) {
     return res.status(400).json(error);
