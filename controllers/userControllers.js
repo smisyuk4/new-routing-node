@@ -5,11 +5,15 @@ const {
   PutObjectCommand,
   GetObjectCommand,
 } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const sharp = require('sharp');
+//const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+//const sharp = require('sharp');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
-const { s3GeneratorUrl } = require('../middleware/s3GeneratorUrl');
+const {
+  s3SendFile,
+  s3GeneratorUrl,
+  s3CreateOneUrl,
+} = require('../middleware/s3CloudStorage');
 const {
   addUser,
   addToken,
@@ -28,14 +32,14 @@ const {
 } = require('../services/userServices');
 const { constants } = require('../constants');
 
-const bucketName = process.env.BUCKET_NAME;
-const s3 = new S3Client({
-  credentials: {
-    accessKeyId: process.env.ACCESS_KEY,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY,
-  },
-  region: process.env.BUCKET_REGION,
-});
+//const bucketName = process.env.BUCKET_NAME;
+//const s3 = new S3Client({
+//  credentials: {
+//    accessKeyId: process.env.ACCESS_KEY,
+//    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+//  },
+//  region: process.env.BUCKET_REGION,
+//});
 
 const register = async (req, res) => {
   const { password, email, role } = req.body;
@@ -237,31 +241,12 @@ const changeUserPassword = async (req, res) => {
 };
 
 const changeUserAvatar = async (req, res) => {
-  const user_id = 1;
+  const user_id = 3;
+  const pathFile = `Avatars/500x500_${user_id}`;
   //const { user_id } = req.user;
 
   try {
-    // resize image
-    const buffer = await sharp(req.file.buffer)
-      .resize({
-        height: 500,
-        width: 500,
-        fit: 'cover',
-      })
-      .jpeg({ quality: 80 })
-      .toBuffer();
-
-    const pathFile = `Avatars/500x500_${user_id}`;
-
-    const params = {
-      Bucket: bucketName,
-      Key: pathFile,
-      Body: buffer,
-      ContentType: req.file.mimetype,
-    };
-
-    const putCommand = new PutObjectCommand(params);
-    const resultSendFile = await s3.send(putCommand);
+    const resultSendFile = await s3SendFile(req.file, pathFile);
 
     if (!resultSendFile?.['$metadata']) {
       return res.status(400).json({ error: resultSendFile });
@@ -272,18 +257,15 @@ const changeUserAvatar = async (req, res) => {
       avatar_url: pathFile,
     });
 
-    // generate link to image from store
-    const getObjectParams = {
-      Bucket: bucketName,
-      Key: pathFile,
-    };
-
     if (resultSendData?.status) {
-      const getCommand = new GetObjectCommand(getObjectParams);
-      const url = await getSignedUrl(s3, getCommand);
+      const newUrl = await s3CreateOneUrl(pathFile);
 
-      return res.status(200).json({ ...resultSendData.data, avatar_url: url });
+      return res
+        .status(200)
+        .json({ ...resultSendData.data, avatar_url: newUrl });
     }
+
+    res.status(400).json(resultSendData);
   } catch (error) {
     return res.status(400).json(error);
   }
