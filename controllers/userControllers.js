@@ -269,9 +269,8 @@ const changeUserAvatar = async (req, res) => {
 };
 
 const deleteUserAvatar = async (req, res) => {
-  const user_id = 5;
+  const { user_id } = req.user;
   const pathFile = `Avatars/500x500_${user_id}`;
-  //const { user_id } = req.user;
 
   try {
     const result = await updateFieldsUser({ user_id, avatar_url: null });
