@@ -68,12 +68,14 @@ const { asyncWrapper } = require('../helpers/asyncWrapper');
 const {
   createBook,
   updateBook,
+  changeBookCover,
   getFilteredBooks,
   deleteBook,
   createGenre,
   getFilteredGenres,
 } = require('../controllers/bookControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
+const { multerMid, multerErrorHandling } = require('../middleware/uploadFiles');
 
 /**
  * @swagger
@@ -90,12 +92,9 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *           schema:
  *             type: object
  *             required:
- *               - user_id
  *               - title
  *               - short_desc
  *             properties:
- *               user_id:
- *                 type: integer
  *               title:
  *                 type: string
  *               short_desc:
@@ -152,6 +151,44 @@ router.post('/create-book', authenticationToken, asyncWrapper(createBook));
  *         description: Error.
  */
 router.patch('/update-book', authenticationToken, asyncWrapper(updateBook));
+
+/**
+ * @swagger
+ * /api-v1/update-book-cover:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Update book cover (need accessToken in header)
+ *     tags: [Books]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cover:
+ *                 type: string
+ *                 format: binary
+ *               book_id:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Fields updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Books'
+ *       400:
+ *         description: book_id is required or other errors.
+ */
+router.post(
+  '/update-book-cover',
+  multerMid.single('cover'),
+  multerErrorHandling,
+  authenticationToken,
+  asyncWrapper(changeBookCover)
+);
 
 /**
  * @swagger

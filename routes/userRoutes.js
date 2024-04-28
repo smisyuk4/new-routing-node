@@ -92,11 +92,7 @@ const {
   deletePlan,
 } = require('../controllers/userControllers');
 const { authenticationToken } = require('../middleware/authenticationToken');
-const {
-  uploadFiles,
-  multerMid,
-  multerErrorHandling,
-} = require('../middleware/uploadFiles');
+const { multerMid, multerErrorHandling } = require('../middleware/uploadFiles');
 
 /**
  * @swagger

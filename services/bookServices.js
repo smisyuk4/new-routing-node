@@ -31,7 +31,7 @@ const addBook = (params) => {
   });
 };
 
-const updateFieldsBook = (
+const updateFieldsBook = ({
   user_id,
   book_id,
   title,
@@ -39,8 +39,8 @@ const updateFieldsBook = (
   cover_image_url,
   literary_genre,
   cost,
-  count
-) => {
+  count,
+}) => {
   return new Promise((resolve, reject) => {
     sql = 'UPDATE books SET';
     const params = [];
@@ -55,7 +55,7 @@ const updateFieldsBook = (
       params.push(short_desc);
     }
 
-    if (cover_image_url) {
+    if (cover_image_url || cover_image_url === constants.EMPTY) {
       sql += ' cover_image_url = ?,';
       params.push(cover_image_url);
     }

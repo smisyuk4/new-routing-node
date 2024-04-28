@@ -7,6 +7,7 @@ const {
   addGenre,
   getGenresByQuery,
 } = require('../services/bookServices');
+const { s3SendFile, s3CreateOneUrl } = require('../middleware/s3CloudStorage');
 
 const createBook = async (req, res) => {
   const { user_id } = req.user;
@@ -104,6 +105,69 @@ const updateBook = async (req, res) => {
   }
 };
 
+//
+const changeBookCover = async (req, res) => {
+  const { user_id } = req.user;
+  const { book_id } = req.body;
+
+  if (!book_id) {
+    return res.status(400).json({
+      message: 'book_id is required',
+    });
+  }
+
+  const pathFile = `Books/800x500_${user_id}_${book_id}`;
+
+  try {
+    await s3SendFile(req.file, pathFile);
+
+    const resultSendData = await updateFieldsBook({
+      user_id,
+      book_id,
+      cover_image_url: pathFile,
+    });
+
+    if (resultSendData?.status) {
+      const newUrl = await s3CreateOneUrl(pathFile);
+
+      return res
+        .status(200)
+        .json({ ...resultSendData.data, cover_image_url: newUrl });
+    }
+
+    res.status(400).json(resultSendData);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+const deleteUserAvatar = async (req, res) => {
+  const { user_id } = req.user;
+  const pathFile = `Avatars/500x500_${user_id}`;
+
+  try {
+    const result = await updateFieldsUser({
+      user_id,
+      avatar_url: constants.EMPTY,
+    });
+
+    if (
+      result?.status &&
+      (result?.data?.avatar_url || result?.data?.avatar_url !== constants.EMPTY)
+    ) {
+      await s3RemoveFile(pathFile);
+
+      return res.sendStatus(204);
+    }
+
+    return res.status(400).json({ message: constants.NO_REMOVED });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+//
+
 const getFilteredBooks = async (req, res) => {
   const { field, value, pageNumber, pageSize } = url.parse(req.url, true).query;
 
@@ -189,6 +253,7 @@ const getFilteredGenres = async (req, res) => {
 module.exports = {
   createBook,
   updateBook,
+  changeBookCover,
   getFilteredBooks,
   deleteBook,
   createGenre,

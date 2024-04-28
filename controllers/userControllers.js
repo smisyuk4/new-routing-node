@@ -1,12 +1,5 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-//const {
-//  S3Client,
-//  PutObjectCommand,
-//  GetObjectCommand,
-//} = require('@aws-sdk/client-s3');
-//const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-//const sharp = require('sharp');
 require('dotenv').config();
 const { generateAccessToken } = require('../helpers/generateAccessToken');
 const {
@@ -32,15 +25,6 @@ const {
   removePlan,
 } = require('../services/userServices');
 const { constants } = require('../constants');
-
-//const bucketName = process.env.BUCKET_NAME;
-//const s3 = new S3Client({
-//  credentials: {
-//    accessKeyId: process.env.ACCESS_KEY,
-//    secretAccessKey: process.env.SECRET_ACCESS_KEY,
-//  },
-//  region: process.env.BUCKET_REGION,
-//});
 
 const register = async (req, res) => {
   const { password, email, role } = req.body;
