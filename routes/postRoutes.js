@@ -60,7 +60,9 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  * @swagger
  * /api-v1/create-post:
  *   post:
- *     summary: Create a new post
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Create a new post (need accessToken in header)
  *     tags: [Posts]
  *     requestBody:
  *       required: true
@@ -69,12 +71,9 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *           schema:
  *             type: object
  *             required:
- *               - user_id
  *               - title
  *               - message
  *             properties:
- *               user_id:
- *                 type: integer
  *               title:
  *                 type: string
  *               message:
@@ -85,7 +84,7 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *       400:
  *         description: Error.
  */
-router.post('/create-post', asyncWrapper(createPost));
+router.post('/create-post',authenticationToken, asyncWrapper(createPost));
 
 /**
  * @swagger
