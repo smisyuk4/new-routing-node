@@ -237,9 +237,9 @@ router.post('/login', asyncWrapper(login));
  *           schema:
  *             type: object
  *             required:
- *               - refreshToken
+ *               - refresh_token
  *             properties:
- *               refreshToken:
+ *               refresh_token:
  *                 type: string
  *     responses:
  *       200:
@@ -249,7 +249,7 @@ router.post('/login', asyncWrapper(login));
  *             schema:
  *               type: object
  *               properties:
- *                 accessToken:
+ *                 access_token:
  *                   type: string
  *       401:
  *         description: Error.
@@ -271,15 +271,15 @@ router.post('/token', asyncWrapper(checkAndGenerateToken));
  *           schema:
  *             type: object
  *             required:
- *               - refreshToken
+ *               - refresh_token
  *             properties:
- *               refreshToken:
+ *               refresh_token:
  *                 type: string
  *     responses:
  *       204:
  *         description: Logout successfully.
  *       400:
- *         description: RefreshToken is required or other errors.
+ *         description: refresh_token is required or other errors.
  *       401:
  *         description: Not authorized.
  */

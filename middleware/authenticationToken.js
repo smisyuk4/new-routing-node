@@ -6,12 +6,12 @@ const { constants } = require('../constants');
 
 const authenticationToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const access_token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
+  if (!access_token) {
     return res
       .status(401)
-      .json({ message: 'AccessToken in headers not found' });
+      .json({ message: 'access_token in headers not found' });
   }
 
   let decodedToken;
