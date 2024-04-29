@@ -1,5 +1,32 @@
+.header {
+  padding: 10px 0;
+  border-bottom: 2px solid var(--second-color);
+}
+
 .menu {
   display: flex;
   gap: 30px;
-  background-color: rgb(119, 201, 140);
+  list-style: none;
+}
+
+.menu__item {
+  padding: 5px 20px;
+
+  border-radius: 10px 0 20px 50px;
+  border: 1px solid transparent;
+  transition-property: border, background-color;
+  transition-duration: var(--animation-duration);
+  transition-timing-function: var(--timing-function);
+
+  &:hover,
+  &:focus {
+    background-color: var(--second-color);
+    border: 1px solid var(--accent-color);
+  }
+}
+
+.menu__text {
+  font-size: 18px;
+  text-decoration: none;
+  color: var(--accent-color);
 }

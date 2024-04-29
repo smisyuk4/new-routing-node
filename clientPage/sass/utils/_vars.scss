@@ -1,11 +1,12 @@
 :root {
-  --main-color: #212121;
-  --brand-color: #2196f3;
-  --second-color: #757575;
-  --third-color: #ffffff;
-  --bgd-scl: #f5f4fa;
-  --count-cards: 4;
-  --dst-between: 30px;
+  --text-color: #03d4fc;
+  --main-color: #013185;
+  --second-color: #025cb8;
+  --accent-color: #f4f8f8;
 
-  --animation-regular: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  //--count-cards: 4;
+  //--dst-between: 30px;
+
+  --animation-duration: 250ms;
+  --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
