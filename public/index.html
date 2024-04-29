@@ -153,6 +153,58 @@
     <h2 class="section-title">Документація</h2>
 
     <a class="swagger_link" href="/api-v1/doc/">перехід на Swagger сторінку</a>
+
+    <p class="docs__text description">
+      У проекті підключена база даних SQLite, вона як файл знаходиться на
+      сервері разом з кодом. До неї не підключено окремого UI, тому доступ до
+      даних тільки через консоль або АРІ.
+    </p>
+
+    <p class="docs__text description">
+      База має кілька таблиць
+      <a
+        class="docs_link"
+        href="https://dbdiagram.io/d/posts-sqlite-662f55c25b24a634d00bd7b7"
+        target="_blank"
+        rel="noopener noreferrer"
+        >посилання на схему</a
+      >
+    </p>
+
+    <img
+      class="docs_image"
+      src="./images/db-schema.png"
+      alt="схема таблиць бази даних"
+      height="1000"
+      width="1000"
+    />
+
+    <h3 class="section__subtitle">User</h3>
+    <h4 class="section__route">/api-v1/user/register</h4>
+    <p class="docs__text description">
+      Створює новий профіль користувача при відправці форми з обовʼязковими
+      полями:
+    </p>
+    <p class="docs__text query-params">
+      { "password": "string", "email": "string", "role": "string" }
+    </p>
+    <p>
+      Пароль кодується і зберігається в базі у закодованому вигляді (bcrypt).
+    </p>
+    <img
+      class="docs_image"
+      src="./images/user-password.png"
+      alt="зображення обʼєкта користувача з шифрованим паролем"
+      height="1000"
+      width="1000"
+    />
+    <p>
+      Назад маршрут повертає весь обʼєкт користувача, включно з новим полем
+      <strong>access_token</strong>
+      - цей ключ потрібен в майбутньому при зверненні до захищених маршрутів
+      АРІ. Цей токен має обмежений термін життя - <strong> 10 хвилин </strong>,
+      а потім потрібно звернутись за оновленням токену.
+    </p>
   </div>
 </section>
 

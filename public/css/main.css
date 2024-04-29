@@ -136,7 +136,9 @@ body {
 }
 
 .swagger_link {
+  display: inline-block;
   padding: 10px 20px;
+  margin-bottom: 30px;
   font-size: 18px;
   text-decoration: none;
   color: var(--text-color);
@@ -150,6 +152,40 @@ body {
   border: 1px solid var(--accent-color);
   background-color: var(--second-color);
   box-shadow: var(--box-shadow);
+}
+
+.docs__text {
+  line-height: 1.5;
+}
+
+.description:not(:last-child) {
+  margin-bottom: 30px;
+}
+
+.docs_link {
+  padding: 5px 10px;
+  margin-left: 5px;
+  border: 1px solid var(--text-color);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-color);
+  transition-property: border, background-color;
+  transition-duration: var(--animation-duration);
+  transition-timing-function: var(--timing-function);
+}
+.docs_link:hover, .docs_link:focus {
+  border: 1px solid var(--accent-color);
+  background-color: var(--second-color);
+  box-shadow: var(--box-shadow);
+}
+
+.docs_image {
+  margin: 0 auto;
+}
+
+.section__subtitle {
+  margin: 20px 0;
+  font-size: 16px;
 }
 
 .header {
