@@ -99,9 +99,65 @@ body {
   font-size: 18px;
 }
 
+.info_section {
+  padding: 30px 0;
+}
+
+.section__subtitle {
+  margin: 20px 0;
+  font-size: 16px;
+}
+
+.info__list__title {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.info__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 50px;
+}
+.info__list:not(:last-child) {
+  margin-bottom: 30px;
+}
+
+.info__text {
+  line-height: 1.5;
+}
+
+.description:not(:last-child) {
+  margin-bottom: 30px;
+}
+
+.docs_section {
+  padding: 30px 0;
+}
+
+.swagger_link {
+  padding: 10px 20px;
+  font-size: 18px;
+  text-decoration: none;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--text-color);
+  transition-property: border, background-color;
+  transition-duration: var(--animation-duration);
+  transition-timing-function: var(--timing-function);
+}
+.swagger_link:hover, .swagger_link:focus {
+  border-radius: 10px 20px;
+  border: 1px solid var(--accent-color);
+  background-color: var(--second-color);
+  box-shadow: var(--box-shadow);
+}
+
 .header {
+  position: sticky;
+  top: 0;
   padding: 15px 0;
   border-bottom: 2px solid var(--text-color);
+  background-color: var(--main-color);
 }
 
 .menu {
