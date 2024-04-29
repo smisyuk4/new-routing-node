@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "table": "node db/table.js",
-    "compile": "html-includes --src public --dest public/output"
+    "compile": "html-includes --src clientPage --dest public --watch"
   },
   "author": "",
   "license": "ISC",

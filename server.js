@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 
 app.use(bodyParser.json());
-app.use('/api-v1/', express.static('public/output/'));
+app.use('/api-v1/', express.static('public/'));
 app.use('/api-v1/doc', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use('/api-v1', postRouter);
 app.use('/api-v1/post', commentRouter);
