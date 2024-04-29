@@ -1,0 +1,36 @@
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: large;
+  background-color: black;
+  color: white;
+}
+
+a {
+  color: skyblue;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100dvh;
+}
+
+.link-to-linkedin {
+  margin-top: 30px;
+}
+
+/*<div class="container">
+<h1>Hello!</h1>
+<p>Now the code is still being written and the project is not complete</p>
+<p style>You can look API <a href="/api-v1/doc/">from here</a></p>
+
+<a
+  class="link-to-linkedin"
+  href="https://www.linkedin.com/in/%D1%81%D0%B5%D1%80%D0%B3%D0%B5%D0%B9-%D0%BC%D0%B8%D1%81%D1%8E%D0%BA/"
+  target="_blank"
+  rel="noopener noreferrer"
+  >I'm Sergiy Misyuk and I full stack developer</a
+>
+</div>*/

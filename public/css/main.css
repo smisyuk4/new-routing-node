@@ -1,0 +1,53 @@
+:root {
+  --main-color: #212121;
+  --brand-color: #2196f3;
+  --second-color: #757575;
+  --third-color: #ffffff;
+  --bgd-scl: #f5f4fa;
+  --count-cards: 4;
+  --dst-between: 30px;
+  --animation-regular: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+h1,
+h2,
+h3,
+ul,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  color: var(--main-color);
+  font-size: 16px;
+}
+
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media screen and (min-width: 480px) {
+  .container {
+    width: 480px;
+  }
+}
+@media screen and (min-width: 768px) {
+  .container {
+    width: 768px;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .container {
+    width: 1200px;
+  }
+}/*# sourceMappingURL=main.css.map */

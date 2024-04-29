@@ -38,6 +38,10 @@
 - [sharp npm - convert large images](https://www.npmjs.com/package/sharp)
 - [aws-sdk/s3-request-presigner](https://www.npmjs.com/package/@aws-sdk/s3-request-presigner)
 
+## HTML on server side
+
+- [html-includes](https://www.npmjs.com/package/html-includes)
+
 ## other
 
 - [body-parser](https://www.npmjs.com/package/body-parser)
