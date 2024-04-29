@@ -326,9 +326,15 @@ const deleteUser = async (req, res) => {
   try {
     const result = await removeUser(user_id);
 
+    const pathFile = `Avatars/500x500_${user_id}`;
+
     if (result?.status) {
+      await s3RemoveFile(pathFile);
+
       return res.sendStatus(204);
     }
+
+    return res.status(400).json({ message: constants.NO_REMOVED });
   } catch (error) {
     return res.status(400).json(error);
   }

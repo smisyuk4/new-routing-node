@@ -229,9 +229,15 @@ const deleteBook = async (req, res) => {
   try {
     const result = await removeBook(book_id, user_id);
 
+    const pathFile = `Books/800x600_${user_id}_${book_id}`;
+
     if (result?.status) {
+      await s3RemoveFile(pathFile);
+
       return res.sendStatus(204);
     }
+
+    return res.status(400).json({ message: constants.NO_REMOVED });
   } catch (error) {
     return res.status(400).json(error);
   }
