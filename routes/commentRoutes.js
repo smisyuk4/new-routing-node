@@ -40,7 +40,7 @@
  * @swagger
  * tags:
  *   name: Comments
- *   description: The comments managing API
+ *   description: Operations related to comments
  */
 
 const express = require('express');

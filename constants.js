@@ -12,6 +12,8 @@ const constants = {
   NO_REMOVED: 'No removed',
   EMPTY: 'empty',
   ADMIN: 'admin',
+  AUTHOR: 'author',
+  CUSTOMER: 'customer',
 };
 
 module.exports = {

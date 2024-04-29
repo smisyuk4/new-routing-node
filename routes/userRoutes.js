@@ -126,9 +126,12 @@
 /**
  * @swagger
  * tags:
- *   name: Users
- *   name: Roles
- *   name: Plans
+ *   - name: Users
+ *     description: Operations related to users
+ *   - name: Roles
+ *     description: Operations related to roles
+ *   - name: Plans
+ *     description: Operations related to plans
  */
 
 const express = require('express');
@@ -556,14 +559,7 @@ router.get('/plans', asyncWrapper(getAllPlans));
  *         content:
  *           application/json:
  *             schema:
- *             type: object
- *             properties:
- *               plan_id:
- *                 type: integer
- *               title:
- *                 type: string
- *               cost:
- *                 type: integer
+ *               $ref: '#/components/schemas/Plans'
  *       400:
  *         description: Errors.
  */

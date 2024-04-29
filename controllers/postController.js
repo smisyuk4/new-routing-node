@@ -8,11 +8,18 @@ const {
 } = require('../services/postServices');
 
 const createPost = async (req, res) => {
-  const { user_id, title, message } = req.body;
+  const { user_id } = req.user;
+  const { title, message } = req.body;
 
-  if (!user_id || !title || !message) {
+  if (!user_id) {
     return res.status(400).json({
-      message: 'user_id, title and message required',
+      message: 'user_id is required',
+    });
+  }
+
+  if (!title || !message) {
+    return res.status(400).json({
+      message: 'title and message required',
     });
   }
 

@@ -347,12 +347,18 @@ const getUserRoles = async (req, res) => {
 };
 
 const createPlan = async (req, res) => {
-  const { user_id } = req.user;
+  const { user_id, role } = req.user;
   const { title, cost } = req.body;
 
   if (!user_id || !title || !cost) {
     return res.status(400).json({
       message: 'user_id, title and cost required',
+    });
+  }
+
+  if (role !== constants.ADMIN) {
+    return res.status(400).json({
+      message: 'this path available only for user with role admin',
     });
   }
 
@@ -380,12 +386,18 @@ const getAllPlans = async (req, res) => {
 };
 
 const updatePlan = async (req, res) => {
-  const { user_id } = req.user;
+  const { user_id, role } = req.user;
   const { plan_id, title, cost } = req.body;
 
   if (!user_id) {
     return res.status(400).json({
       message: 'user_id is required',
+    });
+  }
+
+  if (role !== constants.ADMIN) {
+    return res.status(400).json({
+      message: 'this path available only for user with role admin',
     });
   }
 
@@ -409,7 +421,7 @@ const updatePlan = async (req, res) => {
 };
 
 const deletePlan = async (req, res) => {
-  const { user_id } = req.user;
+  const { user_id, role } = req.user;
   const { plan_id } = req.body;
 
   if (!user_id) {
@@ -421,6 +433,12 @@ const deletePlan = async (req, res) => {
   if (!plan_id) {
     return res.status(400).json({
       message: 'plan_id is required',
+    });
+  }
+
+  if (role !== constants.ADMIN) {
+    return res.status(400).json({
+      message: 'this path available only for user with role admin',
     });
   }
 

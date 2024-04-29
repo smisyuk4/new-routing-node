@@ -238,11 +238,18 @@ const deleteBook = async (req, res) => {
 };
 
 const createGenre = async (req, res) => {
+  const { role } = req.user;
   const { title } = req.body;
 
   if (!title) {
     return res.status(400).json({
       message: 'title is required',
+    });
+  }
+
+  if (role !== constants.AUTHOR || role !== constants.ADMIN) {
+    return res.status(400).json({
+      message: 'this path available only for user with role author',
     });
   }
 
