@@ -41,6 +41,8 @@
 ## HTML on server side
 
 - [html-includes](https://www.npmjs.com/package/html-includes)
+- after change html files - need generate new main page `npm run compile`
+- Filenames starting with an \_ underscore will not be saved into destination (in the style of partial files in Sass).
 
 ## other
 

@@ -50,4 +50,10 @@ body {
   .container {
     width: 1200px;
   }
+}
+
+.menu {
+  display: flex;
+  gap: 30px;
+  background-color: red;
 }/*# sourceMappingURL=main.css.map */
