@@ -556,14 +556,7 @@ router.get('/plans', asyncWrapper(getAllPlans));
  *         content:
  *           application/json:
  *             schema:
- *             type: object
- *             properties:
- *               plan_id:
- *                 type: integer
- *               title:
- *                 type: string
- *               cost:
- *                 type: integer
+ *               $ref: '#/components/schemas/Plans'
  *       400:
  *         description: Errors.
  */
