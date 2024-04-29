@@ -232,7 +232,7 @@ const getUserByToken = async (refreshToken) => {
   }
 
   return new Promise((resolve, reject) => {
-    sql = `SELECT * FROM users WHERE token = ?`;
+    sql = `SELECT * FROM users WHERE refresh_token = ?`;
 
     return db.all(sql, [refreshToken], (err, rows) => {
       if (err) {

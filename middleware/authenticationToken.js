@@ -16,7 +16,7 @@ const authenticationToken = async (req, res, next) => {
 
   let decodedToken;
   try {
-    decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    decodedToken = await jwt.verify(access_token, process.env.ACCESS_TOKEN_SECRET);
   } catch (error) {
     return res.status(403).json(error);
   }
