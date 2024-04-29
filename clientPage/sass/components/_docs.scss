@@ -32,6 +32,22 @@
   margin-bottom: 30px;
 }
 
+.query-params {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px 0;
+
+  font-size: 18px;
+  color: var(--accent-color);
+  background-color: var(--second-color);
+}
+
+.accent-text {
+  display: inline-block;
+  padding: 5px;
+  background-color: var(--second-color);
+}
+
 .docs_link {
   padding: 5px 10px;
   margin-left: 5px;
@@ -52,10 +68,35 @@
 }
 
 .docs_image {
-  margin: 0 auto;
+  margin: 0 auto 30px auto;
 }
 
 .section__subtitle {
   margin: 20px 0;
+  font-size: 22px;
+}
+
+.section__route {
+  margin: 0 0 20px 50px;
+  font-size: 18px;
+}
+
+.docs__list__title {
+  margin-bottom: 10px;
   font-size: 16px;
+}
+
+.docs__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 50px;
+
+  &:not(:last-child) {
+    margin-bottom: 30px;
+  }
+}
+
+.users__link {
+  color: var(--text-color);
 }
