@@ -116,21 +116,21 @@ const login = async (req, res) => {
 };
 
 const checkAndGenerateToken = async (req, res) => {
-  const { refreshToken } = req.body;
+  const { refresh_token } = req.body;
 
-  if (!refreshToken) {
+  if (!refresh_token) {
     return res.status(401).json({ message: 'Token not found' });
   }
 
   try {
-    const { password, email } = await getUserByToken(refreshToken);
+    const { password, email } = await getUserByToken(refresh_token);
 
     if (!email) {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
     let decodedToken = await jwt.verify(
-      refreshToken,
+      refresh_token,
       process.env.REFRESH_TOKEN_SECRET
     );
 
@@ -138,26 +138,26 @@ const checkAndGenerateToken = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    const accessToken = generateAccessToken({
+    const access_token = generateAccessToken({
       password,
       email,
     });
 
-    return res.status(200).json({ accessToken });
+    return res.status(200).json({ access_token });
   } catch (error) {
     return res.status(401).json(error);
   }
 };
 
 const logOut = async (req, res) => {
-  const { refreshToken } = req.body;
+  const { refresh_token } = req.body;
 
-  if (!refreshToken) {
-    return res.status(400).json({ message: 'refreshToken is required' });
+  if (!refresh_token) {
+    return res.status(400).json({ message: 'refresh_token is required' });
   }
 
   try {
-    const { email } = await getUserByToken(refreshToken);
+    const { email } = await getUserByToken(refresh_token);
 
     if (!email) {
       return res.status(401).json({ message: 'Not authorized' });
