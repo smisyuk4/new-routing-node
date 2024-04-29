@@ -14,6 +14,7 @@ const constants = {
   ADMIN: 'admin',
   AUTHOR: 'author',
   CUSTOMER: 'customer',
+  IMAGE_TYPE: 'only jpeg, png and webp',
 };
 
 module.exports = {
