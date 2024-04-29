@@ -70,8 +70,10 @@
 /**
  * @swagger
  * tags:
- *   name: Books
- *   name: Genres
+ *   - name: Books
+ *     description: Operations related to books
+ *   - name: Genres
+ *     description: Operations related to genres
  */
 
 const express = require('express');
@@ -339,6 +341,7 @@ router.post('/create-genre', authenticationToken, asyncWrapper(createGenre));
  *         name: field
  *         schema:
  *           type: string
+ *         description: \"title\"
  *         required: false
  *       - in: query
  *         name: value

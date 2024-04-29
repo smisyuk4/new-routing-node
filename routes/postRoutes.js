@@ -40,7 +40,7 @@
  * @swagger
  * tags:
  *   name: Posts
- *   description: The posts managing API
+ *   description: Operations related to posts
  */
 
 const express = require('express');
@@ -84,7 +84,7 @@ const { authenticationToken } = require('../middleware/authenticationToken');
  *       400:
  *         description: Error.
  */
-router.post('/create-post',authenticationToken, asyncWrapper(createPost));
+router.post('/create-post', authenticationToken, asyncWrapper(createPost));
 
 /**
  * @swagger

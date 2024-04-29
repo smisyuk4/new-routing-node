@@ -126,9 +126,12 @@
 /**
  * @swagger
  * tags:
- *   name: Users
- *   name: Roles
- *   name: Plans
+ *   - name: Users
+ *     description: Operations related to users
+ *   - name: Roles
+ *     description: Operations related to roles
+ *   - name: Plans
+ *     description: Operations related to plans
  */
 
 const express = require('express');
