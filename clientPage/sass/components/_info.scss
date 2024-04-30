@@ -1,10 +1,9 @@
-.info_section {
-  padding: 30px 0;
+.info__text {
+  line-height: 1.5;
 }
 
-.section__subtitle {
-  margin: 20px 0;
-  font-size: 16px;
+.description {
+  margin-bottom: 30px;
 }
 
 .info__list__title {
@@ -21,12 +20,4 @@
   &:not(:last-child) {
     margin-bottom: 30px;
   }
-}
-
-.info__text {
-  line-height: 1.5;
-}
-
-.description:not(:last-child) {
-  margin-bottom: 30px;
 }
