@@ -11,3 +11,35 @@
 </p>
 
 <!-- ============================================================ -->
+
+<h4 class="section__route">/api-v1/user/update-plan</h4>
+<p class="docs__text">
+  Захищений маршрут користувача. Потребує в заголовку запиту наявність
+  <strong>Bearer token (access_token)</strong>. Можливе використання тільки
+  користувачам з role=admin. Оновлює поля обʼєкту, plan_id обовʼязково і title
+  або cost:
+</p>
+<p class="docs__text query-params">
+  { "plan_id": 0, "title": "string", "cost": 0 }
+</p>
+<p class="docs__text description">
+  Назад повертає цей оновлений обʼєкт плану підписки.
+</p>
+
+<!-- ============================================================ -->
+
+<h4 class="section__route">/api-v1/user/plans</h4>
+<p class="docs__text description">
+  Назад повертає масив обʼєктів планів підписки.
+</p>
+
+<!-- ============================================================ -->
+
+<h4 class="section__route">/api-v1/user/delete-plan</h4>
+<p class="docs__text">
+  Захищений маршрут користувача. Потребує в заголовку запиту наявність
+  <strong>Bearer token (access_token)</strong>. Можливе використання тільки
+  користувачам з role=admin. Видаляє існуючий план підписки якщо надіслати:
+</p>
+<p class="docs__text query-params">{ "plan_id": 0 }</p>
+<p class="docs__text">Назад не повертає даних, а тільки статус 204</p>

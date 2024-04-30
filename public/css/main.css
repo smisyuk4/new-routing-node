@@ -173,8 +173,10 @@ body {
 }
 
 .accent-text {
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
   padding: 5px;
+  letter-spacing: 0.04rem;
   background-color: var(--second-color);
 }
 
