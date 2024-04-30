@@ -1,4 +1,11 @@
 .section__subtitle {
   margin-bottom: 20px;
   font-size: 18px;
+
+  &.sticky {
+    position: sticky;
+    top: 92px;
+    padding: 10px;
+    background-color: var(--second-color);
+  }
 }

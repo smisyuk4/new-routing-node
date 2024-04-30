@@ -1,204 +1,227 @@
-<h4 class="section__route">/api-v1/user/register</h4>
-<p class="docs__text">
-  Створює новий профіль користувача при відправці форми з обовʼязковими полями:
-</p>
-<p class="docs__text query-params">
-  { "password": "string", "email": "string", "role": "string" }
-</p>
-<p class="docs__text description">
-  Пароль кодується і зберігається в базі у закодованому вигляді (bcrypt).
-</p>
-<img
-  class="docs_image"
-  src="./images/user-password.png"
-  alt="зображення обʼєкта користувача з шифрованим паролем"
-  height="1000"
-  width="1000"
-/>
-<p class="docs__text description">
-  Назад маршрут повертає весь обʼєкт користувача, включно з новим полем
-  <strong>access_token</strong>
-  - цей ключ потрібен в майбутньому при зверненні до захищених маршрутів АРІ.
-  Цей токен має обмежений термін життя - <strong> 10 хвилин </strong>, а потім
-  потрібно звернутись за оновленням токену.
-</p>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/register</h4>
+  <p class="docs__text">
+    Створює новий профіль користувача при відправці форми з обовʼязковими
+    полями:
+  </p>
+  <p class="docs__text query-params">
+    { "password": "string", "email": "string", "role": "string" }
+  </p>
+  <p class="docs__text description">
+    Пароль кодується і зберігається в базі у закодованому вигляді (bcrypt).
+  </p>
+  <img
+    class="docs_image"
+    src="./images/user-password.png"
+    alt="зображення обʼєкта користувача з шифрованим паролем"
+    height="1000"
+    width="1000"
+  />
+  <p class="docs__text">
+    Назад маршрут повертає весь обʼєкт користувача, включно з новим полем
+    <strong>access_token</strong>
+    - цей ключ потрібен в майбутньому при зверненні до захищених маршрутів АРІ.
+    Цей токен має обмежений термін життя - <strong> 10 хвилин </strong>, а потім
+    потрібно звернутись за оновленням токену.
+  </p>
+</div>
 
 <!-- ============================================================ -->
 
-<h4 class="section__route">/api-v1/user/token</h4>
-<p class="docs__text">
-  Очікує <strong>refresh_token</strong>, який раніше був виданий користувачу при
-  реєстрації чи вході. Перевіряє чи їснує такий токен взагалі і проходить
-  розкодування. Потім формує новий <strong>access_token</strong> і повертає на
-  сторону клієнта
-</p>
-<p class="docs__text query-params">{ "refresh_token": "string" }</p>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/token</h4>
+  <p class="docs__text">
+    Очікує <strong>refresh_token</strong>, який раніше був виданий користувачу
+    при реєстрації чи вході. Перевіряє чи їснує такий токен взагалі і проходить
+    розкодування. Потім формує новий <strong>access_token</strong> і повертає на
+    сторону клієнта
+  </p>
+  <p class="docs__text query-params">{ "refresh_token": "string" }</p>
+</div>
 
 <!-- ============================================================ -->
 
-<h4 class="section__route">/api-v1/user/login</h4>
-<p class="docs__text">
-  Виконує автентифікацію користувача при отриманні обовʼязкових значень з форми
-</p>
-<p class="docs__text query-params">
-  { "password": "string", "email": "string" }
-</p>
-<p class="docs__text description">
-  Перевіряє чи існує користувач з такою поштою в базі, якщо існує то перевіряє
-  пароль. Назад маршрут повертає весь обʼєкт користувача, включно з новим полем
-  <strong>access_token</strong>.
-</p>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/login</h4>
+  <p class="docs__text">
+    Виконує автентифікацію користувача при отриманні обовʼязкових значень з
+    форми
+  </p>
+  <p class="docs__text query-params">
+    { "password": "string", "email": "string" }
+  </p>
+  <p class="docs__text">
+    Перевіряє чи існує користувач з такою поштою в базі, якщо існує то перевіряє
+    пароль. Назад маршрут повертає весь обʼєкт користувача, включно з новим
+    полем
+    <strong>access_token</strong>.
+  </p>
+</div>
 
 <!-- ============================================================ -->
 
-<h4 class="section__route">/api-v1/user/logout</h4>
-<p class="docs__text description">
-  Очікує <strong>refreshToken</strong>, який раніше був виданий користувачу.
-  Перевіряє чи їснує такий токен взагалі. Потім видаляє в базі цей токен зі
-  зберігання. Назад не повертає даних, а тільки статус 204
-</p>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/logout</h4>
+  <p class="docs__text">
+    Очікує <strong>refreshToken</strong>, який раніше був виданий користувачу.
+    Перевіряє чи їснує такий токен взагалі. Потім видаляє в базі цей токен зі
+    зберігання. Назад не повертає даних, а тільки статус 204
+  </p>
+</div>
 
 <!-- ============================================================ -->
 
-<h4 class="section__route">/api-v1/user/update-profile</h4>
-<p class="docs__text">
-  Захищений маршрут користувача. Потребує в заголовку запиту наявність
-  <strong>Bearer token (access_token)</strong>. Можна оновити дані:
-</p>
-<p class="docs__text query-params">
-  { "sign_plan": 0, "payment": "string", "location": "string" }
-</p>
-<p class="docs__text description">
-  МІнімум одне поле обʼєкта можно оновити. Назад маршрут повертає весь обʼєкт
-  користувача, без поля <strong>access_token</strong>.
-</p>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/update-profile</h4>
+  <p class="docs__text">
+    Захищений маршрут користувача. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Можна оновити дані:
+  </p>
+  <p class="docs__text query-params">
+    { "sign_plan": 0, "payment": "string", "location": "string" }
+  </p>
+  <p class="docs__text">
+    МІнімум одне поле обʼєкта можно оновити. Назад маршрут повертає весь обʼєкт
+    користувача, без поля <strong>access_token</strong>.
+  </p>
+</div>
 
 <!-- ============================================================ -->
 
-<h4 class="section__route">/api-v1/user/update-password</h4>
-<p class="docs__text">
-  Захищений маршрут користувача. Потребує в заголовку запиту наявність
-  <strong>Bearer token (access_token)</strong>. Можна оновити пароль якщо відомо
-  попередній:
-</p>
-<p class="docs__text query-params">
-  { "password_old": "string", "password_new": "string" }
-</p>
-<p class="docs__text description">
-  Перевіряє старий пароль що зберігається в базі з щойно надійшовшим, якщо все
-  добре, то робить новий пароль у закодованому вигляді (bcrypt) і записує в
-  базу. Назад не повертає даних, а тільки статус 204
-</p>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/update-password</h4>
+  <p class="docs__text">
+    Захищений маршрут користувача. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Можна оновити пароль якщо
+    відомо попередній:
+  </p>
+  <p class="docs__text query-params">
+    { "password_old": "string", "password_new": "string" }
+  </p>
+  <p class="docs__text">
+    Перевіряє старий пароль що зберігається в базі з щойно надійшовшим, якщо все
+    добре, то робить новий пароль у закодованому вигляді (bcrypt) і записує в
+    базу. Назад не повертає даних, а тільки статус 204
+  </p>
+</div>
 
 <!-- ============================================================ -->
 
-<h4 class="section__route">/api-v1/user/update-avatar</h4>
-<p class="docs__text description">
-  Захищений маршрут користувача. Потребує в заголовку запиту наявність
-  <strong>Bearer token (access_token)</strong>. Оновлює зображення аватару
-  користувача якщо надіслати файл із
-  <strong>“Content-Type: multipart/form-data”</strong>. Поле у формі повинно
-  мати назву <strong>avatar</strong>.
-</p>
-<p class="docs__text docs__list__title">
-  Файл має обмеження до 3 мб. Приймаються тільки формати зображень:
-</p>
-<ul class="docs__list">
-  <li>
-    <p>image/png</p>
-  </li>
-  <li>
-    <p>image/jpeg</p>
-  </li>
-  <li>
-    <p>image/webp</p>
-  </li>
-</ul>
-<p class="docs__text description">
-  Потім на сервері обрізається до розмірів 500рх x 500рх, застосовується
-  властивість
-  <a
-    class="users__link"
-    href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit#cover"
-    target="_blank"
-    rel="noopener noreferrer"
-    >fit:cover</a
-  >, змінюється якість зображення до 70% від оригіналу. Оброблене зображення
-  відправляється на зберігання у
-  <a
-    class="users__link"
-    href="https://aws.amazon.com/ru/pm/serv-s3/?gclid=Cj0KCQjwir2xBhC_ARIsAMTXk85mAdVGtud2UEwwCjW07R30bI3O_oOa3sFbeD4mqQm43vaoX7Q5uQQaAglSEALw_wcB&trk=c8974be7-bc21-436d-8108-722e8ab912e1&sc_channel=ps&ef_id=Cj0KCQjwir2xBhC_ARIsAMTXk85mAdVGtud2UEwwCjW07R30bI3O_oOa3sFbeD4mqQm43vaoX7Q5uQQaAglSEALw_wcB:G:s&s_kwcid=AL!4422!3!645125274431!e!!g!!aws%20s3!19574556914!145779857032"
-    target="_blank"
-    rel="noopener noreferrer"
-    >AWS S3</a
-  >, а шлях до файлу зберігається у базі у обʼєкті користувача. Імʼя файлу
-  створено з динамічним ключем <strong>user_id</strong> і кожен користувач має
-  унікальну назву файлу. Коли користувач оновлює аватар, то перезаписує свій
-  попередній, таким чином немає накопичення файлів та історії їх оновлення.
-</p>
-<img
-  class="docs_image"
-  src="./images/user-avatar-0.png"
-  alt="зображення сховища AWS S3 і відкритою папкою Avatars"
-  height="1000"
-  width="1000"
-/>
-<img
-  class="docs_image"
-  src="./images/user-avatar-1.png"
-  alt="зображення обʼєкта користувача де поле avatar_url виглядає як шлях до файлу"
-  height="1000"
-  width="1000"
-/>
-<p class="docs__text description">
-  Після успішної обробки даних назад маршрут повертає весь обʼєкт користувача,
-  без поля <strong>access_token</strong> разом з згенерованим url до зображення
-  в сховищі. Є в цього методу можливість встановлювати термін життя посилання,
-  але зараз не застосований. Для генерації посилань потрібно шлях до файлу, тому
-  цей шлях збережено у базі, а не посилання.
-</p>
-<p class="docs__text description accent-text">
-  <em>
-    Тепер всі маршрути які повертають об'єкт користувача на сторону клієнта
-    додатково генерують url з шляху.
-  </em>
-</p>
-<img
-  class="docs_image"
-  src="./images/user-avatar-2.png"
-  alt="зображення обʼєкта користувача де поле avatar_url виглядає як url"
-  height="1000"
-  width="1000"
-/>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/update-avatar</h4>
+  <p class="docs__text description">
+    Захищений маршрут користувача. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Оновлює зображення аватару
+    користувача якщо надіслати файл із
+    <strong>“Content-Type: multipart/form-data”</strong>. Поле у формі повинно
+    мати назву <strong>avatar</strong>.
+  </p>
+  <p class="docs__text docs__list__title">
+    Файл має обмеження до 3 мб. Приймаються тільки формати зображень:
+  </p>
+  <ul class="docs__list">
+    <li>
+      <p>image/png</p>
+    </li>
+    <li>
+      <p>image/jpeg</p>
+    </li>
+    <li>
+      <p>image/webp</p>
+    </li>
+  </ul>
+  <p class="docs__text description">
+    Потім на сервері обрізається до розмірів 500рх x 500рх, застосовується
+    властивість
+    <a
+      class="users__link"
+      href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit#cover"
+      target="_blank"
+      rel="noopener noreferrer"
+      >fit:cover</a
+    >, змінюється якість зображення до 70% від оригіналу. Оброблене зображення
+    відправляється на зберігання у
+    <a
+      class="users__link"
+      href="https://aws.amazon.com/ru/pm/serv-s3/?gclid=Cj0KCQjwir2xBhC_ARIsAMTXk85mAdVGtud2UEwwCjW07R30bI3O_oOa3sFbeD4mqQm43vaoX7Q5uQQaAglSEALw_wcB&trk=c8974be7-bc21-436d-8108-722e8ab912e1&sc_channel=ps&ef_id=Cj0KCQjwir2xBhC_ARIsAMTXk85mAdVGtud2UEwwCjW07R30bI3O_oOa3sFbeD4mqQm43vaoX7Q5uQQaAglSEALw_wcB:G:s&s_kwcid=AL!4422!3!645125274431!e!!g!!aws%20s3!19574556914!145779857032"
+      target="_blank"
+      rel="noopener noreferrer"
+      >AWS S3</a
+    >, а шлях до файлу зберігається у базі у обʼєкті користувача. Імʼя файлу
+    створено з динамічним ключем <strong>user_id</strong> і кожен користувач має
+    унікальну назву файлу. Коли користувач оновлює аватар, то перезаписує свій
+    попередній, таким чином немає накопичення файлів та історії їх оновлення.
+  </p>
+  <img
+    class="docs_image"
+    src="./images/user-avatar-0.png"
+    alt="зображення сховища AWS S3 і відкритою папкою Avatars"
+    height="1000"
+    width="1000"
+  />
+  <img
+    class="docs_image"
+    src="./images/user-avatar-1.png"
+    alt="зображення обʼєкта користувача де поле avatar_url виглядає як шлях до файлу"
+    height="1000"
+    width="1000"
+  />
+  <p class="docs__text description">
+    Після успішної обробки даних назад маршрут повертає весь обʼєкт користувача,
+    без поля <strong>access_token</strong> разом з згенерованим url до
+    зображення в сховищі. Є в цього методу можливість встановлювати термін життя
+    посилання, але зараз не застосований. Для генерації посилань потрібно шлях
+    до файлу, тому цей шлях збережено у базі, а не посилання.
+  </p>
+  <p class="docs__text description accent-text">
+    <em>
+      Тепер всі маршрути які повертають об'єкт користувача на сторону клієнта
+      додатково генерують url з шляху.
+    </em>
+  </p>
+  <img
+    class="docs_image"
+    src="./images/user-avatar-2.png"
+    alt="зображення обʼєкта користувача де поле avatar_url виглядає як url"
+    height="1000"
+    width="1000"
+  />
+</div>
 
 <!-- ============================================================ -->
 
-<h4 class="section__route">/api-v1/user/delete-avatar</h4>
-<p class="docs__text description">
-  Захищений маршрут користувача. Потребує в заголовку запиту наявність
-  <strong>Bearer token (access_token)</strong>. Видаляє зображення аватару
-  користувача. Спочатку записує замість старого значення нове
-  <strong>“empty”</strong>, а потім видаляє файл за адресою у сховищі. Назад не
-  повертає даних, а тільки статус 204
-</p>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/delete-avatar</h4>
+  <p class="docs__text">
+    Захищений маршрут користувача. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Видаляє зображення аватару
+    користувача. Спочатку записує замість старого значення нове
+    <strong>“empty”</strong>, а потім видаляє файл за адресою у сховищі. Назад
+    не повертає даних, а тільки статус 204
+  </p>
+</div>
 
 <!-- ============================================================ -->
 
-<h4 class="section__route">/api-v1/user/delete-profile</h4>
-<p class="docs__text description">
-  Захищений маршрут користувача. Потребує в заголовку запиту наявність
-  <strong>Bearer token (access_token)</strong>. Видаляє профіль користувача у
-  базі. Не видаляє створені ним раніше записи в таблицях (posts, books,
-  comments), але видаляє зображення аватару у сховищі AWS S3. Назад не повертає
-  даних, а тільки статус 204
-</p>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/delete-profile</h4>
+  <p class="docs__text">
+    Захищений маршрут користувача. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Видаляє профіль користувача у
+    базі. Не видаляє створені ним раніше записи в таблицях (posts, books,
+    comments), але видаляє зображення аватару у сховищі AWS S3. Назад не
+    повертає даних, а тільки статус 204
+  </p>
+</div>
 
 <!-- ============================================================ -->
 
-<h4 class="section__route">/api-v1/user/all-profiles</h4>
-<p class="docs__text">
-  Демонстраційний маршрут, який не варто використовувати в розробці клієнтської
-  частини. Створений для зручної перевірки стану таблиці users при практичних
-  заняттях з АРІ. Назад повертає масив обʼєктів, в яких видно пароль і
-  згенеровані url посилання на зображення.
-</p>
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/user/all-profiles</h4>
+  <p class="docs__text">
+    Демонстраційний маршрут, який не варто використовувати в розробці
+    клієнтської частини. Створений для зручної перевірки стану таблиці users при
+    практичних заняттях з АРІ. Назад повертає масив обʼєктів, в яких видно
+    пароль і згенеровані url посилання на зображення.
+  </p>
+</div>

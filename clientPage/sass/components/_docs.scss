@@ -1,7 +1,37 @@
+.route-wrp {
+  padding: 20px;
+  border: 2px solid var(--second-color);
+
+  &:not(:last-child) {
+    margin-bottom: 30px;
+  }
+}
+
+.docs__text {
+  line-height: 1.5;
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  &.description {
+    margin-bottom: 30px;
+  }
+}
+
+.query-params {
+  display: inline-block;
+  padding: 10px 20px;
+
+  font-size: 18px;
+  color: var(--accent-color);
+  background-color: var(--second-color);
+}
+
 .swagger_link {
   display: inline-block;
   padding: 10px 20px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 
   font-size: 18px;
   text-decoration: none;
@@ -18,24 +48,6 @@
     background-color: var(--second-color);
     box-shadow: var(--box-shadow);
   }
-}
-
-.docs__text {
-  line-height: 1.5;
-}
-
-.description:not(:last-child) {
-  margin-bottom: 30px;
-}
-
-.query-params {
-  display: inline-block;
-  padding: 10px 20px;
-  margin: 10px 0;
-
-  font-size: 18px;
-  color: var(--accent-color);
-  background-color: var(--second-color);
 }
 
 .accent-text {
@@ -66,7 +78,11 @@
 }
 
 .docs_image {
-  margin: 0 auto 30px auto;
+  margin: 0 auto;
+
+  &:not(:last-child) {
+    margin: 0 auto 30px auto;
+  }
 }
 
 .section__route {
@@ -92,4 +108,13 @@
 
 .users__link {
   color: var(--text-color);
+}
+
+.route-nav {
+  position: sticky;
+  top: 52px;
+  z-index: 1;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: var(--second-color);
 }

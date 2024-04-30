@@ -1,9 +1,9 @@
 .info__text {
   line-height: 1.5;
-}
 
-.description {
-  margin-bottom: 30px;
+  &.description {
+    margin-bottom: 30px;
+  }
 }
 
 .info__list__title {
