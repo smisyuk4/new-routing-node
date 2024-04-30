@@ -1,0 +1,222 @@
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/create-book</h4>
+  <p class="docs__text">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Створює книгу. Потрібно
+    надіслати обовʼязкові поля:
+  </p>
+  <p class="docs__text query-params">
+    { "title": "string", "short_desc": "string" }
+  </p>
+  <p class="docs__text">
+    Можливо додати до запиту не обовʼязкові поля і вони додаються у цей обʼєкт:
+  </p>
+  <p class="docs__text query-params">
+    { "cover_image_url": "string", "literary_genre": "array", "cost": "integer",
+    "count": "integer" }
+  </p>
+  <p class="docs__text description">
+    Назад не повертає даних, а тільки статус 204
+  </p>
+  <p class="docs__text description accent-text">
+    <em
+      >Важливо: таблиця books у полі literary_genre має тип text і зберігає всі
+      жанри одним суцільним рядком з роздільником “ | “, а потім додатковими
+      діями цей рядок розділяється на масив і повертається на сторону
+      клієнта</em
+    >
+  </p>
+  <img
+    class="docs_image"
+    src="./images/book-genre-1.png"
+    alt="зображення обʼєкта книга, яке показує literary_genre у вигляді текстового рядка"
+    height="1000"
+    width="1000"
+  />
+  <img
+    class="docs_image"
+    src="./images/book-genre-2.png"
+    alt="зображення обʼєкта книга, яке показує literary_genre у вигляді масиву текстових рядків"
+    height="1000"
+    width="1000"
+  />
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/update-book</h4>
+  <p class="docs__text">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Можна оновити дані у власній
+    книжці. Окрім book_id потрібно передати ще мінімум одне поле:
+  </p>
+  <p class="docs__text query-params">
+    { "book_id": 0, "title": "string", "short_desc": "string", "literary_genre":
+    [ "string" ], "cost": 0, "count": 0 }
+  </p>
+  <p class="docs__text description">
+    Назад маршрут повертає весь обʼєкт книги.
+  </p>
+  <p class="docs__text accent-text">
+    <em
+      >Важливо: у поле literary_genre потрібно передавати масив з актуальних
+      жанрів, а далі він трансформується у рядок і перезаписує минуле
+      значення.</em
+    >
+  </p>
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/update-book-cover</h4>
+  <p class="docs__text">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Оновлює зображення обкладинки
+    книги якщо надіслати файл із
+    <strong>“Content-Type: multipart/form-data”</strong>. Поле у формі повинно
+    мати назву cover і
+  </p>
+  <p class="docs__text query-params">{ "book_id": 0 }</p>
+  <p class="docs__text docs__list__title">
+    Файл має обмеження до 3 мб. Приймаються тільки формати зображень:
+  </p>
+  <ul class="docs__list">
+    <li>
+      <p>image/png</p>
+    </li>
+    <li>
+      <p>image/jpeg</p>
+    </li>
+    <li>
+      <p>image/webp</p>
+    </li>
+  </ul>
+  <p class="docs__text description">
+    Потімна сервері обрізається до розмірів 800рх x 600рх, застосовується
+    властивість
+    <a
+      class="users__link"
+      href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit#cover"
+      target="_blank"
+      rel="noopener noreferrer"
+      >fit:cover</a
+    >, змінюється якість зображення до 70% від оригіналу. Оброблене зображення
+    відправляється на зберігання у
+    <a
+      class="users__link"
+      href="https://aws.amazon.com/ru/pm/serv-s3/?gclid=Cj0KCQjwir2xBhC_ARIsAMTXk85mAdVGtud2UEwwCjW07R30bI3O_oOa3sFbeD4mqQm43vaoX7Q5uQQaAglSEALw_wcB&trk=c8974be7-bc21-436d-8108-722e8ab912e1&sc_channel=ps&ef_id=Cj0KCQjwir2xBhC_ARIsAMTXk85mAdVGtud2UEwwCjW07R30bI3O_oOa3sFbeD4mqQm43vaoX7Q5uQQaAglSEALw_wcB:G:s&s_kwcid=AL!4422!3!645125274431!e!!g!!aws%20s3!19574556914!145779857032"
+      target="_blank"
+      rel="noopener noreferrer"
+      >AWS S3</a
+    >, а шлях до файлу зберігається у базі у обʼєкті книги. Імʼя файлу створено
+    з динамічним ключем user_id і book_id, так кожна обкладинка має унікальну
+    назву файлу. Коли користувач оновлює обкладинку, то перезаписує попередню до
+    цієї ж книги, таким чином немає накопичення файлів та історії їх оновлення.
+  </p>
+  <img
+    class="docs_image"
+    src="./images/books-1.png"
+    alt="зображення сховища AWS S3 і відкритою папкою Books"
+    height="1000"
+    width="1000"
+  />
+  <p class="docs__text description">
+    Після успішної обробки даних шлях до файлу записано у таблицю books в
+    короткому вигляді, а потім перед видачею даних на сторону клієнта функція
+    генерує url. Є в цього методу можливість встановлювати термін життя
+    посилання, але зараз не застосований. Для генерації посилань потрібно шлях
+    до файлу, тому цей шлях збережено у базі, а не посилання. Назад маршрут
+    повертає весь обʼєкт книги.
+  </p>
+  <p class="docs__text description accent-text">
+    <em
+      >Тепер всі маршрути які повертають на сторону клієнта об'єкт книги на
+      сервері додатково генерують url з шляху.</em
+    >
+  </p>
+  <img
+    class="docs_image"
+    src="./images/books-2.png"
+    alt="зображення обʼєкта користувача де поле cover_image_url виглядає як шлях до файлу"
+    height="1000"
+    width="1000"
+  />
+  <img
+    class="docs_image"
+    src="./images/books-3.png"
+    alt="зображення обʼєкта користувача де поле cover_image_url виглядає як url"
+    height="1000"
+    width="1000"
+  />
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/delete-book-cover</h4>
+  <p class="docs__text">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Видаляє зображення обкладинки
+    книги створеної авторизованим користувачем. Потрібно передати обовʼязкове
+    поле:
+  </p>
+  <p class="docs__text query-params">{ "book_id": 0 }</p>
+  <p class="docs__text">
+    Спочатку записує замість старого значення нове “empty”, а потім видаляє файл
+    за адресою у сховищі. Назад не повертає даних, а тільки статус 204
+  </p>
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/books</h4>
+  <p class="docs__text description">
+    Маршрут по якому можна отримати всі книги з бази. Також можна застосувати до
+    запиту критерії фільтрування по одному з полів:
+    <strong
+      >cost, count, book_id, user_id, title, short_desc, literary_genre.</strong
+    >
+  </p>
+  <p class="docs__text description accent-text">
+    <em
+      >Важливо: числові значення пошуку фільтруються у точній відповідності
+      WHERE ${field} = ${value}, а текстові значення фільтруються при наявності
+      у будь якій частині речення WHERE ${field} LIKE '%${value}%'</em
+    >
+  </p>
+  <p class="docs__text description accent-text">
+    <em>Приклади:</em>
+    <em>/api-v1/books?field=cost&value=100</em>
+    <em>/api-v1/books?field=short_desc&value=poet</em>
+  </p>
+  <p class="docs__text description">
+    Також можна застосувати налаштування пагінації, якщо передати pageNumber
+    (порядковий номер сторінки) і pageSize (кількість обʼєктів на сторінці).
+    Назад маршрут повертає масив обʼєктів публікації.
+  </p>
+  <p class="docs__text accent-text">
+    <em
+      >Приклад:
+      /api-v1/books?field=literary_genre&value=fiction&pageNumber=1&pageSize=10</em
+    >
+  </p>
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/delete-book</h4>
+  <p class="docs__text">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Видаляє існуючу книгу якщо
+    вона створений авторизованим користувачем, потрібно надіслати:
+  </p>
+  <p class="docs__text query-params">{ "book_id": 0 }</p>
+  <p class="docs__text">
+    Також видаляє зображення обкладинки у сховищі AWS S3. Назад не повертає
+    даних, а тільки статус 204
+  </p>
+</div>

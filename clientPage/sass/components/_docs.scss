@@ -1,0 +1,120 @@
+.route-wrp {
+  padding: 20px;
+  border: 2px solid var(--second-color);
+
+  &:not(:last-child) {
+    margin-bottom: 30px;
+  }
+}
+
+.docs__text {
+  line-height: 1.5;
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  &.description {
+    margin-bottom: 30px;
+  }
+}
+
+.query-params {
+  display: inline-block;
+  padding: 10px 20px;
+
+  font-size: 18px;
+  color: var(--accent-color);
+  background-color: var(--second-color);
+}
+
+.swagger_link {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+
+  font-size: 18px;
+  text-decoration: none;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--text-color);
+  transition-property: border, background-color;
+  transition-duration: var(--animation-duration);
+  transition-timing-function: var(--timing-function);
+
+  &:hover,
+  &:focus {
+    border-radius: 10px 20px;
+    border: 1px solid var(--accent-color);
+    background-color: var(--second-color);
+    box-shadow: var(--box-shadow);
+  }
+}
+
+.accent-text {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 5px;
+  letter-spacing: 0.04rem;
+  background-color: var(--second-color);
+}
+
+.docs_link {
+  padding: 5px 10px;
+  margin-left: 5px;
+  border: 1px solid var(--text-color);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-color);
+  transition-property: border, background-color;
+  transition-duration: var(--animation-duration);
+  transition-timing-function: var(--timing-function);
+
+  &:hover,
+  &:focus {
+    border: 1px solid var(--accent-color);
+    background-color: var(--second-color);
+    box-shadow: var(--box-shadow);
+  }
+}
+
+.docs_image {
+  margin: 0 auto;
+
+  &:not(:last-child) {
+    margin: 0 auto 30px auto;
+  }
+}
+
+.section__route {
+  margin: 0 0 20px 50px;
+  font-size: 18px;
+}
+
+.docs__list__title {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.docs__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 50px;
+
+  &:not(:last-child) {
+    margin-bottom: 30px;
+  }
+}
+
+.users__link {
+  color: var(--text-color);
+}
+
+.route-nav {
+  position: sticky;
+  top: 52px;
+  z-index: 1;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: var(--second-color);
+}

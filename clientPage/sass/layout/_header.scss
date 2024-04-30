@@ -1,0 +1,38 @@
+.header {
+  position: sticky;
+  top: 0;
+  padding: 15px 0;
+  border-bottom: 2px solid var(--text-color);
+  background-color: var(--main-color);
+}
+
+.menu {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+
+  &.menu__routes {
+    gap: 0;
+    justify-content: space-between;
+  }
+}
+
+.menu__link {
+  padding: 5px 20px 10px;
+
+  font-size: 18px;
+  text-decoration: none;
+  color: var(--text-color);
+  border-radius: 10px 0 20px 50px;
+  border: 1px solid transparent;
+  transition-property: border, background-color;
+  transition-duration: var(--animation-duration);
+  transition-timing-function: var(--timing-function);
+
+  &:hover,
+  &:focus {
+    border: 1px solid var(--accent-color);
+    background-color: var(--second-color);
+    box-shadow: var(--box-shadow);
+  }
+}

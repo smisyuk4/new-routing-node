@@ -1,0 +1,25 @@
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/create-genre</h4>
+  <p class="docs__text">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Можливе використання тільки
+    користувачам з role=admin або author. Створює новий літературний жанр.
+    Очікує обовʼязкові поля:
+  </p>
+  <p class="docs__text query-params">{ "title": "string" }</p>
+  <p class="docs__text">Назад не повертає даних, а тільки статус 204</p>
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/genres</h4>
+  <p class="docs__text">
+    Маршрут по якому можна отримати всі жанри з бази. Також можна застосувати до
+    запиту критерії фільтрування по полю title. Назад маршрут повертає масив
+    обʼєктів жанр.
+  </p>
+  <p class="docs__text accent-text">
+    <em>Приклад: /api-v1/genres?field=title&value=fic</em>
+  </p>
+</div>

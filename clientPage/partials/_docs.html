@@ -1,0 +1,81 @@
+<section class="section" id="docs">
+  <div class="container">
+    <h2 class="section__title">Документація</h2>
+
+    <a class="swagger_link" href="/api-v1/doc/">перехід на Swagger сторінку</a>
+
+    <nav class="route-nav">
+      <ul>
+        <ul class="menu menu__routes">
+          <li>
+            <a class="menu__link" href="#users">users</a>
+          </li>
+          <li>
+            <a class="menu__link" href="#roles">roles</a>
+          </li>
+          <li>
+            <a class="menu__link" href="#plans">plans</a>
+          </li>
+          <li>
+            <a class="menu__link" href="#posts">posts</a>
+          </li>
+          <li>
+            <a class="menu__link" href="#comments">comments</a>
+          </li>
+          <li>
+            <a class="menu__link" href="#books">books</a>
+          </li>
+          <li>
+            <a class="menu__link" href="#genres">genres</a>
+          </li>
+        </ul>
+      </ul>
+    </nav>
+
+    <p class="docs__text description">
+      У проекті підключена база даних SQLite, вона як файл знаходиться на
+      сервері разом з кодом. До неї не підключено окремого UI, тому доступ до
+      даних тільки через консоль або АРІ.
+    </p>
+
+    <p class="docs__text description">
+      База має кілька таблиць
+      <a
+        class="docs_link"
+        href="https://dbdiagram.io/d/posts-sqlite-662f55c25b24a634d00bd7b7"
+        target="_blank"
+        rel="noopener noreferrer"
+        >посилання на схему</a
+      >
+    </p>
+
+    <img
+      class="docs_image"
+      src="./images/db-schema.png"
+      alt="схема таблиць бази даних"
+      height="1000"
+      width="1000"
+    />
+
+    <h3 class="section__subtitle sticky" id="users">User</h3>
+    ${require('_users.html')}
+
+    <h3 class="section__subtitle sticky" id="roles">Roles</h3>
+    ${require('_roles.html')}
+
+    <h3 class="section__subtitle sticky" id="plans">Plans</h3>
+    ${require('_plans.html')}
+
+    <h3 class="section__subtitle sticky" id="posts">Posts</h3>
+    ${require('_posts.html')}
+
+    <h3 class="section__subtitle sticky" id="comments">Comments</h3>
+    ${require('_comments.html')}
+
+    <h3 class="section__subtitle sticky" id="books">Books</h3>
+    ${require('_books.html')}
+
+    <h3 class="section__subtitle sticky" id="genres">Genres</h3>
+    ${require('_genres.html')}
+  </div>
+</section>

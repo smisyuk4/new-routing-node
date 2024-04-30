@@ -38,6 +38,12 @@
 - [sharp npm - convert large images](https://www.npmjs.com/package/sharp)
 - [aws-sdk/s3-request-presigner](https://www.npmjs.com/package/@aws-sdk/s3-request-presigner)
 
+## HTML on server side
+
+- [html-includes](https://www.npmjs.com/package/html-includes)
+- after change html files - need generate new main page `npm run compile`
+- Filenames starting with an \_ underscore will not be saved into destination (in the style of partial files in Sass).
+
 ## other
 
 - [body-parser](https://www.npmjs.com/package/body-parser)

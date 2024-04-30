@@ -1,0 +1,91 @@
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/post/create-comment</h4>
+  <p class="docs__text">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Створює коментар до
+    публікації. Потрібно надіслати обовʼязкові поля:
+  </p>
+  <p class="docs__text query-params">{ "post_id": 0, "message": "string" }</p>
+  <p class="docs__text">Назад не повертає даних, а тільки статус 204</p>
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/post/update-comment</h4>
+  <p class="docs__text">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Можна оновити дані у власному
+    коментарі:
+  </p>
+  <p class="docs__text query-params">
+    { "post_id": 0, "comment_id": 0, "message": "string" }
+  </p>
+  <p class="docs__text">Назад маршрут повертає весь обʼєкт публікації.</p>
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/post/comments-below-post</h4>
+  <p class="docs__text description">
+    Маршрут по якому можна отримати всі коментарі під конкретним постом з бази.
+    Для цього треба застосувати до запиту обовʼязкові критерії фільтрування по
+    полю post_id
+  </p>
+  <p class="docs__text description accent-text">
+    <em>Приклад: /api-v1/post/comments-below-post?field=post_id&value=1</em>
+  </p>
+  <p class="docs__text description">
+    Також можна застосувати налаштування пагінації, якщо передати pageNumber
+    (порядковий номер сторінки) і pageSize (кількість обʼєктів на сторінці).
+    Назад маршрут повертає масив обʼєктів коментаря.
+  </p>
+  <p class="docs__text accent-text">
+    <em
+      >Приклад:
+      /api-v1/post/comments-below-post?field=post_id&value=1&pageNumber=2&pageSize=5</em
+    >
+  </p>
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/post/all-comments</h4>
+  <p class="docs__text description">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Можливе використання тільки
+    користувачам з role=admin. Для цього можна застосувати до запиту критерії
+    фільтрування по полю post_id або user_id
+  </p>
+  <p class="docs__text description accent-text">
+    <em>Приклади:</em>
+    <em>/api-v1/post/all-comments?field=post_id&value=2</em>
+    <em>/api-v1/post/all-comments?field=user_id&value=4</em>
+  </p>
+  <p class="docs__text description">
+    Також можна застосувати налаштування пагінації, якщо передати pageNumber
+    (порядковий номер сторінки) і pageSize (кількість обʼєктів на сторінці).
+    Назад маршрут повертає масив обʼєктів коментаря.
+  </p>
+  <p class="docs__text accent-text">
+    <em
+      >Приклад:
+      /api-v1/post/all-comments?field=post_id&value=2&pageNumber=1&pageSize=10</em
+    >
+  </p>
+</div>
+
+<!-- ============================================================ -->
+
+<div class="route-wrp">
+  <h4 class="section__route">/api-v1/post/delete-comment</h4>
+  <p class="docs__text">
+    Захищений маршрут. Потребує в заголовку запиту наявність
+    <strong>Bearer token (access_token)</strong>. Видаляє існуючий коментар якщо
+    він створений авторизованим користувачем, потрібно надіслати:
+  </p>
+  <p class="docs__text query-params">{ "comment_id": 0 }</p>
+  <p class="docs__text">Назад не повертає даних, а тільки статус 204</p>
+</div>
