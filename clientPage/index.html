@@ -14,7 +14,22 @@
   </head>
   <body>
     ${require('./partials/_header.html')}
-    <main>asdasd</main>
+    <main>
+      ${require('./partials/_info.html')}
+      ${require('./partials/_docs.html')}
+      ${require('./partials/_contacts.html')}
+      ${require('./partials/_projects.html')}
+
+      <button
+        class="scroll-up"
+        type="button"
+        aria-label="прокрутити сторінку вгору"
+      >
+        <svg width="40" height="40">
+          <use href="./images/icons/icons.svg#scroll-up"></use>
+        </svg>
+      </button>
+    </main>
     ${require('./partials/_footer.html')}
     <script type="module" src="./js/index.js"></script>
   </body>

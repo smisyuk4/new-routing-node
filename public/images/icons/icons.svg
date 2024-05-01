@@ -13,5 +13,10 @@
             stroke-linecap="butt" stroke-miterlimit="4" stroke-width="3" d="M6.667 19.654l18.667-17.975">
         </path>
     </symbol>
+
+    <!-- scroll-up -->
+    <symbol id="scroll-up" viewBox="12 10 27 27" >
+			<path d="M26.237 11.763a1.75 1.75 0 0 0-2.474 0L12.626 22.899a1.75 1.75 0 0 0 2.475 2.475l9.899-9.9 9.9 9.9a1.75 1.75 0 0 0 2.474-2.474L26.237 11.762ZM26.75 37V13h-3.5v24h3.5Z" />
+		</symbol>
 	</defs>
 </svg>

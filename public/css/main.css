@@ -66,6 +66,35 @@ body {
   }
 }
 
+.scroll-up {
+  position: sticky;
+  bottom: 0;
+  transform: translate(calc(100dvw + 10px), -60px);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--text-color);
+  stroke: var(--text-color);
+  fill: var(--text-color);
+  background-color: var(--main-color);
+  transition-property: border, stroke, fill, background-color;
+  transition: 1.5s;
+  transition-timing-function: var(--timing-function);
+  cursor: pointer;
+}
+.scroll-up:hover, .scroll-up:focus {
+  border: 1px solid var(--accent-color);
+  background-color: var(--second-color);
+  box-shadow: var(--box-shadow);
+}
+.scroll-up.is-show {
+  transition: 1.5s;
+  transform: translate(calc(100dvw - 75px), -60px);
+}
+
 .section {
   padding: 50px 0 30px;
 }
