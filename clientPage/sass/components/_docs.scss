@@ -53,9 +53,12 @@
 .accent-text {
   display: inline-flex;
   flex-direction: column;
-  padding: 5px;
+  padding: 5px 10px;
   letter-spacing: 0.04rem;
   background-color: var(--third-color);
+
+  width: 100%;
+  overflow-x: scroll;
 }
 
 .docs_link {
@@ -111,10 +114,15 @@
 }
 
 .route-nav {
+  display: none;
   position: sticky;
   top: 52px;
-  z-index: 1;
+  z-index: 2;
   padding: 10px;
   margin-bottom: 10px;
   background-color: var(--second-color);
+
+  @media screen and (min-width: 768px) {
+    display: block;
+  }
 }

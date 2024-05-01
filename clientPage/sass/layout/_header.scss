@@ -35,7 +35,6 @@
   font-size: 18px;
   text-decoration: none;
   color: var(--text-color);
-  border-radius: 10px 0 20px 50px;
   border: 1px solid transparent;
   transition-property: border, background-color;
   transition-duration: var(--animation-duration);
@@ -79,6 +78,7 @@
   top: 0;
   left: 0;
   transform: translateX(-260px);
+  z-index: 200;
   width: 260px;
   height: 100dvh;
   padding: 30px;
