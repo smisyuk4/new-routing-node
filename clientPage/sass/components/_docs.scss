@@ -17,6 +17,12 @@
   &.description {
     margin-bottom: 30px;
   }
+
+  &.description.table-schema {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 .query-params {
@@ -43,7 +49,6 @@
 
   &:hover,
   &:focus {
-    border-radius: 10px 20px;
     border: 1px solid var(--accent-color);
     background-color: var(--second-color);
     box-shadow: var(--box-shadow);
@@ -65,7 +70,6 @@
   padding: 5px 10px;
   margin-left: 5px;
   border: 1px solid var(--text-color);
-  border-radius: 10px;
   text-decoration: none;
   color: var(--text-color);
   transition-property: border, background-color;

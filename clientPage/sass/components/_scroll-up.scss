@@ -1,7 +1,7 @@
 .scroll-up {
   position: sticky;
   bottom: 0;
-  transform: translate(calc(100dvw + 10px), -60px);
+  transform: translate(calc(100dvw - 65px), 50px);
   z-index: 2;
   display: flex;
   justify-content: center;
@@ -27,6 +27,6 @@
 
   &.is-show {
     transition: 1.5s;
-    transform: translate(calc(100dvw - 75px), -60px);
+    transform: translate(calc(100dvw - 65px), -50px);
   }
 }

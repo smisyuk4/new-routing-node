@@ -69,7 +69,7 @@ body {
 .scroll-up {
   position: sticky;
   bottom: 0;
-  transform: translate(calc(100dvw + 10px), -60px);
+  transform: translate(calc(100dvw - 65px), 50px);
   z-index: 2;
   display: flex;
   justify-content: center;
@@ -92,7 +92,7 @@ body {
 }
 .scroll-up.is-show {
   transition: 1.5s;
-  transform: translate(calc(100dvw - 75px), -60px);
+  transform: translate(calc(100dvw - 65px), -50px);
 }
 
 .section {
@@ -161,6 +161,11 @@ body {
 .docs__text.description {
   margin-bottom: 30px;
 }
+.docs__text.description.table-schema {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 .query-params {
   display: inline-block;
@@ -183,7 +188,6 @@ body {
   transition-timing-function: var(--timing-function);
 }
 .swagger_link:hover, .swagger_link:focus {
-  border-radius: 10px 20px;
   border: 1px solid var(--accent-color);
   background-color: var(--second-color);
   box-shadow: var(--box-shadow);
@@ -203,7 +207,6 @@ body {
   padding: 5px 10px;
   margin-left: 5px;
   border: 1px solid var(--text-color);
-  border-radius: 10px;
   text-decoration: none;
   color: var(--text-color);
   transition-property: border, background-color;
