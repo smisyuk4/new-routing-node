@@ -1,6 +1,6 @@
 <header class="header">
   <div class="container">
-    <nav>
+    <nav class="header__nav">
       <ul class="menu">
         <li>
           <a class="menu__link" href="/api-v1">Інформація</a>
@@ -16,5 +16,67 @@
         </li>
       </ul>
     </nav>
+
+    <button class="burger__menu" type="button" aria-label="бургер меню">
+      <svg width="40" height="40">
+        <use href="./images/icons/icons.svg#burger"></use>
+      </svg>
+    </button>
+
+    <div class="burger__modal">
+      <button
+        class="burger__close"
+        type="button"
+        aria-label="закриття бургер меню"
+      >
+        <svg width="40" height="40">
+          <use href="./images/icons/icons.svg#close"></use>
+        </svg>
+      </button>
+
+      <nav>
+        <ul class="burger__modal-menu">
+          <li>
+            <a class="burger__modal-link" href="/api-v1">Інформація</a>
+          </li>
+          <li>
+            <a class="burger__modal-link" href="#docs">Документація:</a>
+          </li>
+
+          <!-- sub menu -->
+          <ul class="burger__modal-menu submenu">
+            <li>
+              <a class="burger__modal-link" href="#users">users</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#roles">roles</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#plans">plans</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#posts">posts</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#comments">comments</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#books">books</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#genres">genres</a>
+            </li>
+          </ul>
+          <!-- sub menu -->
+
+          <li>
+            <a class="burger__modal-link" href="#contacts">Хто з нами?</a>
+          </li>
+          <li>
+            <a class="burger__modal-link" href="#projects">Проекти</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </header>

@@ -1,20 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.1.0/modern-normalize.min.css"
-    />
     <link rel="stylesheet" href="./css/main.css" />
-    <title>Posts</title>
+    <link rel="stylesheet" href="./css/main.css" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./favicon-16x16.png"
+    />
+    <link rel="manifest" href="./site.webmanifest" />
+    <meta
+      name="description"
+      content="АРІ для навчання спеціалістів з ручного тестування, розробки сайтів та мобільних додатків. Також може бути цікаво для дизайнерів."
+    />
+    <title>Posts API</title>
   </head>
   <body>
     <header class="header">
   <div class="container">
-    <nav>
+    <nav class="header__nav">
       <ul class="menu">
         <li>
           <a class="menu__link" href="/api-v1">Інформація</a>
@@ -30,6 +49,68 @@
         </li>
       </ul>
     </nav>
+
+    <button class="burger__menu" type="button" aria-label="бургер меню">
+      <svg width="40" height="40">
+        <use href="./images/icons/icons.svg#burger"></use>
+      </svg>
+    </button>
+
+    <div class="burger__modal">
+      <button
+        class="burger__close"
+        type="button"
+        aria-label="закриття бургер меню"
+      >
+        <svg width="40" height="40">
+          <use href="./images/icons/icons.svg#close"></use>
+        </svg>
+      </button>
+
+      <nav>
+        <ul class="burger__modal-menu">
+          <li>
+            <a class="burger__modal-link" href="/api-v1">Інформація</a>
+          </li>
+          <li>
+            <a class="burger__modal-link" href="#docs">Документація:</a>
+          </li>
+
+          <!-- sub menu -->
+          <ul class="burger__modal-menu submenu">
+            <li>
+              <a class="burger__modal-link" href="#users">users</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#roles">roles</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#plans">plans</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#posts">posts</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#comments">comments</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#books">books</a>
+            </li>
+            <li>
+              <a class="burger__modal-link" href="#genres">genres</a>
+            </li>
+          </ul>
+          <!-- sub menu -->
+
+          <li>
+            <a class="burger__modal-link" href="#contacts">Хто з нами?</a>
+          </li>
+          <li>
+            <a class="burger__modal-link" href="#projects">Проекти</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </header>
 
@@ -57,131 +138,72 @@
       Не написано, але могли би бути у реальному проекті:
     </h4>
     <ul class="info__list">
-      <li>
-        <p class="info__text">
-          Зворотній звʼязок з адміністором (підключення email)
-        </p>
+      <li class="info__text">
+        Зворотній звʼязок з адміністором (підключення email)
       </li>
-
-      <li>
-        <p class="info__text">Платіжний сервіс</p>
+      <li class="info__text">Платіжний сервіс</li>
+      <li class="info__text">
+        Розділ даних і маршрути по оплатам за книги і підписки
       </li>
-
-      <li>
-        <p class="info__text">
-          Розділ даних і маршрути по оплатам за книги і підписки
-        </p>
+      <li class="info__text">
+        Кабінет автора з його власною статистикою про продажі книг
       </li>
-
-      <li>
-        <p class="info__text">
-          Кабінет автора з його власною статистикою про продажі книг
-        </p>
-      </li>
-
-      <li>
-        <p class="info__text">Модерація контенту зі сторони адміна</p>
-      </li>
-
-      <li>
-        <p class="info__text">Резервне копіювання бази і файлів</p>
-      </li>
+      <li class="info__text">Модерація контенту зі сторони адміна</li>
+      <li class="info__text">Резервне копіювання бази і файлів</li>
     </ul>
 
     <h4 class="info__list__title">Кому це може бути цікаво?</h4>
     <ul class="info__list">
-      <li>
-        <p class="info__text">дизайнерам</p>
-      </li>
-
-      <li>
-        <p class="info__text">тестувальникам</p>
-      </li>
-
-      <li>
-        <p class="info__text">фронтенд розробникам</p>
-      </li>
-
-      <li>
-        <p class="info__text">мобільним розробникам</p>
-      </li>
-
-      <li>
-        <p class="info__text">бекенд розробникам (node js)</p>
-      </li>
+      <li class="info__text">дизайнерам</li>
+      <li class="info__text">тестувальникам</li>
+      <li class="info__text">фронтенд розробникам</li>
+      <li class="info__text">мобільним розробникам</li>
+      <li class="info__text">бекенд розробникам (node js)</li>
     </ul>
 
     <h4 class="info__list__title">Що я пропоную?</h4>
     <ul class="info__list">
-      <li>
-        <p class="info__text">
-          Ознайомитися з структурою АРІ. Тут можна зробити сайт або додаток
-          будь-якої складності, імітувати процесси, які ви захочете. Вже
-          відправна точка написана.
-        </p>
+      <li class="info__text">
+        Ознайомитися з структурою АРІ. Тут можна зробити сайт або додаток
+        будь-якої складності, імітувати процесси, які ви захочете. Вже відправна
+        точка написана.
+      </li>
+      <li class="info__text">
+        Подумати чи цікаво зробити свій практичний проект на базі цього АРІ.
+      </li>
+      <li class="info__text">
+        Зробити власний проект самостійного або з колегою і показати іншим.
       </li>
 
-      <li>
-        <p class="info__text">
-          Подумати чи цікаво зробити свій практичний проект на базі цього АРІ.
-        </p>
-      </li>
-
-      <li>
-        <p class="info__text">
-          Зробити власний проект самостійного або з колегою і показати іншим.
-        </p>
-      </li>
-
-      <li>
-        <p class="info__text">
-          Розмістити свій проект в резюме або мій як місце здобуття практики.
-        </p>
+      <li class="info__text">
+        Розмістити свій проект в резюме або мій як місце здобуття практики.
       </li>
     </ul>
 
     <h4 class="info__list__title">А також:</h4>
     <ul class="info__list">
-      <li>
-        <p class="info__text">
-          завершені проекти я додам на інфо сторінку серверу.
-        </p>
+      <li class="info__text">
+        завершені проекти я додам на інфо сторінку серверу.
       </li>
-
-      <li>
-        <p class="info__text">
-          додам у розділ "Хто з нами?" учасників з посиланням на профілі у
-          LinkedIn
-        </p>
+      <li class="info__text">
+        додам у розділ "Хто з нами?" учасників з посиланням на профілі у
+        LinkedIn
       </li>
-
-      <li>
-        <p class="info__text">
-          дизайн проекти зможуть втілити в життя фронтенд розробники. Обрати з
-          варіантів дизайнів під цей АРІ.
-        </p>
+      <li class="info__text">
+        дизайн проекти зможуть втілити в життя фронтенд розробники. Обрати з
+        варіантів дизайнів під цей АРІ.
       </li>
-
-      <li>
-        <p class="info__text">
-          живі (на хостингу) сайти зможуть тестувати всі бажаючі.
-        </p>
+      <li class="info__text">
+        живі (на хостингу) сайти зможуть тестувати всі бажаючі.
       </li>
-
-      <li>
-        <p class="info__text">
-          для бекенд розробника пропозиція скромна - лише написати оптимізацію
-          існуючого коду або розробити нові фітчі. Потім зробимо merge.
-        </p>
+      <li class="info__text">
+        для бекенд розробника пропозиція скромна - лише написати оптимізацію
+        існуючого коду або розробити нові фітчі. Потім зробимо merge.
       </li>
-
       <li>
-        <p class="info__text">
-          буде добрим доповненням до вашого проекту супровідний текстовий
-          документ з деталями, які ви закладали в логіку. Тоді спеціаліст, який
-          працює на вашій базі буде мати краще уявлення що розробляти і
-          тестувати.
-        </p>
+        буде добрим доповненням до вашого проекту супровідний текстовий документ
+        з деталями, які ви закладали в логіку. Тоді спеціаліст, який працює на
+        вашій базі буде мати краще уявлення що розробляти і тестувати.
       </li>
     </ul>
 
@@ -201,8 +223,7 @@
     </p>
   </div>
 </section>
-
-      <section class="section" id="docs">
+ <section class="section" id="docs">
   <div class="container">
     <h2 class="section__title">Документація</h2>
 
@@ -261,8 +282,8 @@
       width="1000"
     />
 
-    <h3 class="section__subtitle sticky" id="users">User</h3>
-    <div class="route-wrp">
+    <h3 class="section__subtitle sticky">User</h3>
+    <div class="route-wrp" id="users">
   <h4 class="section__route">/api-v1/user/register</h4>
   <p class="docs__text">
     Створює новий профіль користувача при відправці форми з обовʼязковими
@@ -384,15 +405,9 @@
     Файл має обмеження до 3 мб. Приймаються тільки формати зображень:
   </p>
   <ul class="docs__list">
-    <li>
-      <p>image/png</p>
-    </li>
-    <li>
-      <p>image/jpeg</p>
-    </li>
-    <li>
-      <p>image/webp</p>
-    </li>
+    <li>image/png</li>
+    <li>image/jpeg</li>
+    <li>image/webp</li>
   </ul>
   <p class="docs__text description">
     Потім на сервері обрізається до розмірів 500рх x 500рх, застосовується
@@ -491,29 +506,23 @@
 </div>
 
 
-    <h3 class="section__subtitle sticky" id="roles">Roles</h3>
-    <div class="route-wrp">
+    <h3 class="section__subtitle sticky">Roles</h3>
+    <div class="route-wrp" id="roles">
   <h4 class="section__route">/api-v1/user/roles</h4>
   <p class="docs__text docs__list__title">
     Назад повертає масив обʼєктів, в яких видно заплановані ролі на проекті:
   </p>
   <ul class="docs__list">
-    <li>
-      <p>admin</p>
-    </li>
-    <li>
-      <p>author</p>
-    </li>
-    <li>
-      <p>customer</p>
-    </li>
+    <li>admin</li>
+    <li>author</li>
+    <li>customer</li>
   </ul>
   <p class="docs__text">CRUD операції не передбачені.</p>
 </div>
 
 
-    <h3 class="section__subtitle sticky" id="plans">Plans</h3>
-    <div class="route-wrp">
+    <h3 class="section__subtitle sticky">Plans</h3>
+    <div class="route-wrp" id="plans">
   <h4 class="section__route">/api-v1/user/create-plan</h4>
   <p class="docs__text">
     Захищений маршрут користувача. Потребує в заголовку запиту наявність
@@ -562,8 +571,8 @@
 </div>
 
 
-    <h3 class="section__subtitle sticky" id="posts">Posts</h3>
-    <div class="route-wrp">
+    <h3 class="section__subtitle sticky">Posts</h3>
+    <div class="route-wrp" id="posts">
   <h4 class="section__route">/api-v1/create-post</h4>
   <p class="docs__text">
     Захищений маршрут. Потребує в заголовку запиту наявність
@@ -651,8 +660,8 @@
 </div>
 
 
-    <h3 class="section__subtitle sticky" id="comments">Comments</h3>
-    <div class="route-wrp">
+    <h3 class="section__subtitle sticky">Comments</h3>
+    <div class="route-wrp" id="comments">
   <h4 class="section__route">/api-v1/post/create-comment</h4>
   <p class="docs__text">
     Захищений маршрут. Потребує в заголовку запиту наявність
@@ -745,8 +754,8 @@
 </div>
 
 
-    <h3 class="section__subtitle sticky" id="books">Books</h3>
-    <div class="route-wrp">
+    <h3 class="section__subtitle sticky">Books</h3>
+    <div class="route-wrp" id="books">
   <h4 class="section__route">/api-v1/create-book</h4>
   <p class="docs__text">
     Захищений маршрут. Потребує в заголовку запиту наявність
@@ -831,15 +840,9 @@
     Файл має обмеження до 3 мб. Приймаються тільки формати зображень:
   </p>
   <ul class="docs__list">
-    <li>
-      <p>image/png</p>
-    </li>
-    <li>
-      <p>image/jpeg</p>
-    </li>
-    <li>
-      <p>image/webp</p>
-    </li>
+    <li>image/png</li>
+    <li>image/jpeg</li>
+    <li>image/webp</li>
   </ul>
   <p class="docs__text description">
     Потімна сервері обрізається до розмірів 800рх x 600рх, застосовується
@@ -970,8 +973,8 @@
 </div>
 
 
-    <h3 class="section__subtitle sticky" id="genres">Genres</h3>
-    <div class="route-wrp">
+    <h3 class="section__subtitle sticky">Genres</h3>
+    <div class="route-wrp" id="genres">
   <h4 class="section__route">/api-v1/create-genre</h4>
   <p class="docs__text">
     Захищений маршрут. Потребує в заголовку запиту наявність
@@ -1012,7 +1015,7 @@
           target="_blank"
           rel="noopener noreferrer"
         >
-          <h4 class="contacts_item_title">Sergiy Misyuk</h4>
+          <h3 class="contacts_item_title">Sergiy Misyuk</h3>
           <p class="contacts_item_subtitle">full stack developer</p>
         </a>
       </li>
@@ -1031,10 +1034,21 @@
   </div>
 </section>
 
+
+      <button
+        class="scroll-up"
+        type="button"
+        aria-label="прокрутити сторінку вгору"
+      >
+        <svg width="40" height="40">
+          <use href="./images/icons/icons.svg#scroll-up"></use>
+        </svg>
+      </button>
     </main>
     <footer class="footer">
   <p class="footer__text">&#169 2024 Sergiy Misyuk</p>
 </footer>
 
+    <script type="module" src="./js/index.js"></script>
   </body>
 </html>

@@ -2,10 +2,15 @@
   --accent-color: #03d4fc;
   --main-color: #013185;
   --second-color: #025cb8;
+  --third-color: #333432;
   --text-color: #f4f8f8;
   --box-shadow: #03d4fc 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   --animation-duration: 250ms;
   --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.no-scroll {
+  overflow: hidden;
 }
 
 h1,
@@ -13,7 +18,8 @@ h2,
 h3,
 h4,
 ul,
-p {
+p,
+body {
   margin: 0;
   padding: 0;
 }
@@ -31,6 +37,11 @@ body {
   letter-spacing: 0.03rem;
   color: var(--text-color);
   background-color: var(--main-color);
+}
+
+* {
+  scroll-behavior: smooth;
+  box-sizing: border-box;
 }
 
 .container {
@@ -55,6 +66,35 @@ body {
   }
 }
 
+.scroll-up {
+  position: sticky;
+  bottom: 0;
+  transform: translate(calc(100dvw + 10px), -60px);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--text-color);
+  stroke: var(--text-color);
+  fill: var(--text-color);
+  background-color: var(--main-color);
+  transition-property: border, stroke, fill, background-color;
+  transition: 1.5s;
+  transition-timing-function: var(--timing-function);
+  cursor: pointer;
+}
+.scroll-up:hover, .scroll-up:focus {
+  border: 1px solid var(--accent-color);
+  background-color: var(--second-color);
+  box-shadow: var(--box-shadow);
+}
+.scroll-up.is-show {
+  transition: 1.5s;
+  transform: translate(calc(100dvw - 75px), -60px);
+}
+
 .section {
   padding: 50px 0 30px;
 }
@@ -70,10 +110,16 @@ body {
   font-size: 18px;
 }
 .section__subtitle.sticky {
-  position: sticky;
-  top: 92px;
   padding: 10px;
   background-color: var(--second-color);
+}
+@media screen and (min-width: 768px) {
+  .section__subtitle.sticky {
+    position: sticky;
+    top: 52px;
+    z-index: 1;
+    top: 92px;
+  }
 }
 
 .info__text {
@@ -121,7 +167,7 @@ body {
   padding: 10px 20px;
   font-size: 18px;
   color: var(--accent-color);
-  background-color: var(--second-color);
+  background-color: var(--third-color);
 }
 
 .swagger_link {
@@ -146,9 +192,11 @@ body {
 .accent-text {
   display: inline-flex;
   flex-direction: column;
-  padding: 5px;
+  padding: 5px 10px;
   letter-spacing: 0.04rem;
-  background-color: var(--second-color);
+  background-color: var(--third-color);
+  width: 100%;
+  overflow-x: scroll;
 }
 
 .docs_link {
@@ -200,12 +248,18 @@ body {
 }
 
 .route-nav {
+  display: none;
   position: sticky;
   top: 52px;
-  z-index: 1;
+  z-index: 2;
   padding: 10px;
   margin-bottom: 10px;
   background-color: var(--second-color);
+}
+@media screen and (min-width: 768px) {
+  .route-nav {
+    display: block;
+  }
 }
 
 .contacts_section {
@@ -214,10 +268,15 @@ body {
 
 .contacts_list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   grid-gap: 10px;
   margin-top: 10px;
   list-style: none;
+}
+@media screen and (min-width: 768px) {
+  .contacts_list {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 }
 
 .contacts_item_link {
@@ -225,35 +284,68 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100px;
+  height: 80px;
   width: 100%;
-  padding: 20px;
+  padding: 10px;
   text-decoration: none;
   color: var(--text-color);
-  border-radius: 50px 20px 0 30px;
   border: 1px solid var(--text-color);
   transition-property: color, border, background-color;
   transition-duration: var(--animation-duration);
   transition-timing-function: var(--timing-function);
 }
 .contacts_item_link:hover, .contacts_item_link:focus {
-  border-radius: 20px 50px 30px 0;
   border: 1px solid var(--accent-color);
   background-color: var(--second-color);
   box-shadow: var(--box-shadow);
 }
+@media screen and (min-width: 768px) {
+  .contacts_item_link {
+    height: 100px;
+    width: 100%;
+    padding: 20px;
+  }
+}
 
 .contacts_item_title {
   margin-bottom: 10px;
-  font-size: 18px;
+  font-size: 16px;
+}
+@media screen and (min-width: 768px) {
+  .contacts_item_title {
+    font-size: 18px;
+  }
+}
+
+.contacts_item_subtitle {
+  font-size: 14px;
+}
+@media screen and (min-width: 768px) {
+  .contacts_item_subtitle {
+    font-size: 16px;
+  }
 }
 
 .header {
   position: sticky;
   top: 0;
-  padding: 15px 0;
+  padding: 5px 0;
   border-bottom: 2px solid var(--text-color);
   background-color: var(--main-color);
+}
+@media screen and (min-width: 768px) {
+  .header {
+    padding: 15px 0;
+  }
+}
+
+.header__nav {
+  display: none;
+}
+@media screen and (min-width: 768px) {
+  .header__nav {
+    display: block;
+  }
 }
 
 .menu {
@@ -271,7 +363,6 @@ body {
   font-size: 18px;
   text-decoration: none;
   color: var(--text-color);
-  border-radius: 10px 0 20px 50px;
   border: 1px solid transparent;
   transition-property: border, background-color;
   transition-duration: var(--animation-duration);
@@ -281,6 +372,74 @@ body {
   border: 1px solid var(--accent-color);
   background-color: var(--second-color);
   box-shadow: var(--box-shadow);
+}
+
+.burger__menu,
+.burger__close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: inherit;
+}
+.burger__menu svg,
+.burger__close svg {
+  stroke: var(--text-color);
+}
+@media screen and (min-width: 768px) {
+  .burger__menu,
+  .burger__close {
+    display: none;
+  }
+}
+
+.burger__close {
+  position: absolute;
+  top: 5px;
+  left: 15px;
+}
+
+.burger__modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-260px);
+  z-index: 200;
+  width: 260px;
+  height: 100dvh;
+  padding: 30px;
+  background-color: var(--third-color);
+  transition-property: transform;
+  transition: 1s;
+  transition-timing-function: var(--timing-function);
+}
+.burger__modal nav {
+  margin-top: 22px;
+}
+.burger__modal.is-open {
+  transform: translateX(0);
+  transition: 1s;
+}
+
+.burger__modal-menu,
+.burger__modal-menu.submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  list-style: none;
+}
+
+.burger__modal-menu.submenu {
+  margin-left: 50px;
+}
+
+.burger__modal-link {
+  padding: 5px 20px 10px;
+  font-size: 18px;
+  text-decoration: none;
+  color: var(--text-color);
 }
 
 .footer {

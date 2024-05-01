@@ -1,24 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.1.0/modern-normalize.min.css"
-    />
     <link rel="stylesheet" href="./css/main.css" />
-    <title>Posts</title>
+    <link rel="stylesheet" href="./css/main.css" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./favicon-16x16.png"
+    />
+    <link rel="manifest" href="./site.webmanifest" />
+    <meta
+      name="description"
+      content="АРІ для навчання спеціалістів з ручного тестування, розробки сайтів та мобільних додатків. Також може бути цікаво для дизайнерів."
+    />
+    <title>Posts API</title>
   </head>
   <body>
     ${require('./partials/_header.html')}
     <main>
-      ${require('./partials/_info.html')}
-      ${require('./partials/_docs.html')}
+      ${require('./partials/_info.html')} ${require('./partials/_docs.html')}
       ${require('./partials/_contacts.html')}
       ${require('./partials/_projects.html')}
+
+      <button
+        class="scroll-up"
+        type="button"
+        aria-label="прокрутити сторінку вгору"
+      >
+        <svg width="40" height="40">
+          <use href="./images/icons/icons.svg#scroll-up"></use>
+        </svg>
+      </button>
     </main>
     ${require('./partials/_footer.html')}
+    <script type="module" src="./js/index.js"></script>
   </body>
 </html>
