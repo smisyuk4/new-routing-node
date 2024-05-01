@@ -56,3 +56,11 @@
 - [allof](https://swagger.io/specification/v3/?sbsearch=allof)
 - [example repository](https://github.com/developerarif55/sequlize-ORM/blob/dev/routes/book.js)
 - [NodeJS Swagger API Documentation Tutorial Using Swagger JSDoc](https://www.youtube.com/watch?v=S8kmHtQeflo&ab_channel=MaksimIvanov)
+
+<!-- ==== -->
+ <main>
+      ${require('./partials/_info.html')}
+      ${require('./partials/_docs.html')}
+      ${require('./partials/_contacts.html')}
+      ${require('./partials/_projects.html')}
+    </main>

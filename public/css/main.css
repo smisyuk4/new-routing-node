@@ -9,6 +9,10 @@
   --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 h1,
 h2,
 h3,
@@ -33,6 +37,11 @@ body {
   letter-spacing: 0.03rem;
   color: var(--text-color);
   background-color: var(--main-color);
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 .container {
@@ -73,7 +82,7 @@ body {
 }
 .section__subtitle.sticky {
   position: sticky;
-  top: 92px;
+  top: 52px;
   padding: 10px;
   background-color: var(--second-color);
 }
@@ -253,9 +262,23 @@ body {
 .header {
   position: sticky;
   top: 0;
-  padding: 15px 0;
+  padding: 5px 0;
   border-bottom: 2px solid var(--text-color);
   background-color: var(--main-color);
+}
+@media screen and (min-width: 768px) {
+  .header {
+    padding: 15px 0;
+  }
+}
+
+.header__nav {
+  display: none;
+}
+@media screen and (min-width: 768px) {
+  .header__nav {
+    display: block;
+  }
 }
 
 .menu {
@@ -283,6 +306,73 @@ body {
   border: 1px solid var(--accent-color);
   background-color: var(--second-color);
   box-shadow: var(--box-shadow);
+}
+
+.burger__menu,
+.burger__close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: inherit;
+}
+.burger__menu svg,
+.burger__close svg {
+  stroke: var(--text-color);
+}
+@media screen and (min-width: 768px) {
+  .burger__menu,
+  .burger__close {
+    display: none;
+  }
+}
+
+.burger__close {
+  position: absolute;
+  top: 5px;
+  left: 15px;
+}
+
+.burger__modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-260px);
+  width: 260px;
+  height: 100dvh;
+  padding: 30px;
+  background-color: var(--third-color);
+  transition-property: transform;
+  transition: 1s;
+  transition-timing-function: var(--timing-function);
+}
+.burger__modal nav {
+  margin-top: 22px;
+}
+.burger__modal.is-open {
+  transform: translateX(0);
+  transition: 1s;
+}
+
+.burger__modal-menu,
+.burger__modal-menu.submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  list-style: none;
+}
+
+.burger__modal-menu.submenu {
+  margin-left: 50px;
+}
+
+.burger__modal-link {
+  padding: 5px 20px 10px;
+  font-size: 18px;
+  text-decoration: none;
+  color: var(--text-color);
 }
 
 .footer {

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+	<defs>
+    <!-- burger -->
+		<symbol id="burger" viewBox="4 4 16 16">
+			<path stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h7" />
+		</symbol>
+
+    <!-- close -->
+    <symbol id="close" viewBox="4 -4 26 26">
+        <path fill="none" stroke-linejoin="miter"
+            stroke-linecap="butt" stroke-miterlimit="4" stroke-width="3" d="M7.012 1.333l17.975 18.667"></path>
+        <path fill="none" stroke-linejoin="miter"
+            stroke-linecap="butt" stroke-miterlimit="4" stroke-width="3" d="M6.667 19.654l18.667-17.975">
+        </path>
+    </symbol>
+	</defs>
+</svg>
