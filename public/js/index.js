@@ -6,6 +6,7 @@
     mainContent: document.querySelector('main'),
     burgerMenuLinks: document.querySelectorAll('.burger__modal-link'),
     scrollUpBtn: document.querySelector('.scroll-up'),
+    menuLink: document.querySelectorAll('.menu__link'),
   };
 
   const toggleBurgerMenu = () => {
