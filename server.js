@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -23,6 +24,7 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use('/api-v1/', express.static('public/'));
 app.use('/api-v1/doc', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use('/api-v1', postRouter);
