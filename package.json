@@ -2,7 +2,7 @@
   "name": "new-routing-node",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
     "table": "node db/table.js",
