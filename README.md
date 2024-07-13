@@ -56,3 +56,8 @@
 - [allof](https://swagger.io/specification/v3/?sbsearch=allof)
 - [example repository](https://github.com/developerarif55/sequlize-ORM/blob/dev/routes/book.js)
 - [NodeJS Swagger API Documentation Tutorial Using Swagger JSDoc](https://www.youtube.com/watch?v=S8kmHtQeflo&ab_channel=MaksimIvanov)
+
+## Render hosting
+
+- [file discs for static data base](https://docs.render.com/disks)
+- [github-sqlite3](https://community.render.com/t/database-on-github-sqlite3/536)
